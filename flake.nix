@@ -57,6 +57,7 @@
               eza
               fd
               pre-commit
+              live-server
             ];
             RUST_SRC_PATH = rust;
 
