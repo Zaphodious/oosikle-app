@@ -1,20 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="default_theme/styles.css">
     <title>Oosikle App</title>
 </head>
+
 <body>
     <header>
-        <section>Menu Bar</section>
+        <span class="space-taker"></span>
+        <ul id="view-menu" class="menu-button-bar">
+            <li id="list-view-option">
+                <input type="radio" name="view-option" id="view-as-list"> <label for="view-as-list">List
+                    View</label>
+            </li>
+            <li id="details-view-option">
+                <input type="radio" name="view-option" id="view-as-details"> <label for="view-as-details">Details
+                    View</label>
+            </li>
+            <li id="cover-view-option">
+                <input type="radio" name="view-option" id="view-as-covers"> <label for="view-as-covers">Covers
+                    View</label>
+            </li>
+        </ul>
+
+        <ul id="search-menu" class="menu-button-bar">
+            <li id="search-text-input">
+                <input type="text">
+            </li>
+            <li id="search-options-selector">
+                <button class="optionbutton">Show Search Options</button>
+            </li>
+            <li id="search-go">
+                <button>Go</button>
+            </li>
+        </ul>
     </header>
+    <nav>
+        <details open>
+            <summary>
+                <h2>Collections</h2>
+            </summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Books <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li><input type="radio" name="list-selected" id="books-authors"><label
+                                    for="books-authors">Authors</label></li>
+                            <li><input type="radio" name="list-selected" id="books-titles"><label
+                                    for="books-titles">Titles</label></li>
+                            <li><input type="radio" name="list-selected" id="books-series"><label
+                                    for="books-series">Series</label></li>
+                            <li><input type="radio" name="list-selected" id="books-to-read"><label
+                                    for="books-to-read">To Read</label></li>
+                            <li><input type="radio" name="list-selected" id="books-favorites"><label
+                                    for="books-favorites">Favorites</label></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details open>
+                        <summary>Music <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li><input type="radio" name="list-selected" id="music-songs" checked> <label
+                                    for="music-songs">Songs</label></li>
+                            <li><input type="radio" name="list-selected" id="music-albums"> <label
+                                    for="music-albums">Albums</label></li>
+                            <li><input type="radio" name="list-selected" id="music-artists"> <label
+                                    for="music-artists">Artists</label></li>
+                        </ul>
+
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Portmaster <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li>
+                                <input type="radio" name="list-selected" id="portmaster-games"><label
+                                    for="portmaster-games">Games</label>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+
+            </ul>
+        </details>
+        <details open>
+            <summary>
+                <h2>Devices</h2>
+            </summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Kindle <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>Books <button class="optionbutton">Options</button></summary>
+                                    <ul>
+                                        <li><input type="radio" name="list-selected" id="kindle1-books-authors"><label
+                                                for="kindle1-books-authors">Authors</label></li>
+                                        <li><input type="radio" name="list-selected" id="kindle1-books-titles"><label
+                                                for="kindle1--books-titles">Titles</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+
+                </li>
+                <li>
+                    <details open>
+                        <summary>iPod 5th Gen <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details open>
+                                    <summary>Music <button class="optionbutton">Options</button></summary>
+                                    <ul>
+                                        <li><input type="radio" name="list-selected" id="ipod1-music-songs">
+                                            <label for="ipod1-music-songs">Songs</label>
+                                        </li>
+                                        <li><input type="radio" name="list-selected" id="ipod1-music-albums"> <label
+                                                for="ipod1-music-albums">Albums</label></li>
+                                        <li><input type="radio" name="list-selected" id="ipod1-music-artists">
+                                            <label for="ipod1-music-artists">Artists</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details>
+                                    <summary>Books <button class="optionbutton">Options</button></summary>
+                                    <ul>
+                                        <li><input type="radio" name="list-selected" id="ipod1-books-authors"><label
+                                                for="ipod1-books-authors">Authors</label></li>
+                                        <li><input type="radio" name="list-selected" id="ipod1-books-titles"><label
+                                                for="ipod1-books-titles">Titles</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>TrimUI Brick <button class="optionbutton">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>Portmaster <button class="optionbutton">Options</button></summary>
+                                    <ul>
+                                        <li>
+                                            <input type="radio" name="list-selected" id="brck1-portmaster-games"><label
+                                                for="brick1-portmaster-games">Games</label>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </details>
+    </nav>
     <main>
-        <section>Devices</section>
-        <section>Content</section>
+        <table>
+            <tr>
+                <th>Song Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Year</th>
+            </tr>
+            <tr>
+                <td>Livin On A Prayer</td>
+                <td>Bon Jovi</td>
+                <td>Unknown</td>
+                <td>Unknown</td>
+            </tr>
+            <tr>
+                <td>The Fifth Angel</td>
+                <td>Beast In Black</td>
+                <td>Berserker</td>
+                <td>2017</td>
+            </tr>
+        </table>
     </main>
     <footer>
         <section>More stuff</section>
     </footer>
 </body>
+
 </html>
