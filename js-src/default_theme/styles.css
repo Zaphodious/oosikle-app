@@ -2,34 +2,68 @@
 
 * {
     font-family: "Noto Emoji", Saira;
-    font-variation-settings: "wdth" 80, "wght" 100;
+    font-variation-settings: "wght" 500; /*"wdth" 80, "wght" 100;*/
+    font-stretch: condensed;
     margin: 0;
     padding: 0;
+    text-align: left;
+    text-rendering: optimizeLegibility;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: black;
+    color: white;
+    --form-control-color: rebeccapurple;
 }
 
 body {
-    background-color: black;
-    color: white;
     display: grid;
     grid-template-columns: 33% auto;
     grid-template-rows: 20% auto;
+}
+
+h1, h2, h3, h4, h5, th {
+    font-stretch: normal;
+    font-weight: bold;
 }
 
 header {
     grid-column: span 2;
     display: grid;
     grid-template-columns: repeat(3, 33%);
+
     & ul {
         display: inline;
+
         & li {
             display: inline;
             list-style: none;
         }
     }
+
+    #view-menu {
+        & li {
+            /* part of hiding radio buttons */
+            display: inline-grid;
+            grid-template-columns: 0 auto;
+            gap: 0;
+            /* end part of hiding radio buttons */
+            & input[type="radio"] {
+                appearance: none;
+                margin: 0;
+            }
+            & input[type="radio"]:checked+label {
+                background: white;
+                color: black;
+            }
+        }
+    }
+
+    .menu-button-bar {}
 }
-
-
-
-
-
-
