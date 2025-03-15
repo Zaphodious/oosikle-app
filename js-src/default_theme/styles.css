@@ -2,12 +2,13 @@
 
 * {
     font-family: "Noto Emoji", Saira;
-    font-variation-settings: "wght" 500; /*"wdth" 80, "wght" 100;*/
+    /*font-variation-settings: "wght" 500; /*"wdth" 80, "wght" 100;*/
     font-stretch: condensed;
     margin: 0;
     padding: 0;
     text-align: left;
     text-rendering: optimizeLegibility;
+    font-size: 12pt;    
 }
 
 *,
@@ -20,6 +21,7 @@ html {
     background-color: black;
     color: white;
     --form-control-color: rebeccapurple;
+    width: 100%;
 }
 
 body {
