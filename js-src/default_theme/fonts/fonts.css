@@ -19,10 +19,10 @@
 }
 @font-face {
     font-family: "Ninito";
-    src url("./Nunito/Nunito-VariableFont_wght.ttf");
+    src: url("./Nunito/Nunito-VariableFont_wght.ttf");
 }
 @font-face {
     font-family: "Ninito";
-    src url("./Nunito/Nunito-Italic-VariableFont_wght.ttf");
+    src: url("./Nunito/Nunito-Italic-VariableFont_wght.ttf");
     font-style: italic;
 }

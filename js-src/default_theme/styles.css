@@ -1,8 +1,9 @@
 @import url("./fonts/fonts.css");
 
 * {
-    font-family: Nonito, sans-serif, "Noto Emoji";
-    /*font-variation-settings: "wght" 500; /*"wdth" 80, "wght" 100;*/
+    font-family: "Ninito", "Noto Emoji";
+    /*font-variation-settings: "wght" 600; /*"wdth" 80, "wght" 100;*/
+    font-weight: 600;
     font-stretch: condensed;
     margin: 0;
     padding: 0;
@@ -17,7 +18,7 @@
 }
 
 html {
-    background-color: black;
+    background-color: #120E0E;
     color: white;
     --form-control-color: rebeccapurple;
     width: 100%;
