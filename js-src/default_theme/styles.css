@@ -1,13 +1,12 @@
 @import url("./fonts/fonts.css");
 
 * {
-    font-family: "Noto Emoji", Saira;
+    font-family: Nonito, sans-serif, "Noto Emoji";
     /*font-variation-settings: "wght" 500; /*"wdth" 80, "wght" 100;*/
     font-stretch: condensed;
     margin: 0;
     padding: 0;
     text-align: left;
-    text-rendering: optimizeLegibility;
     font-size: 12pt;    
 }
 
@@ -26,46 +25,102 @@ html {
 
 body {
     display: grid;
-    grid-template-columns: 33% auto;
-    grid-template-rows: 20% auto;
+    grid-template-columns: 15em auto;
+    grid-template-rows: auto auto;
 }
 
 h1, h2, h3, h4, h5, th {
-    font-stretch: normal;
+    font-family: Saira;
+    font-stretch: condensed;
     font-weight: bold;
+    font-size: 1em;
+}
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3, th { font-size: 1.1em; }
+
+button {
+    height: 2em;
+    background: #333;
+    border: black 1px solid;
+    border-radius: 0.5em;
+    padding: 0 0.5em;
+}
+button, button::before {
+    color: white;
+}
+button:hover {
+    background: #777;
+    color: black;
+}
+button:hover::before {
+    color: black;
+}
+button:active {
+    background: #AAA;
+}
+input[type="text"] {
+    display: inline-block;
+    height: 2em;
+    padding: 0 0.5em;
+    background: transparent;
+    color: white;
+    border: 2px white solid;
+    border-radius: 0.5em;
+    margin: 0 0.5em;
 }
 
 header {
     grid-column: span 2;
-    display: grid;
-    grid-template-columns: repeat(3, 33%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 2px #333 solid;
+    padding: 0.5em 0;
 
-    & ul {
+    & ul li {
         display: inline;
-
+        list-style: none;
+    }
+    .menu-button-bar {
+        display: flex;
         & li {
-            display: inline;
-            list-style: none;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: top;
+            & button {
+                height: 2em;
+                color: white;
+
+            }
+            & button {
+            }
+            & button::before {
+                font-family: "Noto Emoji";
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                font-size: 1.2em;
+                content: "≣";
+                padding: 0;
+                margin-top: -0.15em;
+            }
         }
+
     }
 
     #view-menu {
-        & li {
-            /* part of hiding radio buttons */
-            display: inline-grid;
-            grid-template-columns: 0 auto;
-            gap: 0;
-            /* end part of hiding radio buttons */
-            & input[type="radio"] {
-                appearance: none;
-                margin: 0;
-            }
-            & input[type="radio"]:checked+label {
-                background: white;
-                color: black;
-            }
+
+    }
+
+    #search-menu {
+        & input[type="text"] {
+            display: inline-block;
+            width: 100px;
+            height: 2em;
         }
     }
 
-    .menu-button-bar {}
 }
