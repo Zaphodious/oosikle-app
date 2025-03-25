@@ -10,31 +10,49 @@
 
 <body>
     <header>
-        <span class="space-taker"></span>
-        <ul id="view-menu" class="menu-button-bar">
-                <span class="group-title">View</span>
-            <li id="list-view-option">
-                <button>List</button>
-            </li>
-            <li id="details-view-option">
-                <button>Detail</button>
-            </li>
-            <li id="cover-view-option">
-                <button>Cover</button>
-            </li>
-        </ul>
+        <div class="menu-section">
+            <span class="bar-title">Functions</span>
+            <ul id="function-menu" class="menu-button-bar">
+                <li id="sync-all-function">
+                    <button class="sync">Sync</button>
+                </li>
+                <li id="import-function">
+                    <button class="import">Import</button>
+                </li>
+                <li id="export-function">
+                    <button class="export">Export</button>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-section">
+            <span class="bar-title">View</span>
+            <ul id="view-menu" class="menu-button-bar">
+                <li id="list-view-option">
+                    <button class="hamburger">List</button>
+                </li>
+                <li id="details-view-option">
+                    <button class="broken-hamburger">Detail</button>
+                </li>
+                <li id="cover-view-option">
+                    <button class="square-grid">Cover</button>
+                </li>
+            </ul>
+        </div>
 
-        <ul id="search-menu" class="menu-button-bar">
-            <li id="search-text-input">
-                <input type="text">
-            </li>
-            <li id="search-options-selector">
-                <button class="optionbutton">Search Options</button>
-            </li>
-            <li id="search-go">
-                <button>Search</button>
-            </li>
-        </ul>
+        <div class="menu-section">
+            <span class="bar-title">Search</span>
+            <ul id="search-menu" class="menu-button-bar">
+                <li id="search-text-input">
+                    <input type="text">
+                </li>
+                <li id="search-options-selector">
+                    <button class="option">Options</button>
+                </li>
+                <li id="search-go">
+                    <button class="go">Search</button>
+                </li>
+            </ul>
+        </div>
     </header>
     <nav>
         <details open>
@@ -44,7 +62,7 @@
             <ul>
                 <li>
                     <details>
-                        <summary>Books <button class="optionbutton">Options</button></summary>
+                        <summary>Books <button class="option">Options</button></summary>
                         <ul>
                             <li><input type="radio" name="list-selected" id="books-authors"><label
                                     for="books-authors">Authors</label></li>
@@ -61,7 +79,7 @@
                 </li>
                 <li>
                     <details open>
-                        <summary>Music <button class="optionbutton">Options</button></summary>
+                        <summary>Music <button class="option">Options</button></summary>
                         <ul>
                             <li><input type="radio" name="list-selected" id="music-songs" checked> <label
                                     for="music-songs">Songs</label></li>
@@ -75,7 +93,7 @@
                 </li>
                 <li>
                     <details>
-                        <summary>Portmaster <button class="optionbutton">Options</button></summary>
+                        <summary>Portmaster <button class="option">Options</button></summary>
                         <ul>
                             <li>
                                 <input type="radio" name="list-selected" id="portmaster-games"><label
@@ -94,11 +112,11 @@
             <ul>
                 <li>
                     <details>
-                        <summary>Kindle <button class="optionbutton">Options</button></summary>
+                        <summary>Kindle <button class="option">Options</button></summary>
                         <ul>
                             <li>
                                 <details>
-                                    <summary>Books <button class="optionbutton">Options</button></summary>
+                                    <summary>Books <button class="option">Options</button></summary>
                                     <ul>
                                         <li><input type="radio" name="list-selected" id="kindle1-books-authors"><label
                                                 for="kindle1-books-authors">Authors</label></li>
@@ -115,11 +133,11 @@
                 </li>
                 <li>
                     <details open>
-                        <summary>iPod 5th Gen <button class="optionbutton">Options</button></summary>
+                        <summary>iPod 5th Gen <button class="option">Options</button></summary>
                         <ul>
                             <li>
                                 <details open>
-                                    <summary>Music <button class="optionbutton">Options</button></summary>
+                                    <summary>Music <button class="option">Options</button></summary>
                                     <ul>
                                         <li><input type="radio" name="list-selected" id="ipod1-music-songs">
                                             <label for="ipod1-music-songs">Songs</label>
@@ -135,7 +153,7 @@
                             </li>
                             <li>
                                 <details>
-                                    <summary>Books <button class="optionbutton">Options</button></summary>
+                                    <summary>Books <button class="option">Options</button></summary>
                                     <ul>
                                         <li><input type="radio" name="list-selected" id="ipod1-books-authors"><label
                                                 for="ipod1-books-authors">Authors</label></li>
@@ -151,11 +169,11 @@
                 </li>
                 <li>
                     <details>
-                        <summary>TrimUI Brick <button class="optionbutton">Options</button></summary>
+                        <summary>TrimUI Brick <button class="option">Options</button></summary>
                         <ul>
                             <li>
                                 <details>
-                                    <summary>Portmaster <button class="optionbutton">Options</button></summary>
+                                    <summary>Portmaster <button class="option">Options</button></summary>
                                     <ul>
                                         <li>
                                             <input type="radio" name="list-selected" id="brck1-portmaster-games"><label

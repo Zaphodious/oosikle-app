@@ -1,9 +1,10 @@
 @import url("./fonts/fonts.css");
+@import url("buttons.css");
 
 * {
     font-family: "Ninito", "Noto Emoji";
     /*font-variation-settings: "wght" 600; /*"wdth" 80, "wght" 100;*/
-    font-weight: 600;
+    font-weight: 500;
     font-stretch: condensed;
     margin: 0;
     padding: 0;
@@ -51,14 +52,15 @@ button, button::before {
     color: white;
 }
 button:hover {
-    background: #777;
+    background: #AAA;
     color: black;
 }
 button:hover::before {
     color: black;
 }
 button:active {
-    background: #AAA;
+    background: #777;
+    color: black;
 }
 input[type="text"] {
     display: inline-block;
@@ -77,34 +79,53 @@ header {
     justify-content: space-around;
     align-items: center;
     border-bottom: 2px #333 solid;
-    padding: 0.5em 0;
+    padding: 1em 0;
+    padding-top: 0.25em;
 
     & ul li {
         display: inline;
         list-style: none;
     }
+    .menu-section {
+        .bar-title {
+            display: block;
+            order: -1;
+            flex-basis: 100%;
+            width: 100%;
+            text-align: center;
+            padding-bottom: 0.25em;
+
+        }
+    }
     .menu-button-bar {
         display: flex;
+        flex-wrap: wrap;
         & li {
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: top;
             & button {
+                display: flex;
                 height: 2em;
+                width: 2.5em;
                 color: white;
-
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+                align-items: center;
+                color: transparent;
             }
-            & button {
+            & button:hover {
+                color: white;
             }
             & button::before {
-                font-family: "Noto Emoji";
                 width: 100%;
-                height: 100%;
+                height: 1em;
                 justify-content: center;
+                text-align: center;
                 align-items: center;
-                font-size: 1.2em;
-                content: "≣";
+                font-size: 2em;
                 padding: 0;
                 margin-top: -0.15em;
             }
@@ -113,7 +134,7 @@ header {
     }
 
     #view-menu {
-
+    
     }
 
     #search-menu {
