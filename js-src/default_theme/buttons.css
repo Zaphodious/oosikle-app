@@ -6,10 +6,31 @@ button::before {
                 align-items: center;
                 padding: 0;
                 margin-top: -0.15em;
+                margin-bottom: 0.15em;
 }
 button.option::before {
-    content: "⚙️";
+    content: "⚙";
 }
 button.hamburger::before {
-    content: "≣";
+    content: "🟦"/*"≣"*/;
+}
+button.broken-hamburger::before {
+    content: "🟥";
+}
+button.square-grid::before {
+    content:"⬛";
+}
+button.sync::before {
+    content:"⇄";
+    margin-right: -0.4em;
+}
+button.import::before {
+    content: "📥";
+}
+button.save::before {
+    content: "💾";
+}
+button.go::before {
+    content: "⇨";
+    margin-right: -0.4em;
 }
