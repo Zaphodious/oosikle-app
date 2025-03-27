@@ -47,7 +47,7 @@ input[type="text"] {
     padding: 0 0.5em;
     background: transparent;
     color: white;
-    border: 2px white solid;
+    border: 2px #444 solid;
     border-radius: 0.5em;
     margin: 0 0.5em;
 }
@@ -138,4 +138,62 @@ header {
 }
 
 nav {
+    & details {
+        & summary {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            & button {
+                border: none;
+                background: transparent;
+                color: transparent;
+            }
+            & button::before {
+                color: transparent;
+            }
+        }
+        & summary:hover {
+            & button {
+                background: auto;
+                color: transparent;
+            }
+            & button::before {
+                color: white;
+            }
+            & button:hover::before {
+                color: black;
+            }
+        }
+        & ul {
+            display: block;
+            padding-left: 0.75em;
+            margin-left: 0.25em;
+            border-left: 2px #222 solid;
+            & li {
+                list-style: none;
+            }
+            & li.plist {
+                display: flex;
+                align-items: center;
+                gap: 0.25em;
+                color: white;
+                padding: 0.25em;
+                padding-left: 0.5em;
+                border-radius: 1em;
+                width: calc(100% - 1em);
+                & label {
+                    display: inline-block;
+                    width: 100%;
+                }
+                & input[type="radio"] {
+                    display: none;
+                }
+            }
+            & li.plist:has(input[type="radio"]:checked) {
+                background: white;
+                color: black;
+            }
+
+        }
+    }
 }
