@@ -1,28 +1,30 @@
 button {
     height: 2em;
-    background: #333;
+    background: transparent;/*#333;*/
     border: black 1px solid;
-    border-radius: 0.5em;
+    border-radius: 2em;
     padding: 0 0.5em;
 }
 button, button::before {
     color: white;
 }
 button:hover {
-    background: #AAA;
-    color: black;
+    background: black;
+    color: white;
+    border: white 2px solid;
+    cursor: pointer;
 }
 button:hover::before {
-    color: black;
+    color: white;
 }
 button:active {
     background: #777;
     color: black;
 }
 button.icon-only {
-    font-size: 0.5em;
+    font-size: 0.65em;
     display: flex;
-    height: 4em;
+    height: 3em;
     width: 4.5em;
     color: white;
     flex-wrap: wrap;
@@ -32,7 +34,7 @@ button.icon-only {
     color: transparent;
 }
 button.icon-only:hover {
-    color: black;
+    color: white;
 }
 button.icon-only::before {
     width: 100%;
@@ -40,16 +42,17 @@ button.icon-only::before {
     justify-content: center;
     text-align: center;
     align-items: center;
-    font-size: 2.5em;
+    font-size: 2em;
     padding: 0;
-    margin-top: 0.15em;
+    margin-top: 0.1em;
     margin-left: -0.0em;
 }
 button.icon-only:hover::before {
     font-size: 2em;
     margin-top: 0em;
-    margin-left: 0.2em;
+    margin-left: 0.4em;
     text-align: left;
+    content: none;
 }
 button.option::before {
     content: "⚙";
@@ -67,6 +70,9 @@ button.sync::before {
     content:"⇄";
     margin-right: -0.4em;
 }
+button.sync:hover::before {
+    margin-left: 0.7em;
+}
 button.import::before {
     content: "📥";
 }
@@ -76,4 +82,7 @@ button.save::before {
 button.go::before {
     content: "⇨";
     margin-right: -0.4em;
+}
+button.go:hover::before {
+    margin-left: 0.7em;
 }

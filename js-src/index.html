@@ -68,16 +68,16 @@
                     <details>
                         <summary>Books <button class="option icon-only">Options</button></summary>
                         <ul>
-                            <li class="plist"><input type="radio" name="list-selected" id="books-authors"><label
-                                    for="books-authors">Authors</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="books-titles"><label
-                                    for="books-titles">Titles</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="books-series"><label
-                                    for="books-series">Series</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="books-to-read"><label
-                                    for="books-to-read">To Read</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="books-favorites"><label
-                                    for="books-favorites">Favorites</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-authors"><label for="books-authors">Authors</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-titles"><label for="books-titles">Titles</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-series"><label for="books-series">Series</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-to-read"><label for="books-to-read">To Read</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-favorites"><label for="books-favorites">Favorites</label></li>
                         </ul>
                     </details>
                 </li>
@@ -85,12 +85,12 @@
                     <details open>
                         <summary>Music <button class="option icon-only">Options</button></summary>
                         <ul>
-                            <li class="plist"><input type="radio" name="list-selected" id="music-songs" checked> <label
-                                    for="music-songs">Songs</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="music-albums"> <label
-                                    for="music-albums">Albums</label></li>
-                            <li class="plist"><input type="radio" name="list-selected" id="music-artists"> <label
-                                    for="music-artists">Artists</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected" id="music-songs"
+                                    checked> <label for="music-songs">Songs</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="music-albums"> <label for="music-albums">Albums</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="music-artists"> <label for="music-artists">Artists</label></li>
                         </ul>
 
                     </details>
@@ -99,7 +99,7 @@
                     <details>
                         <summary>Portmaster <button class="option icon-only">Options</button></summary>
                         <ul>
-                            <li class="plist">
+                            <li class="plist" draggable="true">
                                 <input type="radio" name="list-selected" id="portmaster-games"><label
                                     for="portmaster-games">Games</label>
                             </li>
@@ -122,9 +122,11 @@
                                 <details>
                                     <summary>Books <button class="option icon-only">Options</button></summary>
                                     <ul>
-                                        <li class="plist"><input type="radio" name="list-selected" id="kindle1-books-authors"><label
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="kindle1-books-authors"><label
                                                 for="kindle1-books-authors">Authors</label></li>
-                                        <li class="plist"><input type="radio" name="list-selected" id="kindle1-books-titles"><label
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="kindle1-books-titles"><label
                                                 for="kindle1--books-titles">Titles</label>
                                         </li>
 
@@ -143,12 +145,15 @@
                                 <details open>
                                     <summary>Music <button class="option icon-only">Options</button></summary>
                                     <ul>
-                                        <li class="plist"><input type="radio" name="list-selected" id="ipod1-music-songs">
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-songs">
                                             <label for="ipod1-music-songs">Songs</label>
                                         </li>
-                                        <li class="plist"><input type="radio" name="list-selected" id="ipod1-music-albums"> <label
-                                                for="ipod1-music-albums">Albums</label></li>
-                                        <li class="plist"><input type="radio" name="list-selected" id="ipod1-music-artists">
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-albums"> <label for="ipod1-music-albums">Albums</label>
+                                        </li>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-artists">
                                             <label for="ipod1-music-artists">Artists</label>
                                         </li>
 
@@ -159,10 +164,11 @@
                                 <details>
                                     <summary>Books <button class="option icon-only">Options</button></summary>
                                     <ul>
-                                        <li class="plist"><input type="radio" name="list-selected" id="ipod1-books-authors"><label
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-books-authors"><label
                                                 for="ipod1-books-authors">Authors</label></li>
-                                        <li class="plist"><input type="radio" name="list-selected" id="ipod1-books-titles"><label
-                                                for="ipod1-books-titles">Titles</label>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-books-titles"><label for="ipod1-books-titles">Titles</label>
                                         </li>
 
                                     </ul>
@@ -179,7 +185,7 @@
                                 <details>
                                     <summary>Portmaster <button class="option icon-only">Options</button></summary>
                                     <ul>
-                                        <li class="plist">
+                                        <li class="plist" draggable="true">
                                             <input type="radio" name="list-selected" id="brck1-portmaster-games"><label
                                                 for="brick1-portmaster-games">Games</label>
                                         </li>
@@ -194,24 +200,28 @@
     </nav>
     <main>
         <table>
-            <tr>
-                <th>Song Title</th>
-                <th>Artist</th>
-                <th>Album</th>
-                <th>Year</th>
-            </tr>
-            <tr>
-                <td>Livin On A Prayer</td>
-                <td>Bon Jovi</td>
-                <td>Unknown</td>
-                <td>Unknown</td>
-            </tr>
-            <tr>
-                <td>The Fifth Angel</td>
-                <td>Beast In Black</td>
-                <td>Berserker</td>
-                <td>2017</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Song Title</th>
+                    <th>Artist</th>
+                    <th>Album</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr draggable="true">
+                    <td>Livin On A Prayer</td>
+                    <td>Bon Jovi</td>
+                    <td>Unknown</td>
+                    <td>Unknown</td>
+                </tr>
+                <tr draggable="true">
+                    <td>The Fifth Angel</td>
+                    <td>Beast In Black</td>
+                    <td>Berserker</td>
+                    <td>2017</td>
+                </tr>
+            </tbody>
         </table>
     </main>
     <footer>

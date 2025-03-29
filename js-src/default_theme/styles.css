@@ -138,15 +138,18 @@ header {
 }
 
 nav {
+    overflow-y: scroll;
     & details {
         & summary {
             display: flex;
             width: 100%;
             align-items: center;
+            cursor: pointer;
             & button {
                 border: none;
                 background: transparent;
                 color: transparent;
+                margin-left: 0.2em;
             }
             & button::before {
                 color: transparent;
@@ -193,7 +196,47 @@ nav {
                 background: white;
                 color: black;
             }
+            & li.plist[draggable="true"] {
+                input, label {
+                    cursor: grab;
+                }
+                cursor: grab;
+            }
 
         }
     }
 }
+
+main {
+    overflow-y: scroll;
+    table {
+        border-spacing: 0;
+        border-collapse: collapse;
+        width: 100%;
+        & tbody {
+            & tr {
+                cursor: grab;
+                
+                border-radius: 1em;
+                & td {
+                    padding: 0.2em;
+                }
+                & td:first-child {
+                    border-radius: 1em 0 0 1em;
+                }
+                & td:last-child {
+                    border-radius: 0 1em 1em 0;
+                }
+            }
+            & tr:hover {
+                background: white;
+                color: black;
+            }
+        }
+    }
+
+}
+footer {
+    width: 100%;
+}
+
