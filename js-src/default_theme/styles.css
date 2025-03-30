@@ -28,7 +28,9 @@ html {
 body {
     display: grid;
     grid-template-columns: 15em auto;
-    grid-template-rows: auto auto;
+    grid-template-rows: 4em 2em auto 2em;
+    height: 100vh;
+    width: 100vw;
 }
 
 h1, h2, h3, h4, h5, th {
@@ -139,6 +141,7 @@ header {
 
 nav {
     overflow-y: scroll;
+    height: 100%;
     & details {
         & summary {
             display: flex;
@@ -211,61 +214,102 @@ nav {
 }
 
 main {
-    overflow-y: scroll;
-    table {
-        border-spacing: 0;
-        border-collapse: collapse;
-        width: calc(100% - 1em);
-        margin: 0 auto;
-        & thead {
-            & tr {
-                & th {
-                    text-align: center;
-                    cursor: pointer;
+    display: grid;
+    grid-template-rows: auto 2em;
+    border-radius: 1.2em;
+    #content-view {
+        overflow-y: scroll;
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: calc(100% - 1em);
+            margin: 0 auto;
+            & thead {
+                & tr {
+                    & th {
+                        text-align: center;
+                        cursor: pointer;
+                    }
+                    & th:hover {
+                        background: white;
+                        color: black;
+                    }
+                    & th:first-child {
+                        border-radius: 1em 0 0 1em;
+                    }
+                    & th:last-child {
+                        border-radius: 0 1em 1em 0;
+                    }
                 }
-                & th:hover {
+                & tr:hover {
+                    background: black;
+                    & th {
+                    }
+                }
+            }
+            & tbody {
+                & tr {
+                    cursor: grab;
+                    
+                    border-radius: 2em;
+
+                    & td {
+                        padding: 0.5em;
+                    }
+                    & td:first-child {
+                        border-radius: 1em 0 0 1em;
+                        padding-left: 1em;
+                    }
+                    & td:last-child {
+                        border-radius: 0 1em 1em 0;
+                    }
+                }
+                & tr:hover {
                     background: white;
                     color: black;
                 }
-                & th:first-child {
-                    border-radius: 1em 0 0 1em;
-                }
-                & th:last-child {
-                    border-radius: 0 1em 1em 0;
-                }
-            }
-            & tr:hover {
-                background: black;
-                & th {
-                }
-            }
-        }
-        & tbody {
-            & tr {
-                cursor: grab;
-                
-                border-radius: 2em;
-
-                & td {
-                    padding: 0.5em;
-                }
-                & td:first-child {
-                    border-radius: 1em 0 0 1em;
-                    padding-left: 1em;
-                }
-                & td:last-child {
-                    border-radius: 0 1em 1em 0;
-                }
-            }
-            & tr:hover {
-                background: white;
-                color: black;
             }
         }
     }
 
 }
+#breadcrumb {
+    overflow-x: scroll;
+    border-bottom: none;
+    border-radius: 1em;
+    padding: 0.2em;
+    height: 100%;
+    grid-column: span 2;
+    & ol {
+        height: 100%;
+        display: flex;
+        list-style: "➤ ";
+        align-items: center;
+        justify-content: center;
+        :first-child {
+            list-style: none;
+        }
+        & li {
+            margin-right: 1.2em;
+            :before {
+            }
+            & button {
+                border-width: 2px;
+            }
+            & button:hover {
+                border: 2px solid white;
+            }
+        }
+    }
+}
 footer {
     width: 100%;
+    display: flex;
+    align-items: bottom;
+    grid-column: span 2;
+    section {
+        height: 2em;
+        max-height: 2em;
+    }
 }
 
