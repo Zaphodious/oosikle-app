@@ -1,0 +1,7 @@
+The files in this directory are sourced from the following locations
+
+(If these files are updated, please make sure to change this file to reflect the new versions)
+
+htmx.js: https://github.com/bigskysoftware/htmx/blob/52db21955e4821f61cd8e075e7c95baae338bfd9/dist/htmx.js
+tauri-ext.js: https://github.com/ChristianPavilonis/tauri-htmx-extension/blob/8e716911af2db8cebb3b3982d9e797a5bb55fcd5/dist/tauri-ext.js
+
