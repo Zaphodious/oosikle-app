@@ -1,4 +1,4 @@
-const { invoke } = window.__TAURI__.core;
+const invoke = window.__TAURI__.core.invoke;
 const { listen, emit, emitTo } = window.__TAURI__.event;
 
 /** @type {import("./htmx").HtmxInternalApi} */
