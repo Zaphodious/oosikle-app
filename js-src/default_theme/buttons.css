@@ -68,7 +68,7 @@ button.square-grid::before {
 }
 button.sync::before {
     content:"⇄";
-    margin-right: -0.4em;
+    margin-right: -0.0em;
 }
 button.sync:hover::before {
     margin-left: 0.7em;
@@ -76,13 +76,16 @@ button.sync:hover::before {
 button.import::before {
     content: "📥";
 }
+button.export::before {
+    content: "🡅";
+}
 button.save::before {
     content: "💾";
 }
 button.go::before {
     content: "⇨";
-    margin-right: -0.4em;
+    margin-right: -0.0em;
 }
 button.go:hover::before {
-    margin-left: 0.7em;
+    margin-left: 1em;
 }
