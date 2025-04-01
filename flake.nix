@@ -54,10 +54,12 @@
               webkitgtk_4_1
               openssl
 
+                
               eza
               fd
               pre-commit
               live-server
+              dia
             ];
             RUST_SRC_PATH = rust;
 
