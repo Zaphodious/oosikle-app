@@ -2039,6 +2039,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "micromap"
+version = "0.0.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c2d090ba3da1b4870322f51a2948fdca131116c2be9cb12946ba866940d0031"
+
+[[package]]
 name = "mime"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2408,9 +2414,11 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 name = "oosikle-app"
 version = "0.1.0"
 dependencies = [
+ "micromap",
  "rusqlite",
  "serde",
  "serde_json",
+ "serde_rusqlite",
  "tauri",
  "tauri-build",
  "tauri-plugin-opener",
@@ -3203,6 +3211,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.100",
+]
+
+[[package]]
+name = "serde_rusqlite"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e77d42c863496aee3253704aa621691088f718cd8800bd50bcdc19f9bd2a8ea"
+dependencies = [
+ "rusqlite",
+ "serde",
 ]
 
 [[package]]

@@ -64,7 +64,6 @@ create table Objects (
 create table ObjectAttributes (
     object_uuid blob not null,
     attribute_name text not null,
-    attribute_data_type text not null,
     attribute_value blob,
     primary key (object_uuid, attribute_name),
     foreign key (object_uuid) references Objects(object_id)

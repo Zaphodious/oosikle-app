@@ -53,9 +53,8 @@
               pango
               webkitgtk_4_1
               openssl
-              sqlitestudio
+              sqlitebrowser
 
-                
               eza
               fd
               pre-commit
@@ -65,10 +64,10 @@
             RUST_SRC_PATH = rust;
 
             shellHook = ''
-      export XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS;
-      export GIO_MODULE_DIR="${pkgs.glib-networking}/lib/gio/modules/";
-              alias ls=eza
-              alias find=fd
+              export XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS;
+              export GIO_MODULE_DIR="${pkgs.glib-networking}/lib/gio/modules/";
+                      alias ls=eza
+                      alias find=fd
             '';
 
           };
