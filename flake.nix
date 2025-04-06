@@ -53,6 +53,7 @@
               pango
               webkitgtk_4_1
               openssl
+              sqlitestudio
 
                 
               eza
