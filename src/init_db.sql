@@ -43,7 +43,7 @@ create table Files (
 );
 
 insert into Files values (
-    174098803918619659780710301363682631886,
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     "welcome.txt",
     0,
     'a38bcfa83e52932d49e36146950db40423daeb89a2e1f1b9734401bc98f1c79e',
