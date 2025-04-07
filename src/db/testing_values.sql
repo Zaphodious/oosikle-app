@@ -36,9 +36,32 @@ insert into MediaTypesForPlugins values (
 
 insert into Objects values (
     X'ABADCAFEABADCAFEABADCAFEABADCAFE',
-
     'Welcome File',
     'oosikle.manager.text'
+);
+
+insert into ObjectAttributes values (
+    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    'author',
+    'TheHotFish'
+);
+
+insert into ObjectAttributes values (
+    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    'revision',
+    4
+);
+
+insert into ObjectAttributes values (
+    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    'rating',
+    3.9
+);
+
+insert into ObjectAttributes values (
+    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    'editable',
+    TRUE
 );
 
 insert into FilesForObjects values (

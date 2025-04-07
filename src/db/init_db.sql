@@ -66,7 +66,7 @@ create table ObjectAttributes (
     attribute_name text not null,
     attribute_value blob,
     primary key (object_uuid, attribute_name),
-    foreign key (object_uuid) references Objects(object_id)
+    foreign key (object_uuid) references Objects(object_uuid)
 );
 
 create table FilesForObjects (
