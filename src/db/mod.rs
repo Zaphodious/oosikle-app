@@ -1,7 +1,7 @@
 use micromap::Map;
-use rusqlite::{types::ValueRef, Connection, Error, OptionalExtension, Result};
+use rusqlite::{types::ValueRef, Connection, OptionalExtension, Result};
 use serde::{Deserialize, Serialize};
-use serde_rusqlite;
+use serde_rusqlite::*;
 use std::vec::Vec;
 use uuid::{uuid, Uuid};
 
@@ -22,7 +22,7 @@ pub enum AttrValue {
     NONE,
 }
 
-#[derive()]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ObjectAttr {
     name: String,
     data: AttrValue,
@@ -33,8 +33,9 @@ pub struct ObjectRecord {
     uuid: Uuid,
     name: String,
     manager: String,
-    #[serde(skip)]
-    attributes: Option<Box<[AttrValue]>>,
+    file_path: String,
+    deleted: bool,
+    set_media_type: Option<String>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -47,16 +48,34 @@ pub fn get_object_by_uuid(
     conn: &Connection,
     the_uuid: &Uuid,
 ) -> Result<Option<ObjectRecord>, Error> {
-    let mut stmt = conn.prepare_cached(
-        "select object_name, plugin_package_name from Objects where Objects.object_uuid = ?1",
+    let mut stmt = conn.prepare_cached( "
+select 
+	file_uuid as uuid, 
+	object_name as name, 
+	plugin_package_name as manager, 
+	file_path,
+	object_deleted as deleted,
+	media_type_override_id as set_media_type
+from Objects left join Files on Objects.object_uuid = Files.file_uuid 
+	where Files.file_deleted = 0 and Objects.object_uuid = ?1;
+",
     )?;
+    /*
+     *  ##deserializing using query() and from_rows(), the most efficient way
+        let mut statement = connection.prepare("SELECT * FROM example").unwrap();
+        let mut res = from_rows::<Example>(statement.query([]).unwrap());
+        assert_eq!(res.next().unwrap().unwrap(), row1);
+        assert_eq!(res.next().unwrap().unwrap(), Example { id: 2, name: "second name".into() });
+     */
     let record = stmt
         .query_row([the_uuid], |row| {
             Ok( ObjectRecord {
-                uuid: *the_uuid,
-                name: row.get(0)?,
-                manager: row.get(1)?,
-                attributes: Some(Box::new([])),
+                uuid: row.get("uuid")?,
+                name: row.get("name")?,
+                manager: row.get("manager")?,
+                file_path: row.get::<&str, String>("file_path")?,
+                deleted: row.get("deleted")?,
+                set_media_type: row.get("set_media_type")?
             })
         })
         .optional()?;

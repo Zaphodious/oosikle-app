@@ -15,6 +15,7 @@ insert into Files values (
     'TXT',
     'UTF-8',
     NULL,
+    FALSE,
     FALSE
 );
 
