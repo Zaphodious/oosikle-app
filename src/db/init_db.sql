@@ -31,7 +31,10 @@ create table Files (
     file_path text not null,
     file_extension_tag text not null,
     file_encoding text,
-    foreign key (file_extension_tag) references FileExtensions(file_extension_tag)
+    media_type_override_id text,
+    file_deleted integer,
+    foreign key (file_extension_tag) references FileExtensions(file_extension_tag),
+    foreign key (media_type_override_id) references MediaTypes(media_type_id)
 );
 
 create table FileBlobs (
@@ -58,6 +61,7 @@ create table Objects (
     object_uuid blob primary key,
     object_name text not null,
     plugin_package_name text not null,
+    object_deleted integer,
     foreign key (plugin_package_name) references Plugins(plugin_package_name)
 );
 
@@ -82,7 +86,8 @@ create table Collections (
     collection_uuid blob primary key,
     collection_name text not null,
     collection_visible integer not null,
-    collection_location text not null
+    collection_location text not null,
+    collected_deleted integer
 );
 
 
@@ -111,11 +116,11 @@ create table Devices (
 
 create table DeviceSyncLists (
     device_uuid blob not null,
-    plugin_package_name text not null,
     collection_uuid blob not null,
+    plugin_package_name text not null,
     dsl_directory_on_device text not null,
     last_sync_time integer not null,
-    primary key (device_uuid, plugin_package_name),
+    primary key (device_uuid, collection_uuid),
     foreign key (device_uuid) references Devices(device_uuid),
     foreign key (plugin_package_name) references Plugins(plugin_package_name),
     foreign key (collection_uuid) references Collections(collection_uuid)

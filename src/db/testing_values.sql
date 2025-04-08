@@ -1,5 +1,3 @@
-
-
 insert into MediaCategories values ('DOCUMENT', 'Document');
 
 insert into MediaTypes values ('PLAINTEXT', 'Plain Text File', 'DOCUMENT');
@@ -15,7 +13,9 @@ insert into Files values (
     'a38bcfa83e52932d49e36146950db40423daeb89a2e1f1b9734401bc98f1c79e',
     '',
     'TXT',
-    'UTF-8'
+    'UTF-8',
+    NULL,
+    FALSE
 );
 
 insert into FileBlobs values (
@@ -37,7 +37,8 @@ insert into MediaTypesForPlugins values (
 insert into Objects values (
     X'ABADCAFEABADCAFEABADCAFEABADCAFE',
     'Welcome File',
-    'oosikle.manager.text'
+    'oosikle.manager.text',
+    FALSE
 );
 
 insert into ObjectAttributes values (
@@ -74,7 +75,8 @@ insert into Collections values (
     X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'Default Briefcase',
     TRUE,
-    ''
+    '',
+    FALSE
 );
 
 insert into MediaCategoriesForCollections values (
@@ -96,8 +98,8 @@ insert into Devices values (
 
 insert into DeviceSyncLists values (
     X'0DE2C3400DE2C3400DE2C3400DE2C340',
-    'oosikle.manager.text',
     X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'oosikle.manager.text',
     'documents',
     0
 );
