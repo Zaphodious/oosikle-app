@@ -77,10 +77,19 @@ create table ObjectAttributes (
 create table ExtraFilesForObjects (
     object_uuid blob not null,
     file_uuid blob not null,
-    file_priority integer not null,
+    file_note text not null,
     primary key (object_uuid, file_uuid),
     foreign key (object_uuid) references Objects(object_uuid),
     foreign key (file_uuid) references Files(file_uuid)
+);
+
+create table FileArtwork (
+    file_uuid blob not null,
+    artwork_file_uuid blob not null,
+    artwork_note text not null,
+    primary key (file_uuid, artwork_file_uuid),
+    foreign key (file_uuid) references Files(file_uuid),
+    foreign key (artwork_file_uuid) references Files(file_uuid)
 );
 
 create table Collections (
