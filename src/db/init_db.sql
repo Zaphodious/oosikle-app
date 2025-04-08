@@ -62,6 +62,7 @@ create table Objects (
     object_name text not null,
     plugin_package_name text not null,
     object_deleted integer,
+    foreign key (object_uuid) references Files(file_uuid),
     foreign key (plugin_package_name) references Plugins(plugin_package_name)
 );
 
@@ -73,7 +74,7 @@ create table ObjectAttributes (
     foreign key (object_uuid) references Objects(object_uuid)
 );
 
-create table FilesForObjects (
+create table ExtraFilesForObjects (
     object_uuid blob not null,
     file_uuid blob not null,
     file_priority integer not null,

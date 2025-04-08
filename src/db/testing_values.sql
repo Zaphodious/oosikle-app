@@ -35,40 +35,34 @@ insert into MediaTypesForPlugins values (
 );
 
 insert into Objects values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome File',
     'oosikle.manager.text',
     FALSE
 );
 
 insert into ObjectAttributes values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'author',
     'TheHotFish'
 );
 
 insert into ObjectAttributes values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'revision',
     4
 );
 
 insert into ObjectAttributes values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'rating',
     3.9
 );
 
 insert into ObjectAttributes values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'editable',
     TRUE
-);
-
-insert into FilesForObjects values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
-    0
 );
 
 insert into Collections values (
@@ -85,7 +79,7 @@ insert into MediaCategoriesForCollections values (
 );
 
 insert into ObjectsInCollections values (
-    X'ABADCAFEABADCAFEABADCAFEABADCAFE',
+    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D'
 );
 

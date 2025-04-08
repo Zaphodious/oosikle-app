@@ -96,7 +96,7 @@ mod tests {
     #[test]
     fn gets_an_object_by_uuid() -> Result<(), Error> {
         let conn = init()?;
-        let obj = get_object_by_uuid(&conn, &uuid!("ABADCAFEABADCAFEABADCAFEABADCAFE"))?
+        let obj = get_object_by_uuid(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
         assert!(obj.name == "Welcome File");
         return Ok(());
