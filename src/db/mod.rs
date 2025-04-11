@@ -174,6 +174,15 @@ impl FileDescription {}
 */
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct ObjectsInCollection {
+    collection_uuid: Uuid,
+    orderby: String,
+    pagesize: usize,
+    pageno: usize,
+    objects: Vec<ObjectRecord>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CollectionRecord {
     uuid: Uuid,
     name: String,
@@ -208,6 +217,29 @@ impl DBQuickGettable<Uuid> for CollectionRecord {
         }).optional()?;
         return Ok(coll_rec);
     }*/
+}
+
+impl CollectionRecord {
+
+    fn get_objects(conn: &Connection, id: &Uuid, orderby: &str, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
+        let mut obj_stmt = conn.prepare_cached("
+            select * from ObjectsInCollections
+                inner join ObjectRecordView on ObjectRecordView.uuid=ObjectsInCollections.object_uuid
+                where ObjectsInCollections.collection_uuid = ?1
+                order by ObjectRecordView.?2
+                limit ?3
+                offset ?4;")?;
+        let coll_rec = obj_stmt.query_map(params![id, orderby, pagesize, pagesize*pageno], ObjectRecord::from_row)?
+            .map(|t|t.expect("Should be an object here")).collect();
+        Ok(ObjectsInCollection {
+            collection_uuid: *id,
+            objects: coll_rec,
+            orderby: orderby.to_string(),
+            pagesize: pagesize,
+            pageno: pageno,
+        })
+
+    }
 }
 
 /*
