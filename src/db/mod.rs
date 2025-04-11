@@ -12,7 +12,7 @@ pub fn init_db(db_loc: &str) -> Result<Connection, Error> {
     return Ok(conn);
 }
 
-pub trait DBRecord<U> {
+pub trait DBFlatRecord<U> {
     fn get_from_id(conn: &Connection, id: &U) -> Result<Option<Self>, Error> where Self: Sized;
 }
 
@@ -31,7 +31,7 @@ pub struct ObjectAttr {
     data: AttrValue,
 }
 
-impl DBRecord<(&Uuid, &str)> for ObjectAttr {
+impl DBFlatRecord<(&Uuid, &str)> for ObjectAttr {
     fn get_from_id(conn: &Connection, id: &(&Uuid, &str)) -> Result<Option<ObjectAttr>, Error> {
         let mut stmt = conn.prepare_cached( "select * from ObjectAttributes where ObjectAttributes.object_uuid = ?1 and ObjectAttributes.attribute_name = ?2;")?;
         let record: Option<ObjectAttr> = stmt
@@ -75,7 +75,7 @@ pub struct ObjectRecord {
     pub media_type_override: Option<String>
 }
 
-impl DBRecord<Uuid> for ObjectRecord {
+impl DBFlatRecord<Uuid> for ObjectRecord {
     fn get_from_id(conn: &Connection, id: &Uuid)  -> Result<Option<ObjectRecord>, Error> {
         let mut stmt = conn.prepare_cached( "select * from ObjectRecordView where ObjectRecordView.uuid = ?1;")?;
         let record = stmt
@@ -141,7 +141,7 @@ pub struct CollectionRecord {
     objects: Vec<ObjectRecord>,
 }
 
-impl DBRecord<Uuid> for CollectionRecord {
+impl DBFlatRecord<Uuid> for CollectionRecord {
     fn get_from_id(conn: &Connection, id: &Uuid) -> Result<Option<CollectionRecord>, Error> {
         let mut coll_stmt = conn.prepare_cached("select * from Collections where Collections.collection_uuid = ?1;")?;
         let mut obj_stmt = conn.prepare_cached("select * from ObjectRecordView left join ObjectsInCollections on ObjectsInCollections.object_uuid = ObjectRecordView.uuid where ObjectsInCollections.collection_uuid = ?1;")?;
