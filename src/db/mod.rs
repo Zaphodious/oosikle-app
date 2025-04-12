@@ -239,22 +239,22 @@ impl FileRecord {
     }
 
     fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
-        let mut stmt = conn
-            .prepare_cached("select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1;")?;
+        let mut stmt = conn.prepare_cached(
+            "select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1;",
+        )?;
         let record = stmt
             .query_row(params![self.uuid], |row| {
-
-            let thingy = row.get_ref("blob_value")?;
+                let thingy = row.get_ref("blob_value")?;
                 Ok(match thingy {
+                    // It would be really weird for these first three to be here
                     ValueRef::Null => vec![],
-                ValueRef::Integer(i) => i.to_be_bytes().to_vec(),
-                ValueRef::Real(f) => f.to_be_bytes().to_vec(),
-                ValueRef::Text(s) => s.to_vec(),
-                ValueRef::Blob(b) => b.to_vec(),
-            
+                    ValueRef::Integer(i) => i.to_be_bytes().to_vec(),
+                    ValueRef::Real(f) => f.to_be_bytes().to_vec(),
+                    // Sometimes it may be a string
+                    ValueRef::Text(s) => s.to_vec(),
+                    ValueRef::Blob(b) => b.to_vec(),
+                })
             })
-        }
-        )
             .optional()?;
         return Ok(record);
     }
