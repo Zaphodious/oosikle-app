@@ -34,6 +34,31 @@ pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
     }
 }
 
+pub struct PluginRecord {
+    package_name: String,
+    display_name: String,
+    version: usize,
+}
+
+impl DBQuickGettable<&str> for PluginRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from Plugins where Plugins.plugin_package_name = ?1"
+    }
+}
+
+impl DBSimpleRecord for PluginRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(PluginRecord {
+            package_name: row.get("plugin_package_name")?,
+            display_name: row.get("plugin_display_name")?,
+            version: row.get("plugin_version")?
+        })
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct MediaCategoryRecord {
     id: String,
@@ -99,6 +124,7 @@ impl MediaTypeRecord {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct FileExtensionRecord {
     tag: String,
     description: String,
