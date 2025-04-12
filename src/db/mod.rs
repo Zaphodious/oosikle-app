@@ -102,6 +102,7 @@ pub struct ObjectRecord {
     pub deleted: bool,
     pub media_type_override: Option<String>,
 }
+
 impl DBSimpleRecord for ObjectRecord {
     fn from_row(row: &Row) -> Result<ObjectRecord, Error> {
         Ok(ObjectRecord {
@@ -114,15 +115,8 @@ impl DBSimpleRecord for ObjectRecord {
         })
     }
 }
+
 impl DBQuickGettable<Uuid> for ObjectRecord {
-    /*
-    fn get_from_id(conn: &Connection, id: &Uuid)  -> Result<Option<ObjectRecord>, Error> {
-        let mut stmt =
-        let record = stmt
-            .query_row([id], ObjectRecord::from_view)
-            .optional()?;
-        return Ok(record);
-    }*/
     fn get_fetch_sql() -> &'static str {
         "select * from ObjectRecordView where ObjectRecordView.uuid = ?1;"
     }
@@ -146,7 +140,7 @@ impl ObjectRecord {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct FileDescription {
+pub struct FileRecord {
     pub uuid: Uuid,
     pub name: String,
     pub size_bytes: usize,
@@ -159,7 +153,32 @@ pub struct FileDescription {
     pub read_only: bool,
 }
 
-impl FileDescription {}
+impl DBQuickGettable<Uuid> for FileRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from Files where Files.file_uuid = ?1"
+    }
+}
+
+impl DBSimpleRecord for FileRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(FileRecord {
+            uuid: row.get("file_uuid")?,
+            name: row.get("file_name")?,
+            size_bytes: row.get("file_size_bytes")?,
+            hash: row.get("file_hash")?,
+            path: row.get("file_path")?,
+            extension_tag: row.get("file_extension_tag")?,
+            encoding: row.get("file_encoding")?,
+            media_type_override: row.get("media_type_override_id")?,
+            deleted: row.get("file_deleted")?,
+            read_only: row.get("read_only")?,
+        })
+    }
+}
+
 /*
    file_uuid blob primary key,
    file_name text not null,
@@ -199,39 +218,40 @@ impl DBSimpleRecord for CollectionRecord {
         })
     }
 }
+
 impl DBQuickGettable<Uuid> for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Collections where Collections.collection_uuid = ?1;"
     }
-    /*
-    fn get_from_id(conn: &Connection, id: &Uuid) -> Result<Option<CollectionRecord>, Error> {
-        let mut coll_stmt = conn.prepare_cached()?;
-        let mut obj_stmt = conn.prepare_cached("select * from ObjectRecordView left join ObjectsInCollections on ObjectsInCollections.object_uuid = ObjectRecordView.uuid where ObjectsInCollections.collection_uuid = ?1;")?;
-        let coll_rec = coll_stmt.query_row([id], |row| {
-            let objects = obj_stmt.query_map([id], ObjectRecord::from_view)?;
-            Ok(CollectionRecord {
-                uuid: row.get("collection_uuid")?,
-                name: row.get("collection_name")?,
-                objects: objects.map(|t|t.expect("for now")).collect()
-            })
-        }).optional()?;
-        return Ok(coll_rec);
-    }*/
 }
 
 impl CollectionRecord {
-
-    fn get_objects(&self, conn: &Connection, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
-        return ObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno)
+    fn get_objects(
+        &self,
+        conn: &Connection,
+        pagesize: usize,
+        pageno: usize,
+    ) -> Result<ObjectsInCollection, Error> {
+        return ObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno);
     }
 }
 
 impl ObjectsInCollection {
     fn get_next_page(&mut self, conn: &Connection) -> Result<ObjectsInCollection> {
-        return ObjectsInCollection::get_object_page(conn, &self.collection_uuid, self.pagesize, self.pageno+1);
+        return ObjectsInCollection::get_object_page(
+            conn,
+            &self.collection_uuid,
+            self.pagesize,
+            self.pageno + 1,
+        );
     }
 
-    fn get_object_page(conn: &Connection, collection_id: &Uuid, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
+    fn get_object_page(
+        conn: &Connection,
+        collection_id: &Uuid,
+        pagesize: usize,
+        pageno: usize,
+    ) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached("
             select * from ObjectsInCollections
                 inner join ObjectRecordView on ObjectRecordView.uuid=ObjectsInCollections.object_uuid
@@ -241,18 +261,21 @@ impl ObjectsInCollection {
                 offset ?3;")?;
         let mut total_length_stmt = conn.prepare_cached("select count(*) from ObjectsInCollections where ObjectsInCollections.collection_uuid = ?1")?;
         let total_length = total_length_stmt.query_row([collection_id], |r| Ok(r.get(0)?))?;
-        let objects = obj_stmt.query_map(params![collection_id, pagesize, pagesize*pageno], ObjectRecord::from_row)?
-            .map(|t|t.expect("Should be an object here")).collect();
+        let objects = obj_stmt
+            .query_map(
+                params![collection_id, pagesize, pagesize * pageno],
+                ObjectRecord::from_row,
+            )?
+            .map(|t| t.expect("Should be an object here"))
+            .collect();
         Ok(ObjectsInCollection {
             collection_uuid: *collection_id,
             objects,
             pagesize,
             pageno,
-            total_length
+            total_length,
         })
-
     }
-
 }
 
 #[cfg(test)]
@@ -328,11 +351,21 @@ mod tests {
     #[test]
     fn gets_objects_in_collection() -> Result<(), Error> {
         let conn = init()?;
-        let objcol = CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
+        let objcol =
+            CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
                 .expect("There is no collection here")
                 .get_objects(&conn, 10, 0)?;
         assert!(objcol.total_length == 1);
         assert!(objcol.objects[0].name == "Welcome File");
+        return Ok(());
+    }
+
+    #[test]
+    fn gets_a_file_by_uuid() -> Result<(), Error> {
+        let conn = init()?;
+        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+            .expect("There is no entity here");
+        assert!(fr.name == "welcome.txt");
         return Ok(());
     }
 
