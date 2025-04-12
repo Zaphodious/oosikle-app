@@ -99,6 +99,41 @@ impl MediaTypeRecord {
     }
 }
 
+pub struct FileExtensionRecord {
+    tag: String,
+    description: String,
+}
+
+impl DBQuickGettable<&str> for FileExtensionRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from FileExtensions where FileExtensions.file_extension_tag = ?1;"
+    }
+}
+
+impl DBSimpleRecord for FileExtensionRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(FileExtensionRecord {
+            tag: row.get("file_extension_tag")?,
+            description: row.get("file_extension_description")?,
+        })
+    }
+}
+
+impl FileExtensionRecord {
+    fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
+        let mut stmt =
+            conn.prepare_cached("
+            select * from MediaTypesForFileExtensions
+                inner join MediaTypes on MediaTypesForFileExtensions.media_type_id = MediaTypes.media_type_id
+                where MediaTypesForFileExtensions.file_Extension_tag = ?;")?;
+        let type_rows = stmt.query_map([&self.tag], MediaTypeRecord::from_row)?;
+        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+    }
+}
+
 /*
 create table MediaTypes (
     media_type_id text primary key,
@@ -151,6 +186,10 @@ impl DBSimpleRecord for FileRecord {
 impl FileRecord {
     fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
         ObjectRecord::get_from_id(conn, &self.uuid)
+    }
+
+    fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
+        FileExtensionRecord::get_from_id(conn, &self.extension_tag)
     }
 }
 
@@ -462,6 +501,18 @@ mod tests {
         let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
         assert!(fr.name == "welcome.txt");
+        return Ok(());
+    }
+
+    #[test]
+    fn file_gets_extension_gets_types() -> Result<(), Error> {
+        let conn = init()?;
+        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+            .expect("There is no entity here");
+        let rec = fr.get_extension_record(&conn)?.expect("There should be an extension record here");
+        assert!(rec.description == "Ordinary text file");
+        let types = rec.get_media_types(&conn)?;
+        assert!(types[0].display_name == "Plain Text File");
         return Ok(());
     }
 
