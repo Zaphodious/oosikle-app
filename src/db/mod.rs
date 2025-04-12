@@ -59,6 +59,17 @@ impl DBSimpleRecord for PluginRecord {
     }
 }
 
+impl PluginRecord {
+    fn get_associated_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
+        let mut stmt =
+        conn.prepare_cached("select MT.* from MediaTypesForPlugins FP
+        inner join MediaTypes MT on FP.media_type_id = MT.media_type_id
+        where FP.plugin_package_name = ?;")?;
+        let type_rows = stmt.query_map([&self.package_name], MediaTypeRecord::from_row)?;
+        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct MediaCategoryRecord {
     id: String,
@@ -565,6 +576,17 @@ mod tests {
         let rec = fr.get_extension_record(&conn)?.expect("There should be an extension record here");
         assert!(rec.description == "Ordinary text file");
         let types = rec.get_media_types(&conn)?;
+        assert!(types[0].display_name == "Plain Text File");
+        return Ok(());
+    }
+
+    #[test]
+    fn gets_plugin_record_gets_types() -> Result<(), Error> {
+        let conn = init()?;
+        let fr = PluginRecord::get_from_id(&conn, "oosikle.manager.text")?
+            .expect("There is no entity here");
+        assert!(fr.display_name == "Default Text File Manager");
+        let types = fr.get_associated_types(&conn)?;
         assert!(types[0].display_name == "Plain Text File");
         return Ok(());
     }
