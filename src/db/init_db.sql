@@ -98,7 +98,7 @@ create table Collections (
     collection_name text not null,
     collection_visible integer not null,
     collection_location text not null,
-    collected_deleted integer
+    collection_deleted integer -- bool
 );
 
 
@@ -113,9 +113,11 @@ create table MediaCategoriesForCollections (
 create table ObjectsInCollections (
     object_uuid blob not null,
     collection_uuid blob not null,
+    idx integer,
     primary key (object_uuid, collection_uuid),
     foreign key (object_uuid) references Objects(object_uuid),
-    foreign key (collection_uuid) references Collections(collection_uuid)
+    foreign key (collection_uuid) references Collections(collection_uuid),
+    unique(collection_uuid, idx)
 );
 
 create table Devices (

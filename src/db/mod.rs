@@ -222,6 +222,16 @@ impl DBQuickGettable<Uuid> for CollectionRecord {
 impl CollectionRecord {
 
     fn get_objects(&self, conn: &Connection, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
+        return ObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno)
+    }
+}
+
+impl ObjectsInCollection {
+    fn get_next_page(&mut self, conn: &Connection) -> Result<ObjectsInCollection> {
+        return ObjectsInCollection::get_object_page(conn, &self.collection_uuid, self.pagesize, self.pageno+1);
+    }
+
+    fn get_object_page(conn: &Connection, collection_id: &Uuid, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached("
             select * from ObjectsInCollections
                 inner join ObjectRecordView on ObjectRecordView.uuid=ObjectsInCollections.object_uuid
@@ -230,11 +240,11 @@ impl CollectionRecord {
                 limit ?2
                 offset ?3;")?;
         let mut total_length_stmt = conn.prepare_cached("select count(*) from ObjectsInCollections where ObjectsInCollections.collection_uuid = ?1")?;
-        let total_length = total_length_stmt.query_row([self.uuid], |r| Ok(r.get(0)?))?;
-        let objects = obj_stmt.query_map(params![self.uuid, pagesize, pagesize*pageno], ObjectRecord::from_row)?
+        let total_length = total_length_stmt.query_row([collection_id], |r| Ok(r.get(0)?))?;
+        let objects = obj_stmt.query_map(params![collection_id, pagesize, pagesize*pageno], ObjectRecord::from_row)?
             .map(|t|t.expect("Should be an object here")).collect();
         Ok(ObjectsInCollection {
-            collection_uuid: self.uuid,
+            collection_uuid: *collection_id,
             objects,
             pagesize,
             pageno,
@@ -242,14 +252,8 @@ impl CollectionRecord {
         })
 
     }
-}
-
-/*
-pub fn get_file_by_uuid(conn: &Connection, the_uuid: &Uuid) -> Result<Option<FileDescription>> {
-    let mut coll_stmt = conn.prepare_cached("select * from Collections where Collections.collection_uuid = ?1;")?;
 
 }
-*/
 
 #[cfg(test)]
 mod tests {

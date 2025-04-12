@@ -81,7 +81,8 @@ insert into MediaCategoriesForCollections values (
 
 insert into ObjectsInCollections values (
     X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D'
+    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    0
 );
 
 insert into Devices values (
