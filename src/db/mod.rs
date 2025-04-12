@@ -373,6 +373,23 @@ impl ObjectRecord {
             .optional()?;
         return Ok(record);
     }
+    fn get_manager_plugin_record(&self, conn: &Connection) -> Result<Option<PluginRecord>, Error> {
+        PluginRecord::get_from_id(conn, &self.manager)
+    }
+    fn get_extra_files(&self, conn: &Connection) -> Result<Vec<(FileRecord, String)>> {
+        let mut stmt = conn.prepare_cached(
+            "select * from Files F
+            inner join ExtraFilesForObjects E on F.file_uuid = E.file_uuid
+            where ExtraFilesForObjects.object_uuid = ?",
+        )?;
+        let ex_file_rows = stmt.query_map([&self.uuid], |row| {
+            let ex_file = FileRecord::from_row(row)?;
+            let note: String = row.get("file_note")?;
+            Ok((ex_file, note))
+        })?
+        .map(|t| t.expect("just for now")) .collect();
+        Ok(ex_file_rows)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
