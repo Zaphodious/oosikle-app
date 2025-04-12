@@ -191,6 +191,13 @@ impl FileRecord {
     fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
         FileExtensionRecord::get_from_id(conn, &self.extension_tag)
     }
+
+    fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+        Ok(match &self.media_type_override {
+            Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
+            None => None
+        })
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -293,6 +300,16 @@ impl ObjectRecord {
     }
     fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
         FileRecord::get_from_id(conn, &self.uuid)
+    }
+    fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+        let mut stmt = conn.prepare_cached("
+            select MediaTypes.* from MediaTypes
+            inner join Files on MediaTypes.media_type_id = Files.media_type_override_id
+            where Files.file_uuid = ?1")?;
+        let record = stmt
+            .query_row(params![self.uuid], MediaTypeRecord::from_row)
+            .optional()?;
+        return Ok(record);
     }
 }
 
@@ -471,6 +488,16 @@ mod tests {
             assert!(false);
         }
         return Ok(());
+    }
+
+    #[test]
+    fn gets_type_override_for_object() -> Result<(), Error> {
+        let conn = init()?;
+        let mt = ObjectRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+            .expect("There should be an object here")
+            .get_override_media_type_record(&conn)?;
+        assert!(mt == None);
+        Ok(())
     }
 
     #[test]
