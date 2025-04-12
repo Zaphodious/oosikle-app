@@ -34,6 +34,7 @@ pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct PluginRecord {
     package_name: String,
     display_name: String,
@@ -54,17 +55,18 @@ impl DBSimpleRecord for PluginRecord {
         Ok(PluginRecord {
             package_name: row.get("plugin_package_name")?,
             display_name: row.get("plugin_display_name")?,
-            version: row.get("plugin_version")?
+            version: row.get("plugin_version")?,
         })
     }
 }
 
 impl PluginRecord {
     fn get_associated_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
-        let mut stmt =
-        conn.prepare_cached("select MT.* from MediaTypesForPlugins FP
+        let mut stmt = conn.prepare_cached(
+            "select MT.* from MediaTypesForPlugins FP
         inner join MediaTypes MT on FP.media_type_id = MT.media_type_id
-        where FP.plugin_package_name = ?;")?;
+        where FP.plugin_package_name = ?;",
+        )?;
         let type_rows = stmt.query_map([&self.package_name], MediaTypeRecord::from_row)?;
         Ok(type_rows.map(|t| t.expect("just for now")).collect())
     }
@@ -232,8 +234,29 @@ impl FileRecord {
     fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
         Ok(match &self.media_type_override {
             Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
-            None => None
+            None => None,
         })
+    }
+
+    fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
+        let mut stmt = conn
+            .prepare_cached("select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1;")?;
+        let record = stmt
+            .query_row(params![self.uuid], |row| {
+
+            let thingy = row.get_ref("blob_value")?;
+                Ok(match thingy {
+                    ValueRef::Null => vec![],
+                ValueRef::Integer(i) => i.to_be_bytes().to_vec(),
+                ValueRef::Real(f) => f.to_be_bytes().to_vec(),
+                ValueRef::Text(s) => s.to_vec(),
+                ValueRef::Blob(b) => b.to_vec(),
+            
+            })
+        }
+        )
+            .optional()?;
+        return Ok(record);
     }
 }
 
@@ -339,10 +362,12 @@ impl ObjectRecord {
         FileRecord::get_from_id(conn, &self.uuid)
     }
     fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
-        let mut stmt = conn.prepare_cached("
+        let mut stmt = conn.prepare_cached(
+            "
             select MediaTypes.* from MediaTypes
             inner join Files on MediaTypes.media_type_id = Files.media_type_override_id
-            where Files.file_uuid = ?1")?;
+            where Files.file_uuid = ?1",
+        )?;
         let record = stmt
             .query_row(params![self.uuid], MediaTypeRecord::from_row)
             .optional()?;
@@ -463,8 +488,8 @@ mod tests {
     #[test]
     fn gets_media_type_by_id() -> Result<(), Error> {
         let conn = init()?;
-        let mtype = MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?
-            .expect("Plaintext type should exsit");
+        let mtype =
+            MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?.expect("Plaintext type should exsit");
         assert!(mtype.display_name == "Plain Text File");
         return Ok(());
     }
@@ -472,9 +497,11 @@ mod tests {
     #[test]
     fn media_category_and_type_gets_each_other() -> Result<(), Error> {
         let conn = init()?;
-        let mtype = MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?
-            .expect("Plaintext type should exsit");
-        let mcat = &mtype.get_category_record(&conn)?.expect("category should exist");
+        let mtype =
+            MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?.expect("Plaintext type should exsit");
+        let mcat = &mtype
+            .get_category_record(&conn)?
+            .expect("category should exist");
         let mtype2 = &mcat.get_media_types(&conn)?[0];
         assert!(mtype == *mtype2);
         return Ok(());
@@ -569,11 +596,23 @@ mod tests {
     }
 
     #[test]
+    fn file_gets_blob() -> Result<(), Error> {
+        let conn = init()?;
+        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+            .expect("There is no entity here");
+        let blob = fr.get_blob_contents(&conn)?;
+        assert!(blob == Some("Welcome to Oosikle!".as_bytes().to_vec()));
+        return Ok(());
+    }
+
+    #[test]
     fn file_gets_extension_gets_types() -> Result<(), Error> {
         let conn = init()?;
         let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
-        let rec = fr.get_extension_record(&conn)?.expect("There should be an extension record here");
+        let rec = fr
+            .get_extension_record(&conn)?
+            .expect("There should be an extension record here");
         assert!(rec.description == "Ordinary text file");
         let types = rec.get_media_types(&conn)?;
         assert!(types[0].display_name == "Plain Text File");
