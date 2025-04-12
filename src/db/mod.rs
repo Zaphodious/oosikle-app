@@ -176,10 +176,10 @@ impl FileDescription {}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ObjectsInCollection {
     collection_uuid: Uuid,
-    orderby: String,
     pagesize: usize,
     pageno: usize,
     objects: Vec<ObjectRecord>,
+    total_length: usize,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -221,22 +221,24 @@ impl DBQuickGettable<Uuid> for CollectionRecord {
 
 impl CollectionRecord {
 
-    fn get_objects(conn: &Connection, id: &Uuid, orderby: &str, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
+    fn get_objects(&self, conn: &Connection, pagesize: usize, pageno: usize) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached("
             select * from ObjectsInCollections
                 inner join ObjectRecordView on ObjectRecordView.uuid=ObjectsInCollections.object_uuid
                 where ObjectsInCollections.collection_uuid = ?1
-                order by ObjectRecordView.?2
-                limit ?3
-                offset ?4;")?;
-        let coll_rec = obj_stmt.query_map(params![id, orderby, pagesize, pagesize*pageno], ObjectRecord::from_row)?
+                order by ObjectRecordView.name
+                limit ?2
+                offset ?3;")?;
+        let mut total_length_stmt = conn.prepare_cached("select count(*) from ObjectsInCollections where ObjectsInCollections.collection_uuid = ?1")?;
+        let total_length = total_length_stmt.query_row([self.uuid], |r| Ok(r.get(0)?))?;
+        let objects = obj_stmt.query_map(params![self.uuid, pagesize, pagesize*pageno], ObjectRecord::from_row)?
             .map(|t|t.expect("Should be an object here")).collect();
         Ok(ObjectsInCollection {
-            collection_uuid: *id,
-            objects: coll_rec,
-            orderby: orderby.to_string(),
-            pagesize: pagesize,
-            pageno: pageno,
+            collection_uuid: self.uuid,
+            objects,
+            pagesize,
+            pageno,
+            total_length
         })
 
     }
@@ -316,6 +318,17 @@ mod tests {
             CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
                 .expect("There is no collection here");
         assert!(coll.name == "Default Briefcase");
+        return Ok(());
+    }
+
+    #[test]
+    fn gets_objects_in_collection() -> Result<(), Error> {
+        let conn = init()?;
+        let objcol = CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
+                .expect("There is no collection here")
+                .get_objects(&conn, 10, 0)?;
+        assert!(objcol.total_length == 1);
+        assert!(objcol.objects[0].name == "Welcome File");
         return Ok(());
     }
 
