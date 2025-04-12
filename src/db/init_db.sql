@@ -139,6 +139,7 @@ create table DeviceSyncLists (
     foreign key (collection_uuid) references Collections(collection_uuid)
 );
 
+/*
 create view if not exists ObjectRecordView as
 select
 	file_uuid as uuid,
@@ -149,3 +150,4 @@ select
 	media_type_override_id as media_type_override
 from Objects left join Files on Objects.object_uuid = Files.file_uuid
 	where Files.file_deleted = 0 and Objects.object_deleted = 0;
+    */

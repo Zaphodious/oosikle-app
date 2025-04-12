@@ -35,6 +35,52 @@ pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct FileRecord {
+    pub uuid: Uuid,
+    pub name: String,
+    pub size_bytes: usize,
+    pub hash: String,
+    pub path: String,
+    pub extension_tag: String,
+    pub encoding: String,
+    pub media_type_override: Option<String>,
+    pub deleted: bool,
+    pub read_only: bool,
+}
+
+impl DBQuickGettable<Uuid> for FileRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from Files where Files.file_uuid = ?1"
+    }
+}
+
+impl DBSimpleRecord for FileRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(FileRecord {
+            uuid: row.get("file_uuid")?,
+            name: row.get("file_name")?,
+            size_bytes: row.get("file_size_bytes")?,
+            hash: row.get("file_hash")?,
+            path: row.get("file_path")?,
+            extension_tag: row.get("file_extension_tag")?,
+            encoding: row.get("file_encoding")?,
+            media_type_override: row.get("media_type_override_id")?,
+            deleted: row.get("file_deleted")?,
+            read_only: row.get("read_only")?,
+        })
+    }
+}
+
+impl FileRecord {
+    fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
+        ObjectRecord::get_from_id(conn, &self.uuid)
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AttrValue {
     STRING(String),
@@ -98,27 +144,23 @@ pub struct ObjectRecord {
     pub uuid: Uuid,
     pub name: String,
     pub manager: String,
-    pub file_path: String,
     pub deleted: bool,
-    pub media_type_override: Option<String>,
 }
 
 impl DBSimpleRecord for ObjectRecord {
     fn from_row(row: &Row) -> Result<ObjectRecord, Error> {
         Ok(ObjectRecord {
-            uuid: row.get("uuid")?,
-            name: row.get("name")?,
-            manager: row.get("manager")?,
-            file_path: row.get::<&str, String>("file_path")?,
-            deleted: row.get("deleted")?,
-            media_type_override: row.get("media_type_override")?,
+            uuid: row.get("object_uuid")?,
+            name: row.get("object_name")?,
+            manager: row.get("plugin_package_name")?,
+            deleted: row.get("object_deleted")?,
         })
     }
 }
 
 impl DBQuickGettable<Uuid> for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from ObjectRecordView where ObjectRecordView.uuid = ?1;"
+        "select * from Objects where Objects.object_uuid = ?1;"
     }
 }
 
@@ -137,60 +179,11 @@ impl ObjectRecord {
             .optional()?;
         return Ok(record);
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct FileRecord {
-    pub uuid: Uuid,
-    pub name: String,
-    pub size_bytes: usize,
-    pub hash: String,
-    pub path: String,
-    pub extension_tag: String,
-    pub encoding: String,
-    pub media_type_override: Option<String>,
-    pub deleted: bool,
-    pub read_only: bool,
-}
-
-impl DBQuickGettable<Uuid> for FileRecord {
-    fn get_fetch_sql() -> &'static str {
-        "select * from Files where Files.file_uuid = ?1"
+    fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
+        FileRecord::get_from_id(conn, &self.uuid)
     }
 }
 
-impl DBSimpleRecord for FileRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(FileRecord {
-            uuid: row.get("file_uuid")?,
-            name: row.get("file_name")?,
-            size_bytes: row.get("file_size_bytes")?,
-            hash: row.get("file_hash")?,
-            path: row.get("file_path")?,
-            extension_tag: row.get("file_extension_tag")?,
-            encoding: row.get("file_encoding")?,
-            media_type_override: row.get("media_type_override_id")?,
-            deleted: row.get("file_deleted")?,
-            read_only: row.get("read_only")?,
-        })
-    }
-}
-
-/*
-   file_uuid blob primary key,
-   file_name text not null,
-   file_size_bytes integer not null,
-   file_hash text not null,
-   file_path text not null,
-   file_extension_tag text not null,
-   file_encoding text,
-   media_type_override_id text,
-   file_deleted integer,
-   read_only integer,
-*/
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ObjectsInCollection {
@@ -254,9 +247,9 @@ impl ObjectsInCollection {
     ) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached("
             select * from ObjectsInCollections
-                inner join ObjectRecordView on ObjectRecordView.uuid=ObjectsInCollections.object_uuid
+                inner join Objects on Objects.object_uuid=ObjectsInCollections.object_uuid
                 where ObjectsInCollections.collection_uuid = ?1
-                order by ObjectRecordView.name
+                order by Objects.object_name
                 limit ?2
                 offset ?3;")?;
         let mut total_length_stmt = conn.prepare_cached("select count(*) from ObjectsInCollections where ObjectsInCollections.collection_uuid = ?1")?;
