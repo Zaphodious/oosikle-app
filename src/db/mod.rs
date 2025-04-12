@@ -24,7 +24,7 @@ pub trait DBSimpleRecord {
 
 pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
     fn get_fetch_sql() -> &'static str;
-    fn get_from_id(conn: &Connection, id: &U) -> Result<Option<Self>, Error>
+    fn get_from_id(conn: &Connection, id: U) -> Result<Option<Self>, Error>
     where
         Self: Sized,
     {
@@ -34,7 +34,81 @@ pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct MediaCategoryRecord {
+    id: String,
+    display_name: String,
+}
+
+impl DBQuickGettable<&str> for MediaCategoryRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from MediaCategories where MediaCategories.media_category_id = ?1"
+    }
+}
+
+impl DBSimpleRecord for MediaCategoryRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(MediaCategoryRecord {
+            id: row.get("media_category_id")?,
+            display_name: row.get("media_category_display_name")?,
+        })
+    }
+}
+
+impl MediaCategoryRecord {
+    pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
+        let mut stmt =
+            conn.prepare_cached("select * from MediaTypes where MediaTypes.media_category_id = ?")?;
+        let type_rows = stmt.query_map([&self.id], MediaTypeRecord::from_row)?;
+        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct MediaTypeRecord {
+    id: String,
+    display_name: String,
+    media_category_id: String,
+}
+
+impl DBQuickGettable<&str> for MediaTypeRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from MediaTypes where MediaTypes.media_type_id = ?1;"
+    }
+}
+
+impl DBSimpleRecord for MediaTypeRecord {
+    fn from_row(row: &Row) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        Ok(MediaTypeRecord {
+            id: row.get("media_type_id")?,
+            display_name: row.get("media_type_display_name")?,
+            media_category_id: row.get("media_category_id")?,
+        })
+    }
+}
+
+impl MediaTypeRecord {
+    pub fn get_category_record(&self, conn: &Connection) -> Result<Option<MediaCategoryRecord>> {
+        MediaCategoryRecord::get_from_id(&conn, &self.media_category_id)
+    }
+}
+
+/*
+create table MediaTypes (
+    media_type_id text primary key,
+    media_type_display_name text not null,
+    media_category_id text not null,
+    foreign key (media_category_id) references MediaCategories(media_category_id)
+);
+ */
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct FileRecord {
     pub uuid: Uuid,
     pub name: String,
@@ -48,7 +122,7 @@ pub struct FileRecord {
     pub read_only: bool,
 }
 
-impl DBQuickGettable<Uuid> for FileRecord {
+impl DBQuickGettable<&Uuid> for FileRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Files where Files.file_uuid = ?1"
     }
@@ -80,16 +154,17 @@ impl FileRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum AttrValue {
     STRING(String),
     INT(i64),
     FLOAT(f64),
+    BYTES(Vec<u8>),
     NONE,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectAttr {
     name: String,
     data: AttrValue,
@@ -106,9 +181,7 @@ impl DBSimpleRecord for ObjectAttr {
                 ValueRef::Text(s) => AttrValue::STRING(
                     String::from_utf8(s.to_vec()).expect("A text string was not utf-8"),
                 ),
-                ValueRef::Blob(b) => {
-                    AttrValue::STRING(String::from_utf8(b.to_vec()).expect("A blob went wrong idk"))
-                }
+                ValueRef::Blob(b) => AttrValue::BYTES(b.to_vec()),
             },
         })
     }
@@ -139,7 +212,7 @@ create table ObjectAttributes (
 
 impl ObjectAttr {}
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectRecord {
     pub uuid: Uuid,
     pub name: String,
@@ -158,7 +231,7 @@ impl DBSimpleRecord for ObjectRecord {
     }
 }
 
-impl DBQuickGettable<Uuid> for ObjectRecord {
+impl DBQuickGettable<&Uuid> for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Objects where Objects.object_uuid = ?1;"
     }
@@ -184,8 +257,7 @@ impl ObjectRecord {
     }
 }
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectsInCollection {
     collection_uuid: Uuid,
     pagesize: usize,
@@ -194,7 +266,7 @@ pub struct ObjectsInCollection {
     total_length: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CollectionRecord {
     uuid: Uuid,
     name: String,
@@ -212,7 +284,7 @@ impl DBSimpleRecord for CollectionRecord {
     }
 }
 
-impl DBQuickGettable<Uuid> for CollectionRecord {
+impl DBQuickGettable<&Uuid> for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Collections where Collections.collection_uuid = ?1;"
     }
@@ -245,13 +317,15 @@ impl ObjectsInCollection {
         pagesize: usize,
         pageno: usize,
     ) -> Result<ObjectsInCollection, Error> {
-        let mut obj_stmt = conn.prepare_cached("
+        let mut obj_stmt = conn.prepare_cached(
+            "
             select * from ObjectsInCollections
                 inner join Objects on Objects.object_uuid=ObjectsInCollections.object_uuid
                 where ObjectsInCollections.collection_uuid = ?1
                 order by Objects.object_name
                 limit ?2
-                offset ?3;")?;
+                offset ?3;",
+        )?;
         let mut total_length_stmt = conn.prepare_cached("select count(*) from ObjectsInCollections where ObjectsInCollections.collection_uuid = ?1")?;
         let total_length = total_length_stmt.query_row([collection_id], |r| Ok(r.get(0)?))?;
         let objects = obj_stmt
@@ -282,6 +356,35 @@ mod tests {
         let conn = init_db(":memory:")?;
         conn.execute_batch(DB_INIT_SQL)?;
         return Ok(conn);
+    }
+
+    #[test]
+    fn gets_media_category_by_id() -> Result<(), Error> {
+        let conn = init()?;
+        let mcat = MediaCategoryRecord::get_from_id(&conn, "DOCUMENT")?
+            .expect("Document category should exsit");
+        assert!(mcat.display_name == "Document");
+        return Ok(());
+    }
+
+    #[test]
+    fn gets_media_type_by_id() -> Result<(), Error> {
+        let conn = init()?;
+        let mtype = MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?
+            .expect("Plaintext type should exsit");
+        assert!(mtype.display_name == "Plain Text File");
+        return Ok(());
+    }
+
+    #[test]
+    fn media_category_and_type_gets_each_other() -> Result<(), Error> {
+        let conn = init()?;
+        let mtype = MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?
+            .expect("Plaintext type should exsit");
+        let mcat = &mtype.get_category_record(&conn)?.expect("category should exist");
+        let mtype2 = &mcat.get_media_types(&conn)?[0];
+        assert!(mtype == *mtype2);
+        return Ok(());
     }
 
     #[test]
