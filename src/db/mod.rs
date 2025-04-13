@@ -1,11 +1,13 @@
+use exemplar::Model;
 use micromap::Map;
+use rusqlite::types::{FromSql, ToSqlOutput, Value};
 use rusqlite::{
     params, types::ValueRef, CachedStatement, Connection, Error, OptionalExtension, Params, Result,
     Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
-use exemplar::Model;
 use std::vec::Vec;
+use std::any::type_name;
 use uuid::{uuid, Uuid};
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
@@ -16,25 +18,41 @@ pub fn init_db(db_loc: &str) -> Result<Connection, Error> {
     return Ok(conn);
 }
 
-pub trait DBSimpleRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized;
+trait WithSQL {
+    fn get_fetch_sql() -> &'static str {
+        panic!("Type {} does not provide fetch sql", type_name::<Self>());
+    }
+
+    fn get_update_sql() -> Option<&'static str> {
+        return None;
+    }
 }
 
-pub trait DBQuickGettable<U: ToSql>: Model {
-    fn get_fetch_sql() -> &'static str;
+pub trait Fetchable1<U: ToSql>: Model + WithSQL {
     fn get_from_id(conn: &Connection, id: U) -> Result<Option<Self>, Error>
     where
         Self: Sized,
     {
-        let mut stmt = conn.prepare_cached(Self::get_fetch_sql())?;
-        let record = stmt.query_row([id], Self::from_row).optional()?;
-        return Ok(record);
+        Ok(conn
+            .prepare_cached(Self::get_fetch_sql())?
+            .query_row([id], Self::from_row)
+            .optional()?)
     }
 }
 
-/* 
+pub trait Fetchable2<U1: ToSql, U2: ToSql>: Model + WithSQL {
+    fn get_from_id(conn: &Connection, id1: U1, id2: U2) -> Result<Option<Self>, Error>
+    where
+        Self: Sized,
+    {
+        Ok(conn
+            .prepare_cached(Self::get_fetch_sql())?
+            .query_row(params![id1, id2], Self::from_row)
+            .optional()?)
+    }
+}
+
+/*
 pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
     fn get_update_sql() -> &'static str;
     fn get_insert_sql() -> &'static str;
@@ -52,6 +70,7 @@ pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Plugins")]
+#[check("./init_db.sql")]
 pub struct PluginRecord {
     #[column("plugin_package_name")]
     package_name: String,
@@ -61,7 +80,8 @@ pub struct PluginRecord {
     version: usize,
 }
 
-impl DBQuickGettable<&str> for PluginRecord {
+impl Fetchable1<&str> for PluginRecord {}
+impl WithSQL for PluginRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Plugins where Plugins.plugin_package_name = ?1"
     }
@@ -81,6 +101,7 @@ impl PluginRecord {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("MediaCategories")]
+#[check("./init_db.sql")]
 pub struct MediaCategoryRecord {
     #[column("media_category_id")]
     id: String,
@@ -88,12 +109,12 @@ pub struct MediaCategoryRecord {
     display_name: String,
 }
 
-impl DBQuickGettable<&str> for MediaCategoryRecord {
+impl Fetchable1<&str> for MediaCategoryRecord {}
+impl WithSQL for MediaCategoryRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from MediaCategories where MediaCategories.media_category_id = ?1"
     }
 }
-
 
 impl MediaCategoryRecord {
     pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
@@ -106,6 +127,7 @@ impl MediaCategoryRecord {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("MediaTypes")]
+#[check("./init_db.sql")]
 pub struct MediaTypeRecord {
     #[column("media_type_id")]
     id: String,
@@ -114,7 +136,8 @@ pub struct MediaTypeRecord {
     media_category_id: String,
 }
 
-impl DBQuickGettable<&str> for MediaTypeRecord {
+impl Fetchable1<&str> for MediaTypeRecord {}
+impl WithSQL for MediaTypeRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from MediaTypes where MediaTypes.media_type_id = ?1;"
     }
@@ -128,6 +151,7 @@ impl MediaTypeRecord {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("FileExtensions")]
+#[check("./init_db.sql")]
 pub struct FileExtensionRecord {
     #[column("file_extension_tag")]
     tag: String,
@@ -135,7 +159,8 @@ pub struct FileExtensionRecord {
     description: String,
 }
 
-impl DBQuickGettable<&str> for FileExtensionRecord {
+impl Fetchable1<&str> for FileExtensionRecord {}
+impl WithSQL for FileExtensionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from FileExtensions where FileExtensions.file_extension_tag = ?1;"
     }
@@ -164,6 +189,7 @@ create table MediaTypes (
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Files")]
+#[check("./init_db.sql")]
 pub struct FileRecord {
     #[column("file_uuid")]
     pub uuid: Uuid,
@@ -183,10 +209,12 @@ pub struct FileRecord {
     pub media_type_override: Option<String>,
     #[column("file_deleted")]
     pub deleted: bool,
+    #[column("file_read_only")]
     pub read_only: bool,
 }
 
-impl DBQuickGettable<&Uuid> for FileRecord {
+impl Fetchable1<&Uuid> for FileRecord {}
+impl WithSQL for FileRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Files where Files.file_uuid = ?1"
     }
@@ -208,9 +236,17 @@ impl FileRecord {
         })
     }
 
+    fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
+        let mut stmt = conn.prepare_cached(
+            "select * from FileArtwork FA where FA.file_uuid = ?",
+        )?;
+        let art_rows = stmt.query_map([&self.uuid], FileArtworkRecord::from_row)?;
+        Ok(art_rows.map(|t| t.expect("just for now")).collect())
+    }
+
     fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
         let mut stmt = conn.prepare_cached(
-            "select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1;",
+            "select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1 limit 1;",
         )?;
         let record = stmt
             .query_row(params![self.uuid], |row| {
@@ -230,6 +266,23 @@ impl FileRecord {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("FileArtwork")]
+#[check("./init_db.sql")]
+pub struct FileArtworkRecord {
+    file_uuid: Uuid,
+    artwork_file_uuid: Uuid,
+    #[column("artwork_note")]
+    note: String,
+}
+
+impl Fetchable2<&Uuid, &Uuid> for FileArtworkRecord {}
+impl WithSQL for FileArtworkRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_file_uuid = ?2;"
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum AttrValue {
@@ -240,12 +293,71 @@ pub enum AttrValue {
     NONE,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+impl FromSql for AttrValue {
+    fn column_result(value: ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        Ok(match value {
+            ValueRef::Null => AttrValue::NONE,
+            ValueRef::Integer(i) => AttrValue::INT(i),
+            ValueRef::Real(f) => AttrValue::FLOAT(f),
+            ValueRef::Text(s) => AttrValue::STRING(
+                String::from_utf8(s.to_vec()).expect("A text string was not utf-8"),
+            ),
+            ValueRef::Blob(b) => AttrValue::BYTES(b.to_vec()),
+        })
+    }
+}
+
+impl ToSql for AttrValue {
+    fn to_sql(&self) -> Result<rusqlite::types::ToSqlOutput<'_>> {
+        Ok(match self {
+            AttrValue::NONE => ToSqlOutput::Owned(Value::Null),
+            AttrValue::INT(i) => ToSqlOutput::Owned(Value::Integer(*i)),
+            AttrValue::FLOAT(f) => ToSqlOutput::Owned(Value::Real(*f)),
+            AttrValue::STRING(s) => ToSqlOutput::Borrowed(ValueRef::Text(s.as_bytes())),
+            AttrValue::BYTES(b) => ToSqlOutput::Borrowed(ValueRef::Blob(b)),
+        })
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("ObjectAttributes")]
+#[check("./init_db.sql")]
 pub struct ObjectAttr {
+    object_uuid: Uuid,
+    #[column("attribute_name")]
     name: String,
+    #[column("attribute_value")]
     data: AttrValue,
 }
 
+impl Fetchable2<&Uuid, &str> for ObjectAttr {}
+impl WithSQL for ObjectAttr {
+    fn get_fetch_sql() -> &'static str {
+        "select * from ObjectAttributes OA where OA.object_uuid = ?1 and OA.attribute_name = ?2;"
+    }
+}
+
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("ObjectAttributes")]
+pub struct ObjectExtraFileRecord {
+    object_uuid: Uuid,
+    file_uuid: Uuid,
+    file_note: String,
+}
+
+impl Fetchable2<&Uuid, &Uuid> for ObjectExtraFileRecord {}
+impl WithSQL for ObjectExtraFileRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from ExtraFilesForObjects EF where EF.object_uuid = ?1 and EF.file_uuid = ?2;"
+    }
+}
+impl ObjectExtraFileRecord {
+    fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
+        FileRecord::get_from_id(conn, &self.file_uuid)
+    }
+}
+/*
 impl DBSimpleRecord for ObjectAttr {
     fn from_row(row: &Row) -> Result<ObjectAttr, Error> {
         Ok(ObjectAttr {
@@ -261,7 +373,7 @@ impl DBSimpleRecord for ObjectAttr {
             },
         })
     }
-}
+}*/
 
 /*
 impl DBFlatRecord<(&Uuid, &str)> for ObjectAttr {
@@ -290,6 +402,7 @@ impl ObjectAttr {}
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Objects")]
+#[check("./init_db.sql")]
 pub struct ObjectRecord {
     #[column("object_uuid")]
     pub uuid: Uuid,
@@ -301,7 +414,7 @@ pub struct ObjectRecord {
     pub deleted: bool,
 }
 
-/* 
+/*
 impl DBSimpleRecord for ObjectRecord {
     fn from_row(row: &Row) -> Result<ObjectRecord, Error> {
         Ok(ObjectRecord {
@@ -313,7 +426,8 @@ impl DBSimpleRecord for ObjectRecord {
     }
 }*/
 
-impl DBQuickGettable<&Uuid> for ObjectRecord {
+impl Fetchable1<&Uuid> for ObjectRecord {}
+impl WithSQL for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Objects where Objects.object_uuid = ?1;"
     }
@@ -352,18 +466,14 @@ impl ObjectRecord {
     fn get_manager_plugin_record(&self, conn: &Connection) -> Result<Option<PluginRecord>, Error> {
         PluginRecord::get_from_id(conn, &self.manager)
     }
-    fn get_extra_files(&self, conn: &Connection) -> Result<Vec<(FileRecord, String)>> {
+    fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
         let mut stmt = conn.prepare_cached(
-            "select * from Files F
-            inner join ExtraFilesForObjects E on F.file_uuid = E.file_uuid
-            where ExtraFilesForObjects.object_uuid = ?",
+            "select * from ExtraFilesForObjects EF where EF.object_uuid = ?",
         )?;
-        let ex_file_rows = stmt.query_map([&self.uuid], |row| {
-            let ex_file = FileRecord::from_row(row)?;
-            let note: String = row.get("file_note")?;
-            Ok((ex_file, note))
-        })?
-        .map(|t| t.expect("just for now")) .collect();
+        let ex_file_rows = stmt
+            .query_map([&self.uuid], ObjectExtraFileRecord::from_row)?
+            .map(|t| t.expect("just for now"))
+            .collect();
         Ok(ex_file_rows)
     }
 }
@@ -379,6 +489,7 @@ pub struct ObjectsInCollection {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Collections")]
+#[check("./init_db.sql")]
 pub struct CollectionRecord {
     #[column("collection_uuid")]
     uuid: Uuid,
@@ -392,8 +503,8 @@ pub struct CollectionRecord {
     deleted: bool,
 }
 
-
-impl DBQuickGettable<&Uuid> for CollectionRecord {
+impl Fetchable1<&Uuid> for CollectionRecord {}
+impl WithSQL for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Collections where Collections.collection_uuid = ?1;"
     }

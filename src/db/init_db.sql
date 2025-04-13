@@ -33,7 +33,7 @@ create table Files (
     file_encoding text,
     media_type_override_id text,
     file_deleted integer,
-    read_only integer,
+    file_read_only integer,
     foreign key (file_extension_tag) references FileExtensions(file_extension_tag),
     foreign key (media_type_override_id) references MediaTypes(media_type_id)
 );
