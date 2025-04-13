@@ -83,7 +83,7 @@ pub struct PluginRecord {
 impl Fetchable1<&str> for PluginRecord {}
 impl WithSQL for PluginRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from Plugins where Plugins.plugin_package_name = ?1"
+        "select * from Plugins where Plugins.plugin_package_name = ?1 limit 1;"
     }
 }
 
@@ -112,7 +112,7 @@ pub struct MediaCategoryRecord {
 impl Fetchable1<&str> for MediaCategoryRecord {}
 impl WithSQL for MediaCategoryRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from MediaCategories where MediaCategories.media_category_id = ?1"
+        "select * from MediaCategories where MediaCategories.media_category_id = ?1 limit 1;"
     }
 }
 
@@ -139,7 +139,7 @@ pub struct MediaTypeRecord {
 impl Fetchable1<&str> for MediaTypeRecord {}
 impl WithSQL for MediaTypeRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from MediaTypes where MediaTypes.media_type_id = ?1;"
+        "select * from MediaTypes where MediaTypes.media_type_id = ?1 limit 1;"
     }
 }
 
@@ -162,7 +162,7 @@ pub struct FileExtensionRecord {
 impl Fetchable1<&str> for FileExtensionRecord {}
 impl WithSQL for FileExtensionRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from FileExtensions where FileExtensions.file_extension_tag = ?1;"
+        "select * from FileExtensions where FileExtensions.file_extension_tag = ?1 limit 1;"
     }
 }
 
@@ -216,7 +216,7 @@ pub struct FileRecord {
 impl Fetchable1<&Uuid> for FileRecord {}
 impl WithSQL for FileRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from Files where Files.file_uuid = ?1"
+        "select * from Files where Files.file_uuid = ?1 limit 1"
     }
 }
 
@@ -279,7 +279,7 @@ pub struct FileArtworkRecord {
 impl Fetchable2<&Uuid, &Uuid> for FileArtworkRecord {}
 impl WithSQL for FileArtworkRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_file_uuid = ?2;"
+        "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_file_uuid = ?2 limit 1;"
     }
 }
 
@@ -333,7 +333,7 @@ pub struct ObjectAttr {
 impl Fetchable2<&Uuid, &str> for ObjectAttr {}
 impl WithSQL for ObjectAttr {
     fn get_fetch_sql() -> &'static str {
-        "select * from ObjectAttributes OA where OA.object_uuid = ?1 and OA.attribute_name = ?2;"
+        "select * from ObjectAttributes OA where OA.object_uuid = ?1 and OA.attribute_name = ?2 limit 1;"
     }
 }
 
@@ -349,7 +349,7 @@ pub struct ObjectExtraFileRecord {
 impl Fetchable2<&Uuid, &Uuid> for ObjectExtraFileRecord {}
 impl WithSQL for ObjectExtraFileRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from ExtraFilesForObjects EF where EF.object_uuid = ?1 and EF.file_uuid = ?2;"
+        "select * from ExtraFilesForObjects EF where EF.object_uuid = ?1 and EF.file_uuid = ?2 limit 1;"
     }
 }
 impl ObjectExtraFileRecord {
@@ -429,7 +429,7 @@ impl DBSimpleRecord for ObjectRecord {
 impl Fetchable1<&Uuid> for ObjectRecord {}
 impl WithSQL for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from Objects where Objects.object_uuid = ?1;"
+        "select * from Objects where Objects.object_uuid = ?1 limit 1;"
     }
 }
 
@@ -442,11 +442,7 @@ impl ObjectRecord {
         Ok(attr_rows.map(|t| t.expect("just for now")).collect())
     }
     fn get_attribute(&self, conn: &Connection, name: &str) -> Result<Option<ObjectAttr>> {
-        let mut stmt = conn.prepare_cached("select * from ObjectAttributes where ObjectAttributes.object_uuid = ?1 and ObjectAttributes.attribute_name = ?2")?;
-        let record = stmt
-            .query_row(params![self.uuid, name], ObjectAttr::from_row)
-            .optional()?;
-        return Ok(record);
+        ObjectAttr::get_from_id(conn, &self.uuid, name)
     }
     fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
         FileRecord::get_from_id(conn, &self.uuid)
@@ -506,7 +502,7 @@ pub struct CollectionRecord {
 impl Fetchable1<&Uuid> for CollectionRecord {}
 impl WithSQL for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
-        "select * from Collections where Collections.collection_uuid = ?1;"
+        "select * from Collections where Collections.collection_uuid = ?1 limit 1;"
     }
 }
 
@@ -541,7 +537,10 @@ impl ObjectsInCollection {
             "
             select * from ObjectsInCollections
                 inner join Objects on Objects.object_uuid=ObjectsInCollections.object_uuid
+                inner join Files on Files.file_uuid=Objects.object_uuid
                 where ObjectsInCollections.collection_uuid = ?1
+                and Objects.object_deleted=0
+                and Files.file_deleted=0
                 order by Objects.object_name
                 limit ?2
                 offset ?3;",
