@@ -4,7 +4,7 @@ use rusqlite::{
     Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
-use serde_rusqlite as sr;
+use exemplar::Model;
 use std::vec::Vec;
 use uuid::{uuid, Uuid};
 
@@ -22,7 +22,7 @@ pub trait DBSimpleRecord {
         Self: Sized;
 }
 
-pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
+pub trait DBQuickGettable<U: ToSql>: Model {
     fn get_fetch_sql() -> &'static str;
     fn get_from_id(conn: &Connection, id: U) -> Result<Option<Self>, Error>
     where
@@ -34,29 +34,36 @@ pub trait DBQuickGettable<U: ToSql>: DBSimpleRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+/* 
+pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
+    fn get_update_sql() -> &'static str;
+    fn get_insert_sql() -> &'static str;
+    fn update(&self, conn: &Connection) -> Result<(), Error>{
+        let binding = sr::to_params_named(self)
+            .expect("Params building didn't work");
+        let params = binding
+            .to_slice()
+            .as_slice();
+        let mut stmt = conn.prepare_cached(Self::get_update_sql())?;
+        let res = stmt.execute(params)?;
+        Ok(())
+    }
+}*/
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("Plugins")]
 pub struct PluginRecord {
+    #[column("plugin_package_name")]
     package_name: String,
+    #[column("plugin_display_name")]
     display_name: String,
+    #[column("plugin_version")]
     version: usize,
 }
 
 impl DBQuickGettable<&str> for PluginRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Plugins where Plugins.plugin_package_name = ?1"
-    }
-}
-
-impl DBSimpleRecord for PluginRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(PluginRecord {
-            package_name: row.get("plugin_package_name")?,
-            display_name: row.get("plugin_display_name")?,
-            version: row.get("plugin_version")?,
-        })
     }
 }
 
@@ -72,9 +79,12 @@ impl PluginRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("MediaCategories")]
 pub struct MediaCategoryRecord {
+    #[column("media_category_id")]
     id: String,
+    #[column("media_category_display_name")]
     display_name: String,
 }
 
@@ -84,17 +94,6 @@ impl DBQuickGettable<&str> for MediaCategoryRecord {
     }
 }
 
-impl DBSimpleRecord for MediaCategoryRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(MediaCategoryRecord {
-            id: row.get("media_category_id")?,
-            display_name: row.get("media_category_display_name")?,
-        })
-    }
-}
 
 impl MediaCategoryRecord {
     pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
@@ -105,9 +104,12 @@ impl MediaCategoryRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("MediaTypes")]
 pub struct MediaTypeRecord {
+    #[column("media_type_id")]
     id: String,
+    #[column("media_type_display_name")]
     display_name: String,
     media_category_id: String,
 }
@@ -118,46 +120,24 @@ impl DBQuickGettable<&str> for MediaTypeRecord {
     }
 }
 
-impl DBSimpleRecord for MediaTypeRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(MediaTypeRecord {
-            id: row.get("media_type_id")?,
-            display_name: row.get("media_type_display_name")?,
-            media_category_id: row.get("media_category_id")?,
-        })
-    }
-}
-
 impl MediaTypeRecord {
     pub fn get_category_record(&self, conn: &Connection) -> Result<Option<MediaCategoryRecord>> {
         MediaCategoryRecord::get_from_id(&conn, &self.media_category_id)
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("FileExtensions")]
 pub struct FileExtensionRecord {
+    #[column("file_extension_tag")]
     tag: String,
+    #[column("file_extension_description")]
     description: String,
 }
 
 impl DBQuickGettable<&str> for FileExtensionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from FileExtensions where FileExtensions.file_extension_tag = ?1;"
-    }
-}
-
-impl DBSimpleRecord for FileExtensionRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(FileExtensionRecord {
-            tag: row.get("file_extension_tag")?,
-            description: row.get("file_extension_description")?,
-        })
     }
 }
 
@@ -182,16 +162,26 @@ create table MediaTypes (
 );
  */
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("Files")]
 pub struct FileRecord {
+    #[column("file_uuid")]
     pub uuid: Uuid,
+    #[column("file_name")]
     pub name: String,
+    #[column("file_size_bytes")]
     pub size_bytes: usize,
+    #[column("file_hash")]
     pub hash: String,
+    #[column("file_path")]
     pub path: String,
+    #[column("file_extension_tag")]
     pub extension_tag: String,
+    #[column("file_encoding")]
     pub encoding: String,
+    #[column("media_type_override_id")]
     pub media_type_override: Option<String>,
+    #[column("file_deleted")]
     pub deleted: bool,
     pub read_only: bool,
 }
@@ -199,26 +189,6 @@ pub struct FileRecord {
 impl DBQuickGettable<&Uuid> for FileRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Files where Files.file_uuid = ?1"
-    }
-}
-
-impl DBSimpleRecord for FileRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(FileRecord {
-            uuid: row.get("file_uuid")?,
-            name: row.get("file_name")?,
-            size_bytes: row.get("file_size_bytes")?,
-            hash: row.get("file_hash")?,
-            path: row.get("file_path")?,
-            extension_tag: row.get("file_extension_tag")?,
-            encoding: row.get("file_encoding")?,
-            media_type_override: row.get("media_type_override_id")?,
-            deleted: row.get("file_deleted")?,
-            read_only: row.get("read_only")?,
-        })
     }
 }
 
@@ -318,14 +288,20 @@ create table ObjectAttributes (
 
 impl ObjectAttr {}
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("Objects")]
 pub struct ObjectRecord {
+    #[column("object_uuid")]
     pub uuid: Uuid,
+    #[column("object_name")]
     pub name: String,
+    #[column("plugin_package_name")]
     pub manager: String,
+    #[column("object_deleted")]
     pub deleted: bool,
 }
 
+/* 
 impl DBSimpleRecord for ObjectRecord {
     fn from_row(row: &Row) -> Result<ObjectRecord, Error> {
         Ok(ObjectRecord {
@@ -335,7 +311,7 @@ impl DBSimpleRecord for ObjectRecord {
             deleted: row.get("object_deleted")?,
         })
     }
-}
+}*/
 
 impl DBQuickGettable<&Uuid> for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
@@ -401,23 +377,21 @@ pub struct ObjectsInCollection {
     total_length: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("Collections")]
 pub struct CollectionRecord {
+    #[column("collection_uuid")]
     uuid: Uuid,
+    #[column("collection_name")]
     name: String,
+    #[column("collection_visible")]
+    visible: bool,
+    #[column("collection_location")]
+    location: String,
+    #[column("collection_deleted")]
+    deleted: bool,
 }
 
-impl DBSimpleRecord for CollectionRecord {
-    fn from_row(row: &Row) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        Ok(CollectionRecord {
-            uuid: row.get("collection_uuid")?,
-            name: row.get("collection_name")?,
-        })
-    }
-}
 
 impl DBQuickGettable<&Uuid> for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
@@ -482,14 +456,14 @@ impl ObjectsInCollection {
 
 #[cfg(test)]
 mod tests {
-    static DB_INIT_SQL: &'static str = include_str!("./testing_values.sql");
+    static BASIC_TESTING_VALUES: &'static str = include_str!("./basic_testing_values.sql");
 
     use super::*;
 
     fn init() -> Result<Connection, Error> {
         //let conn = init_db("./tmp/test_generated_db.sqlite")?;
         let conn = init_db(":memory:")?;
-        conn.execute_batch(DB_INIT_SQL)?;
+        conn.execute_batch(BASIC_TESTING_VALUES)?;
         return Ok(conn);
     }
 

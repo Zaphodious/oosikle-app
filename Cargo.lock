@@ -913,6 +913,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "exemplar"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8af7d92f20b25e7ccba9e6aaebf4945a31a9ef2f71cb3b0f6df56ba0d2db0b25"
+dependencies = [
+ "exemplar_proc_macro",
+ "rusqlite",
+]
+
+[[package]]
+name = "exemplar_proc_macro"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "939bea61e58533ea301ed500c715a0217d5a330e2b719fdc52a5df68a9d9dda7"
+dependencies = [
+ "proc-macro-error2",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
+]
+
+[[package]]
 name = "fallible-iterator"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2414,11 +2436,11 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 name = "oosikle-app"
 version = "0.1.0"
 dependencies = [
+ "exemplar",
  "micromap",
  "rusqlite",
  "serde",
  "serde_json",
- "serde_rusqlite",
  "tauri",
  "tauri-build",
  "tauri-plugin-opener",
@@ -2794,6 +2816,28 @@ dependencies = [
  "proc-macro2",
  "quote",
  "version_check",
+]
+
+[[package]]
+name = "proc-macro-error-attr2"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "96de42df36bb9bba5542fe9f1a054b8cc87e172759a1868aa05c1f3acc89dfc5"
+dependencies = [
+ "proc-macro2",
+ "quote",
+]
+
+[[package]]
+name = "proc-macro-error2"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11ec05c52be0a07b08061f7dd003e7d7092e0472bc731b4af7bb1ef876109802"
+dependencies = [
+ "proc-macro-error-attr2",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
 ]
 
 [[package]]
@@ -3211,16 +3255,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.100",
-]
-
-[[package]]
-name = "serde_rusqlite"
-version = "0.38.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e77d42c863496aee3253704aa621691088f718cd8800bd50bcdc19f9bd2a8ea"
-dependencies = [
- "rusqlite",
- "serde",
 ]
 
 [[package]]
