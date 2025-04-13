@@ -6,8 +6,8 @@ use rusqlite::{
     Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
-use std::vec::Vec;
 use std::any::type_name;
+use std::vec::Vec;
 use uuid::{uuid, Uuid};
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
@@ -18,7 +18,7 @@ pub fn init_db(db_loc: &str) -> Result<Connection, Error> {
     return Ok(conn);
 }
 
-trait WithSQL {
+pub trait WithSQL {
     fn get_fetch_sql() -> &'static str {
         panic!("Type {} does not provide fetch sql", type_name::<Self>());
     }
@@ -52,6 +52,18 @@ pub trait Fetchable2<U1: ToSql, U2: ToSql>: Model + WithSQL {
     }
 }
 
+fn fetch_vec_of<ID: ToSql, THINGY: Model>(
+    conn: &Connection,
+    id: ID,
+    sql: &str,
+) -> Result<Vec<THINGY>, Error> {
+    let mut stmt = conn.prepare_cached(&sql)?;
+    let type_rows = stmt.query_map([id], THINGY::from_row)?;
+    Ok(type_rows
+        .map(|t| t.expect("No errors permitted here"))
+        .collect())
+}
+
 /*
 pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
     fn get_update_sql() -> &'static str;
@@ -73,11 +85,11 @@ pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
 #[check("./init_db.sql")]
 pub struct PluginRecord {
     #[column("plugin_package_name")]
-    package_name: String,
+    pub package_name: String,
     #[column("plugin_display_name")]
-    display_name: String,
+    pub display_name: String,
     #[column("plugin_version")]
-    version: usize,
+    pub version: usize,
 }
 
 impl Fetchable1<&str> for PluginRecord {}
@@ -88,14 +100,14 @@ impl WithSQL for PluginRecord {
 }
 
 impl PluginRecord {
-    fn get_associated_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
-        let mut stmt = conn.prepare_cached(
+    pub fn get_associated_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
+        fetch_vec_of(
+            conn,
+            &self.package_name,
             "select MT.* from MediaTypesForPlugins FP
         inner join MediaTypes MT on FP.media_type_id = MT.media_type_id
         where FP.plugin_package_name = ?;",
-        )?;
-        let type_rows = stmt.query_map([&self.package_name], MediaTypeRecord::from_row)?;
-        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+        )
     }
 }
 
@@ -104,9 +116,9 @@ impl PluginRecord {
 #[check("./init_db.sql")]
 pub struct MediaCategoryRecord {
     #[column("media_category_id")]
-    id: String,
+    pub id: String,
     #[column("media_category_display_name")]
-    display_name: String,
+    pub display_name: String,
 }
 
 impl Fetchable1<&str> for MediaCategoryRecord {}
@@ -118,10 +130,11 @@ impl WithSQL for MediaCategoryRecord {
 
 impl MediaCategoryRecord {
     pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
-        let mut stmt =
-            conn.prepare_cached("select * from MediaTypes where MediaTypes.media_category_id = ?")?;
-        let type_rows = stmt.query_map([&self.id], MediaTypeRecord::from_row)?;
-        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+        fetch_vec_of(
+            conn,
+            &self.id,
+            "select * from MediaTypes where MediaTypes.media_category_id = ?",
+        )
     }
 }
 
@@ -167,14 +180,11 @@ impl WithSQL for FileExtensionRecord {
 }
 
 impl FileExtensionRecord {
-    fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
-        let mut stmt =
-            conn.prepare_cached("
+    pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
+        fetch_vec_of(conn, &self.tag, "
             select * from MediaTypesForFileExtensions
                 inner join MediaTypes on MediaTypesForFileExtensions.media_type_id = MediaTypes.media_type_id
-                where MediaTypesForFileExtensions.file_Extension_tag = ?;")?;
-        let type_rows = stmt.query_map([&self.tag], MediaTypeRecord::from_row)?;
-        Ok(type_rows.map(|t| t.expect("just for now")).collect())
+                where MediaTypesForFileExtensions.file_Extension_tag = ?;")
     }
 }
 
@@ -221,30 +231,30 @@ impl WithSQL for FileRecord {
 }
 
 impl FileRecord {
-    fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
+    pub fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
         ObjectRecord::get_from_id(conn, &self.uuid)
     }
 
-    fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
+    pub fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
         FileExtensionRecord::get_from_id(conn, &self.extension_tag)
     }
 
-    fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+    pub fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
         Ok(match &self.media_type_override {
             Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
             None => None,
         })
     }
 
-    fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
-        let mut stmt = conn.prepare_cached(
+    pub fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
+        fetch_vec_of(
+            conn,
+            &self.uuid,
             "select * from FileArtwork FA where FA.file_uuid = ?",
-        )?;
-        let art_rows = stmt.query_map([&self.uuid], FileArtworkRecord::from_row)?;
-        Ok(art_rows.map(|t| t.expect("just for now")).collect())
+        )
     }
 
-    fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
+    pub fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
         let mut stmt = conn.prepare_cached(
             "select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1 limit 1;",
         )?;
@@ -270,10 +280,10 @@ impl FileRecord {
 #[table("FileArtwork")]
 #[check("./init_db.sql")]
 pub struct FileArtworkRecord {
-    file_uuid: Uuid,
-    artwork_file_uuid: Uuid,
+    pub file_uuid: Uuid,
+    pub artwork_file_uuid: Uuid,
     #[column("artwork_note")]
-    note: String,
+    pub note: String,
 }
 
 impl Fetchable2<&Uuid, &Uuid> for FileArtworkRecord {}
@@ -323,11 +333,11 @@ impl ToSql for AttrValue {
 #[table("ObjectAttributes")]
 #[check("./init_db.sql")]
 pub struct ObjectAttr {
-    object_uuid: Uuid,
+    pub object_uuid: Uuid,
     #[column("attribute_name")]
-    name: String,
+    pub name: String,
     #[column("attribute_value")]
-    data: AttrValue,
+    pub data: AttrValue,
 }
 
 impl Fetchable2<&Uuid, &str> for ObjectAttr {}
@@ -337,13 +347,12 @@ impl WithSQL for ObjectAttr {
     }
 }
 
-
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("ObjectAttributes")]
 pub struct ObjectExtraFileRecord {
-    object_uuid: Uuid,
-    file_uuid: Uuid,
-    file_note: String,
+    pub object_uuid: Uuid,
+    pub file_uuid: Uuid,
+    pub file_note: String,
 }
 
 impl Fetchable2<&Uuid, &Uuid> for ObjectExtraFileRecord {}
@@ -434,20 +443,20 @@ impl WithSQL for ObjectRecord {
 }
 
 impl ObjectRecord {
-    fn get_attributes(&self, conn: &Connection) -> Result<Vec<ObjectAttr>> {
-        let mut stmt = conn.prepare_cached(
+    pub fn get_attributes(&self, conn: &Connection) -> Result<Vec<ObjectAttr>> {
+        fetch_vec_of(
+            conn,
+            &self.uuid,
             "select * from ObjectAttributes where ObjectAttributes.object_uuid = ?",
-        )?;
-        let attr_rows = stmt.query_map([&self.uuid], ObjectAttr::from_row)?;
-        Ok(attr_rows.map(|t| t.expect("just for now")).collect())
+        )
     }
-    fn get_attribute(&self, conn: &Connection, name: &str) -> Result<Option<ObjectAttr>> {
+    pub fn get_attribute(&self, conn: &Connection, name: &str) -> Result<Option<ObjectAttr>> {
         ObjectAttr::get_from_id(conn, &self.uuid, name)
     }
-    fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
+    pub fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
         FileRecord::get_from_id(conn, &self.uuid)
     }
-    fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+    pub fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
         let mut stmt = conn.prepare_cached(
             "
             select MediaTypes.* from MediaTypes
@@ -459,28 +468,25 @@ impl ObjectRecord {
             .optional()?;
         return Ok(record);
     }
-    fn get_manager_plugin_record(&self, conn: &Connection) -> Result<Option<PluginRecord>, Error> {
+    pub fn get_manager_plugin_record(&self, conn: &Connection) -> Result<Option<PluginRecord>, Error> {
         PluginRecord::get_from_id(conn, &self.manager)
     }
-    fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
-        let mut stmt = conn.prepare_cached(
+    pub fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
+        fetch_vec_of(
+            conn,
+            &self.uuid,
             "select * from ExtraFilesForObjects EF where EF.object_uuid = ?",
-        )?;
-        let ex_file_rows = stmt
-            .query_map([&self.uuid], ObjectExtraFileRecord::from_row)?
-            .map(|t| t.expect("just for now"))
-            .collect();
-        Ok(ex_file_rows)
+        )
     }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectsInCollection {
-    collection_uuid: Uuid,
-    pagesize: usize,
-    pageno: usize,
-    objects: Vec<ObjectRecord>,
-    total_length: usize,
+    pub collection_uuid: Uuid,
+    pub pagesize: usize,
+    pub pageno: usize,
+    pub objects: Vec<ObjectRecord>,
+    pub total_length: usize,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
@@ -488,15 +494,15 @@ pub struct ObjectsInCollection {
 #[check("./init_db.sql")]
 pub struct CollectionRecord {
     #[column("collection_uuid")]
-    uuid: Uuid,
+    pub uuid: Uuid,
     #[column("collection_name")]
-    name: String,
+    pub name: String,
     #[column("collection_visible")]
-    visible: bool,
+    pub visible: bool,
     #[column("collection_location")]
-    location: String,
+    pub location: String,
     #[column("collection_deleted")]
-    deleted: bool,
+    pub deleted: bool,
 }
 
 impl Fetchable1<&Uuid> for CollectionRecord {}
@@ -518,7 +524,7 @@ impl CollectionRecord {
 }
 
 impl ObjectsInCollection {
-    fn get_next_page(&mut self, conn: &Connection) -> Result<ObjectsInCollection> {
+    pub fn get_next_page(&mut self, conn: &Connection) -> Result<ObjectsInCollection> {
         return ObjectsInCollection::get_object_page(
             conn,
             &self.collection_uuid,
@@ -527,7 +533,7 @@ impl ObjectsInCollection {
         );
     }
 
-    fn get_object_page(
+    pub fn get_object_page(
         conn: &Connection,
         collection_id: &Uuid,
         pagesize: usize,
@@ -535,13 +541,13 @@ impl ObjectsInCollection {
     ) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached(
             "
-            select * from ObjectsInCollections
-                inner join Objects on Objects.object_uuid=ObjectsInCollections.object_uuid
+            select * from ObjectsInCollections OC
+                inner join Objects on Objects.object_uuid=OC.object_uuid
                 inner join Files on Files.file_uuid=Objects.object_uuid
-                where ObjectsInCollections.collection_uuid = ?1
+                where OC.collection_uuid = ?1
                 and Objects.object_deleted=0
                 and Files.file_deleted=0
-                order by Objects.object_name
+                order by OC.idx, Objects.object_name
                 limit ?2
                 offset ?3;",
         )?;
@@ -563,6 +569,61 @@ impl ObjectsInCollection {
         })
     }
 }
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("Devices")]
+#[check("./init_db.sql")]
+pub struct DeviceRecord {
+    #[column("device_uuid")]
+    pub uuid: Uuid,
+    #[column("device_name")]
+    pub name: String,
+    #[column("device_description")]
+    pub description: String,
+    #[column("device_icon_path")]
+    pub icon_path: Option<String>,
+}
+
+impl Fetchable1<&Uuid> for DeviceRecord {}
+impl WithSQL for DeviceRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from Devices where Devices.device_uuid = ?1 limit 1;"
+    }
+}
+
+impl DeviceRecord {}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("DeviceSyncLists")]
+#[check("./init_db.sql")]
+pub struct DeviceSyncListRecord {
+    pub device_uuid: Uuid,
+    pub collection_uuid: Uuid,
+    pub plugin_package_name: String,
+    pub dsl_directory_on_device: String,
+    pub last_sync_time: i32,
+}
+
+impl Fetchable2<&Uuid, &Uuid> for DeviceSyncListRecord {}
+impl WithSQL for DeviceSyncListRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from DeviceSyncLists DSL where DSL.device_uuid = ?1 and DSL.collection_uuid = ?2 limit 1;"
+    }
+}
+
+/*
+create table DeviceSyncLists (
+    device_uuid blob not null,
+    collection_uuid blob not null,
+    plugin_package_name text not null,
+    dsl_directory_on_device text not null,
+    last_sync_time integer not null,
+    primary key (device_uuid, collection_uuid),
+    foreign key (device_uuid) references Devices(device_uuid),
+    foreign key (plugin_package_name) references Plugins(plugin_package_name),
+    foreign key (collection_uuid) references Collections(collection_uuid)
+);
+     */
 
 #[cfg(test)]
 mod tests {
@@ -729,6 +790,15 @@ mod tests {
         let types = fr.get_associated_types(&conn)?;
         assert!(types[0].display_name == "Plain Text File");
         return Ok(());
+    }
+
+    #[test]
+    fn gets_device_record() -> Result<(), Error> {
+        let conn = init()?;
+        let dr = DeviceRecord::get_from_id(&conn, &uuid!("0DE2C3400DE2C3400DE2C3400DE2C340"))?
+            .expect("There is no entity here");
+        assert!(dr.name == "Example Flash Drive");
+        Ok(())
     }
 
     /*
