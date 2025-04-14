@@ -209,8 +209,8 @@ pub struct FileRecord {
     pub size_bytes: usize,
     #[column("file_hash")]
     pub hash: String,
-    #[column("file_path")]
-    pub path: String,
+    #[column("file_dir_path")]
+    pub dir_path: String,
     #[column("file_extension_tag")]
     pub extension_tag: String,
     #[column("file_encoding")]

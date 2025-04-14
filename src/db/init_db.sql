@@ -28,7 +28,7 @@ create table Files (
     file_name text not null,
     file_size_bytes integer not null,
     file_hash text not null,
-    file_path text not null,
+    file_dir_path text not null,
     file_extension_tag text not null,
     file_encoding text,
     media_type_override_id text,
