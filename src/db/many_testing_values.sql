@@ -323,15 +323,11 @@ insert into ObjectAttributes values (
     X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'revision',
     4
-);
-
-insert into ObjectAttributes values (
+), (
     X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'rating',
     3.9
-);
-
-insert into ObjectAttributes values (
+), (
     X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'editable',
     TRUE
