@@ -26,3 +26,4 @@ rusqlite = { version = "0.34.0", features = ["bundled", "uuid", "rusqlite-macros
 uuid = {version = "1.16.0", features = ["v7", "serde"]}
 micromap = "0.0.17"
 exemplar = "0.34.0"
+proptest = "1.6.0"

@@ -38,6 +38,15 @@ pub trait Fetchable1<U: ToSql>: Model + WithSQL {
             .query_row([id], Self::from_row)
             .optional()?)
     }
+
+    fn check_exists(conn: &Connection, id: U) -> Result<bool, Error> {
+        let fetch_sql = Self::get_fetch_sql();
+        conn.prepare_cached(format!("select exists({fetch_sql}) as 'exists';").as_str())?
+            .query_row([id], |r| {
+                let foo: bool = r.get("exists")?;
+                return Ok(foo);
+            })
+    }
 }
 
 pub trait Fetchable2<U1: ToSql, U2: ToSql>: Model + WithSQL {
@@ -49,6 +58,15 @@ pub trait Fetchable2<U1: ToSql, U2: ToSql>: Model + WithSQL {
             .prepare_cached(Self::get_fetch_sql())?
             .query_row(params![id1, id2], Self::from_row)
             .optional()?)
+    }
+
+    fn check_exists(conn: &Connection, id1: U1, id2: U2) -> Result<bool, Error> {
+        let fetch_sql = Self::get_fetch_sql();
+        conn.prepare_cached(format!("select exists({fetch_sql}) as 'exists';").as_str())?
+            .query_row(params![id1, id2], |r| {
+                let foo: bool = r.get("exists")?;
+                return Ok(foo);
+            })
     }
 }
 
@@ -109,6 +127,8 @@ impl PluginRecord {
         where FP.plugin_package_name = ?;",
         )
     }
+
+    pub fn add_type(&self, conn: &Connection, type_record: MediaTypeRecord) -> Result<(), Error> {}
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
@@ -239,7 +259,10 @@ impl FileRecord {
         FileExtensionRecord::get_from_id(conn, &self.extension_tag)
     }
 
-    pub fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+    pub fn get_override_media_type_record(
+        &self,
+        conn: &Connection,
+    ) -> Result<Option<MediaTypeRecord>> {
         Ok(match &self.media_type_override {
             Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
             None => None,
@@ -456,7 +479,10 @@ impl ObjectRecord {
     pub fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
         FileRecord::get_from_id(conn, &self.uuid)
     }
-    pub fn get_override_media_type_record(&self, conn: &Connection) -> Result<Option<MediaTypeRecord>> {
+    pub fn get_override_media_type_record(
+        &self,
+        conn: &Connection,
+    ) -> Result<Option<MediaTypeRecord>> {
         let mut stmt = conn.prepare_cached(
             "
             select MediaTypes.* from MediaTypes
@@ -468,7 +494,10 @@ impl ObjectRecord {
             .optional()?;
         return Ok(record);
     }
-    pub fn get_manager_plugin_record(&self, conn: &Connection) -> Result<Option<PluginRecord>, Error> {
+    pub fn get_manager_plugin_record(
+        &self,
+        conn: &Connection,
+    ) -> Result<Option<PluginRecord>, Error> {
         PluginRecord::get_from_id(conn, &self.manager)
     }
     pub fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
@@ -626,7 +655,27 @@ create table DeviceSyncLists (
      */
 
 #[cfg(test)]
-mod tests {
+mod upsert_tests {
+    static MANY_TESTING_VALUES: &'static str = include_str!("./many_testing_values.sql");
+
+    use super::*;
+
+    fn init() -> Result<Connection, Error> {
+        //let conn = init_db("./tmp/test_generated_db.sqlite")?;
+        let conn = init_db(":memory:")?;
+        conn.execute_batch(MANY_TESTING_VALUES)?;
+        return Ok(conn);
+    }
+
+    #[test]
+    fn foo() -> Result<(), Error> {
+        let conn = init()?;
+        return Ok(());
+    }
+}
+
+#[cfg(test)]
+mod simple_read_tests {
     static BASIC_TESTING_VALUES: &'static str = include_str!("./basic_testing_values.sql");
 
     use super::*;
