@@ -128,7 +128,17 @@ impl PluginRecord {
         )
     }
 
-    pub fn add_type(&self, conn: &Connection, type_record: MediaTypeRecord) -> Result<(), Error> {}
+    pub fn add_type(&self, conn: &Connection, type_record: MediaTypeRecord) -> Result<bool, Error> {
+        let mut stmt = conn.prepare_cached(" insert into MediaTypesForPlugins values (?1, ?2);")?; 
+        if !MediaTypeRecord::check_exists(conn, &type_record.id)? {
+            type_record.insert(conn)?;
+            if !MediaTypeRecord::check_exists(conn, &type_record.id)? {
+                return Ok(false);
+            }
+        }
+        let rows_effected = stmt.execute(params![self.package_name, type_record.id])?;
+        return Ok(rows_effected == 1);
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
