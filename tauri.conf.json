@@ -12,9 +12,19 @@
     "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
         "title": "oosikle-app",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "url": "index.html"
+      },
+      {
+        "label": "list1",
+        "title": "list",
+        "width": 800,
+        "height": 600,
+        "url": "index.html",
+        "create": false
       }
     ],
     "security": {
