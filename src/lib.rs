@@ -2,6 +2,7 @@ pub mod db;
 pub mod lua_api;
 use std::fmt;
 use crate::db::init_db;
+use tauri::webview::WebviewWindowBuilder;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -16,7 +17,7 @@ fn retti() -> String {
 
 #[tauri::command]
 async fn window_open_test(app: tauri::AppHandle) -> String {
-    let window = tauri::window::WindowBuilder::from_config(&app, &app.config().app.windows.get(1).unwrap().clone())
+    let window = WebviewWindowBuilder::from_config(&app, &app.config().app.windows.get(1).unwrap().clone())
         .unwrap().build().unwrap();
     "<div>Did a new window open?</div>".to_string()
 }

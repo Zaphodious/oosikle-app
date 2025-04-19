@@ -4,9 +4,7 @@
   "version": "0.1.0",
   "identifier": "fish.hot.oosikle.app",
   "build": {
-    "frontendDist": "./js-src",
-    "beforeDevCommand": "live-server ./js-src -p 4242 -H localhost",
-    "devUrl": "http://[::1]:4242/"
+    "frontendDist": "./js-src"
   },
   "app": {
     "withGlobalTauri": true,
@@ -14,16 +12,16 @@
       {
         "label": "main",
         "title": "oosikle-app",
-        "width": 400,
-        "height": 800,
-        "url": "/mainbar.html"
+        "width": 800,
+        "height": 600,
+        "url": "mainbar.html"
       },
       {
         "label": "list1",
         "title": "list",
         "width": 800,
         "height": 600,
-        "url": "/list.html"
+        "url": "list.html"
       }
     ],
     "security": {
