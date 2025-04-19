@@ -11,6 +11,55 @@
 </head>
 
 <body id="listview" hx-ext="tauri">
+    <header>
+        <div class="menu-section">
+            <span class="bar-title"></span>
+            <ul id="function-menu" class="menu-button-bar">
+                <li id="import-function">
+                    <button class="import icon-only">Import</button>
+                </li>
+                <li id="export-function">
+                    <button class="export icon-only">Export</button>
+                </li>
+                <li id="backup-function">
+                    <button class="save icon-only">Backup</button>
+                </li>
+                <li id="general-settings-function">
+                    <button class="option icon-only">List Settings</button>
+                </li>
+
+            </ul>
+        </div>
+        <div class="menu-section">
+            <span class="bar-title"></span>
+            <ul id="view-menu" class="menu-button-bar">
+                <li id="fancy-view-option">
+                    <button class="hamburger icon-only">View Fancy</button>
+                </li>
+                <li id="table-view-option">
+                    <button class="broken-hamburger icon-only">View Table</button>
+                </li>
+                <li id="grid-view-option">
+                    <button class="square-grid icon-only">View Grid</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="menu-section">
+            <span class="bar-title"></span>
+            <ul id="search-menu" class="menu-button-bar">
+                <li id="search-text-input">
+                    <input type="text">
+                </li>
+                <li id="search-options-selector">
+                    <button class="option icon-only">Search Options</button>
+                </li>
+                <li id="search-go">
+                    <button class="go icon-only">Search</button>
+                </li>
+            </ul>
+        </div>
+    </header>
     <section id="breadcrumb">
         <ol>
             <li>
@@ -24,84 +73,8 @@
             </li>
         </ol>
     </section>
-    <header>
-        <div class="menu-section">
-            <span class="bar-title">Content</span>
-            <ul id="function-menu" class="menu-button-bar">
-                <li id="sync-all-function">
-                    <button class="sync icon-only" tauri-invoke="window_open_test" hx-target="#view-menu">Sync</button>
-                </li>
-                <li id="import-function">
-                    <button class="import icon-only">Import</button>
-                </li>
-                <li id="export-function">
-                    <button class="export icon-only">Export</button>
-                </li>
-                <li id="backup-function">
-                    <button class="save icon-only">Backup</button>
-                </li>
-                <li id="general-settings-function">
-                    <button class="option icon-only">Settings</button>
-                </li>
-
-            </ul>
-        </div>
-        <div class="menu-section">
-            <span class="bar-title">View</span>
-            <ul id="view-menu" class="menu-button-bar">
-                <li id="fancy-view-option">
-                    <button class="hamburger icon-only">Fancy</button>
-                </li>
-                <li id="table-view-option">
-                    <button class="broken-hamburger icon-only">Table</button>
-                </li>
-                <li id="grid-view-option">
-                    <button class="square-grid icon-only">Grid</button>
-                </li>
-            </ul>
-        </div>
-
-        <div class="menu-section">
-            <span class="bar-title">Search</span>
-            <ul id="search-menu" class="menu-button-bar">
-                <li id="search-text-input">
-                    <input type="text">
-                </li>
-                <li id="search-options-selector">
-                    <button class="option icon-only">Options</button>
-                </li>
-                <li id="search-go">
-                    <button class="go icon-only">Search</button>
-                </li>
-            </ul>
-        </div>
-    </header>
-    <main>
+    <main tauri-invoke="get_test_table" hx-trigger="load" hx-target="#content-view">
         <section id="content-view">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Song Title</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th>Year</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr draggable="true">
-                        <td>Livin On A Prayer</td>
-                        <td>Bon Jovi</td>
-                        <td>Unknown</td>
-                        <td>Unknown</td>
-                    </tr>
-                    <tr draggable="true">
-                        <td>The Fifth Angel</td>
-                        <td>Beast In Black</td>
-                        <td>Berserker</td>
-                        <td>2017</td>
-                    </tr>
-                </tbody>
-            </table>
         </section>
     </main>
     <footer>
