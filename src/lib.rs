@@ -1,7 +1,7 @@
 pub mod db;
 pub mod lua_api;
 use crate::db::init_db;
-use hypertext::{html_elements, maud, GlobalAttributes, Renderable};
+use hypertext::{html_elements, maud, rsx, GlobalAttributes, Renderable};
 use std::fmt;
 use tauri::webview::WebviewWindowBuilder;
 
@@ -27,64 +27,10 @@ async fn window_open_test(app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
-async fn get_test_table(app: tauri::AppHandle, webview_window: tauri::WebviewWindow) -> String {
+async fn get_test_table(webview_window: tauri::WebviewWindow) -> String {
     // https://maud.lambda.xyz/
     let label = webview_window.label();
-    return maud! {
-        table {
-            thead {
-                tr {
-                    th {
-                        "Song Title"
-                    }
-                    th {
-                        "Artist"
-                    }
-                    th {
-                        "Album"
-                    }
-                    th {
-                        "Year"
-                    }
-                }
-            }
-            tbody {
-                tr draggable="true" {
-                    td {
-                        "Livin On A Prayer"
-                    }
-                    td {
-                        "Bon Jovi"
-                    }
-                    td {
-                        (label)
-                    }
-                    td {
-                        "unknown"
-                    }
-
-                }
-                tr draggable="true" {
-                    td {
-                        "The Fifth Angel"
-                    }
-                    td {
-                        "Beast In Black"
-                    }
-                    td {
-                        "Berserker"
-                    }
-                    td {
-                        "2017"
-                    }
-                }
-            }
-        }
-    }
-    .render()
-    .into();
-    /*
-    return format!("
+    return rsx!(
             <table>
                 <thead>
                     <tr>
@@ -95,13 +41,13 @@ async fn get_test_table(app: tauri::AppHandle, webview_window: tauri::WebviewWin
                     </tr>
                 </thead>
                 <tbody>
-                    <tr draggable=\"true\">
+                    <tr draggable="true">
                         <td>Livin On A Prayer</td>
                         <td>Bon Jovi</td>
                         <td>{label}</td>
                         <td>1996</td>
                     </tr>
-                    <tr draggable=\"true\">
+                    <tr draggable="true">
                         <td>The Fifth Angel</td>
                         <td>Beast In Black</td>
                         <td>Berserker</td>
@@ -109,11 +55,14 @@ async fn get_test_table(app: tauri::AppHandle, webview_window: tauri::WebviewWin
                     </tr>
                 </tbody>
             </table>
-    ");*/
+    ).render().into();
 }
+
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    lua_api::demotest().unwrap();
     let t = tauri::Builder::default()
         //.plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet])
