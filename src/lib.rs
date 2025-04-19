@@ -1,7 +1,8 @@
 pub mod db;
 pub mod lua_api;
-use std::fmt;
 use crate::db::init_db;
+use hypertext::{html_elements, maud, GlobalAttributes, Renderable};
+use std::fmt;
 use tauri::webview::WebviewWindowBuilder;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -17,14 +18,72 @@ fn retti() -> String {
 
 #[tauri::command]
 async fn window_open_test(app: tauri::AppHandle) -> String {
-    let window = WebviewWindowBuilder::from_config(&app, &app.config().app.windows.get(1).unwrap().clone())
-        .unwrap().build().unwrap();
+    let window =
+        WebviewWindowBuilder::from_config(&app, &app.config().app.windows.get(1).unwrap().clone())
+            .unwrap()
+            .build()
+            .unwrap();
     "<div>Did a new window open?</div>".to_string()
 }
 
 #[tauri::command]
 async fn get_test_table(app: tauri::AppHandle, webview_window: tauri::WebviewWindow) -> String {
+    // https://maud.lambda.xyz/
     let label = webview_window.label();
+    return maud! {
+        table {
+            thead {
+                tr {
+                    th {
+                        "Song Title"
+                    }
+                    th {
+                        "Artist"
+                    }
+                    th {
+                        "Album"
+                    }
+                    th {
+                        "Year"
+                    }
+                }
+            }
+            tbody {
+                tr draggable="true" {
+                    td {
+                        "Livin On A Prayer"
+                    }
+                    td {
+                        "Bon Jovi"
+                    }
+                    td {
+                        (label)
+                    }
+                    td {
+                        "unknown"
+                    }
+
+                }
+                tr draggable="true" {
+                    td {
+                        "The Fifth Angel"
+                    }
+                    td {
+                        "Beast In Black"
+                    }
+                    td {
+                        "Berserker"
+                    }
+                    td {
+                        "2017"
+                    }
+                }
+            }
+        }
+    }
+    .render()
+    .into();
+    /*
     return format!("
             <table>
                 <thead>
@@ -50,7 +109,7 @@ async fn get_test_table(app: tauri::AppHandle, webview_window: tauri::WebviewWin
                     </tr>
                 </tbody>
             </table>
-    ");
+    ");*/
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -60,8 +119,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![greet])
         .invoke_handler(tauri::generate_handler![retti])
         .invoke_handler(tauri::generate_handler![window_open_test])
-        .invoke_handler(tauri::generate_handler![get_test_table])
-        ;
+        .invoke_handler(tauri::generate_handler![get_test_table]);
     print!("We made it past creation");
     t.run(tauri::generate_context!())
         .expect("error while running tauri application");

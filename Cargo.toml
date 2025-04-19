@@ -28,3 +28,4 @@ micromap = "0.0.17"
 exemplar = "0.34.0"
 proptest = "1.6.0"
 #tokio = { version = "1.44.2", features = ["full"] }
+hypertext = "0.6.2"
