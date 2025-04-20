@@ -30,4 +30,5 @@ exemplar = "0.34.0"
 proptest = "1.6.0"
 hypertext = "0.6.2"
 mlua = {version = "0.10.3", features = ["luau-jit", "anyhow", "serialize", "async", "send", "macros"] }
+anyhow = "1.0.98"
 

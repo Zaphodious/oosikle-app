@@ -6,6 +6,8 @@ use mlua::{
     Table,
 };
 
+mod sqlite;
+
 
 
 pub fn demotest() -> LuaResult<()> {

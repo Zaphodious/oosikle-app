@@ -1,5 +1,5 @@
 
 function basic_function() 
-    local foo = require("haha.foo")
+    local foo = require("testfn.foo")
     return foo()
 end
