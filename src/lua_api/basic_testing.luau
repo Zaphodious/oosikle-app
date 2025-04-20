@@ -1,4 +1,5 @@
 
 function basic_function() 
-    return 42
+    local foo = require("haha.foo")
+    return foo()
 end

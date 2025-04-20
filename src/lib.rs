@@ -62,7 +62,8 @@ async fn get_test_table(webview_window: tauri::WebviewWindow) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    lua_api::demotest().unwrap();
+    // lua_api::demotest().unwrap();
+    lua_api::mt_test().unwrap();
     let t = tauri::Builder::default()
         //.plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet])
