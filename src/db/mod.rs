@@ -1,4 +1,5 @@
 use exemplar::Model;
+use hypertext::html_elements::a;
 use micromap::Map;
 use rusqlite::types::{FromSql, ToSqlOutput, Value};
 use rusqlite::{
@@ -6,7 +7,9 @@ use rusqlite::{
     Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
+use core::fmt;
 use std::any::type_name;
+use std::fmt::Debug;
 use std::vec::Vec;
 use uuid::{uuid, Uuid};
 
@@ -77,6 +80,19 @@ fn fetch_vec_of<ID: ToSql, THINGY: Model>(
 ) -> Result<Vec<THINGY>, Error> {
     let mut stmt = conn.prepare_cached(&sql)?;
     let type_rows = stmt.query_map([id], THINGY::from_row)?;
+    Ok(type_rows
+        .map(|t| t.expect("No errors permitted here"))
+        .collect())
+}
+
+fn fetch_specific_vec_of<ID1: ToSql, ID2: ToSql, THINGY: Model>(
+    conn: &Connection,
+    id1: ID1,
+    id2: ID2,
+    sql: &str,
+) -> Result<Vec<THINGY>, Error> {
+    let mut stmt = conn.prepare_cached(&sql)?;
+    let type_rows = stmt.query_map(params![id1, id2], THINGY::from_row)?;
     Ok(type_rows
         .map(|t| t.expect("No errors permitted here"))
         .collect())
@@ -236,7 +252,7 @@ pub struct FileRecord {
     #[column("file_name")]
     pub name: String,
     #[column("file_size_bytes")]
-    pub size_bytes: usize,
+    pub size_bytes: i64,
     #[column("file_hash")]
     pub hash: String,
     #[column("file_dir_path")]
@@ -264,6 +280,24 @@ impl FileRecord {
     pub fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
         ObjectRecord::get_from_id(conn, &self.uuid)
     }
+    
+    pub fn as_object_attrs(self) -> Result<Vec<ObjectAttr>> {
+        Ok(vec![
+            ObjectAttr {object_uuid: self.uuid, name: "filename".to_string(), data: AttrValue::STRING(self.name)},
+            ObjectAttr {object_uuid: self.uuid, name: "size".to_string(), data: AttrValue::INT(self.size_bytes)},
+            ObjectAttr {object_uuid: self.uuid, name: "hash".to_string(), data: AttrValue::STRING(self.hash)},
+            ObjectAttr {object_uuid: self.uuid, name: "dir".to_string(), data: AttrValue::STRING(self.dir_path)},
+            ObjectAttr {object_uuid: self.uuid, name: "extension".to_string(), data: AttrValue::STRING(self.extension_tag)},
+            ObjectAttr {object_uuid: self.uuid, name: "encoding".to_string(), data: AttrValue::STRING(self.encoding)},
+            ObjectAttr {object_uuid: self.uuid, name: "media_type".to_string(), data: match self.media_type_override {
+                Some(s) => AttrValue::STRING(s),
+                None => AttrValue::NONE
+            }},
+            ObjectAttr {object_uuid: self.uuid, name: "read_only".to_string(), data: AttrValue::INT(if self.read_only {1} else {0})},
+            ObjectAttr {object_uuid: self.uuid, name: "id".to_string(), data: AttrValue::BYTES(self.uuid.into_bytes().to_vec())},
+        ])
+    }
+
 
     pub fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
         FileExtensionRecord::get_from_id(conn, &self.extension_tag)
@@ -285,6 +319,14 @@ impl FileRecord {
             &self.uuid,
             "select * from FileArtwork FA where FA.file_uuid = ?",
         )
+    }
+
+    pub fn get_art_by_role(&self, conn: &Connection, role: &str) -> Result<Option<FileArtworkRecord>> {
+        FileArtworkRecord::get_art_by_role(conn, self.uuid, role)
+    }
+
+    pub fn get_cover_art(&self, conn: &Connection) -> Result<Option<FileArtworkRecord>> {
+        self.get_art_by_role(conn, "cover")
     }
 
     pub fn get_blob_contents(&self, conn: &Connection) -> Result<Option<Vec<u8>>> {
@@ -315,7 +357,7 @@ impl FileRecord {
 pub struct FileArtworkRecord {
     pub file_uuid: Uuid,
     pub artwork_file_uuid: Uuid,
-    #[column("artwork_note")]
+    #[column("artwork_role")]
     pub note: String,
 }
 
@@ -323,6 +365,16 @@ impl Fetchable2<&Uuid, &Uuid> for FileArtworkRecord {}
 impl WithSQL for FileArtworkRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_file_uuid = ?2 limit 1;"
+    }
+}
+
+impl FileArtworkRecord {
+    pub fn get_artwork_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
+        FileRecord::get_from_id(conn, &self.artwork_file_uuid)
+    }
+    pub fn get_art_by_role(conn: &Connection, file_uuid: Uuid, role: &str) -> Result<Option<FileArtworkRecord>> {
+        conn.prepare_cached( "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_role = ?2 limit 1;")?
+        .query_row(params![file_uuid, role], FileArtworkRecord::from_row).optional()
     }
 }
 
@@ -334,6 +386,18 @@ pub enum AttrValue {
     FLOAT(f64),
     BYTES(Vec<u8>),
     NONE,
+}
+
+impl fmt::Display for AttrValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AttrValue::STRING(t) => fmt::Display::fmt(t, f),
+            AttrValue::INT(t) => fmt::Display::fmt(t, f),
+            AttrValue::FLOAT(t) => fmt::Display::fmt(t, f),
+            AttrValue::BYTES(t) => write!(f, "{:?}", t),
+            AttrValue::NONE => write!(f, "")
+        }
+    }
 }
 
 impl FromSql for AttrValue {
@@ -515,6 +579,13 @@ impl ObjectRecord {
             conn,
             &self.uuid,
             "select * from ExtraFilesForObjects EF where EF.object_uuid = ?",
+        )
+    }
+    pub fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
+        fetch_vec_of(
+            conn,
+            &self.uuid,
+            "select * from FileArtwork FA where FA.file_uuid = ?",
         )
     }
 }

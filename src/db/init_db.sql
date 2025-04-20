@@ -87,8 +87,8 @@ create table ExtraFilesForObjects (
 create table FileArtwork (
     file_uuid blob not null,
     artwork_file_uuid blob not null,
-    artwork_note text not null,
-    primary key (file_uuid, artwork_file_uuid),
+    artwork_role text not null,
+    primary key (file_uuid, artwork_file_uuid, artwork_role),
     foreign key (file_uuid) references Files(file_uuid),
     foreign key (artwork_file_uuid) references Files(file_uuid)
 );
