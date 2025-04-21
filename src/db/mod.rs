@@ -593,8 +593,8 @@ impl ObjectRecord {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectsInCollection {
     pub collection_uuid: Uuid,
-    pub pagesize: usize,
-    pub pageno: usize,
+    pub pagesize: i64,
+    pub pageno: i64,
     pub objects: Vec<ObjectRecord>,
     pub total_length: usize,
 }
@@ -626,8 +626,8 @@ impl CollectionRecord {
     fn get_objects(
         &self,
         conn: &Connection,
-        pagesize: usize,
-        pageno: usize,
+        pagesize: i64,
+        pageno: i64,
     ) -> Result<ObjectsInCollection, Error> {
         return ObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno);
     }
@@ -646,8 +646,8 @@ impl ObjectsInCollection {
     pub fn get_object_page(
         conn: &Connection,
         collection_id: &Uuid,
-        pagesize: usize,
-        pageno: usize,
+        pagesize: i64,
+        pageno: i64,
     ) -> Result<ObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached(
             "
