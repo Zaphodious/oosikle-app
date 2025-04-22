@@ -101,6 +101,12 @@ create table Collections (
     collection_deleted integer -- bool
 );
 
+create table CollectionHiddenColumns (
+    collection_uuid blob not null,
+    column_name text not null,
+    primary key (collection_uuid, column_name),
+    foreign key (collection_uuid) references Collections(collection_uuid)
+);
 
 create table MediaCategoriesForCollections (
     collection_uuid blob not null,

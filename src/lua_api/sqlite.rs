@@ -8,15 +8,23 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use mlua::{ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value};
 use anyhow::Result;
+use std::fmt;
 
+#[derive(Debug)]
 pub struct SQLua {conn: Connection, sql_str: Option<String>}
 
 impl SQLua {
-    pub fn init(db_loc: &str) -> Result<SQLua> {
-        Ok(SQLua{
-            conn: init_db(db_loc)?,
+    pub fn init(conn: Connection) -> Result<Self> {
+        let this = SQLua{
+            conn,
             sql_str: None
-        })
+        };
+        Ok(this)
+    }
+
+    pub fn inject_into(self, lua: &Lua) -> Result<()> {
+        lua.globals().set("SQLua", self)?;
+        Ok(())
     }
 }
 
@@ -51,25 +59,15 @@ impl FromLua for ValueWrap {
 }
 
 impl SQLua {
-    pub fn set_sql_string(lua: &Lua, this: &mut SQLua, sqlstring: String) -> luaResult<()> {
+    pub fn with_sql(lua: &Lua, this: &mut Self, sqlstring: String) -> luaResult<()> {
         this.sql_str = Some(sqlstring);
         Ok(())
     }
     pub fn query(lua: &Lua, this: &SQLua, params: Vec<ValueWrap>) -> luaResult<Vec<Table>> {
         let mut stmt = this.conn.prepare_cached(this.sql_str.clone().or(Some("".to_string())).expect("see prev").as_str()).into_lua_err()?;
-        let headers = (&mut stmt).column_names().iter().map(|s|s.to_string()).collect::<Vec<String>>();
-        /*
-        let mut retvec: Vec<Table> = Vec::new();
-        let mut rows = stmt.query(params)?;
-        while let Some(row) = (&rows).next()? {
-            for head in &headers {
-                let t = lua.create_table().unwrap();
-                t.set(head.into_lua(lua)?, value_to_lua(lua, row.get_ref_unwrap(head.as_str()))?);
-            }
-        }
- */
+        let headers = (stmt).column_names().iter().map(|s|s.to_string()).collect::<Vec<String>>();
         let res = (stmt).query_map(params_from_iter(params), |r| {
-            let mut t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
+            let t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
             for head in &headers {
                 t.set(head.as_str(), value_to_lua(lua, r.get_ref_unwrap(head.as_str())).unwrap()).unwrap();
             }
@@ -86,7 +84,7 @@ impl UserData for SQLua {
 
     fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method("query", SQLua::query);
-        methods.add_method_mut("set_sql_string", SQLua::set_sql_string);
+        methods.add_method_mut("with_sql", SQLua::with_sql);
     }
 }
 
@@ -98,9 +96,26 @@ mod test {
     use rusqlite::Connection;
     use crate::{db, lua_api};
 
-    fn init() -> (Lua, Connection) {
-        let lua = lua_api::init(None).unwrap();
+    static TESTING_VALUES: &'static str = include_str!("./many_testing_values.sql");
+    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.lua");
+
+
+    fn init() -> Lua {
         let conn = db::init_db(":memory:").unwrap();
-        (lua, conn)
+        conn.execute(TESTING_VALUES, []).unwrap();
+
+        let mut lua = lua_api::init(None).unwrap();
+        let _ = lua.load(TESTING_LUA).exec();
+
+        SQLua::init(conn).unwrap().inject_into(&lua).unwrap();
+        lua
+    }
+
+    #[test]
+    fn can_do_simple_get() -> Result<()> {
+        let lua = init(); 
+        lua.load("SQLuaFetches()").exec()?;
+        assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
+        Ok(())
     }
 }

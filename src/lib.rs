@@ -4,6 +4,7 @@ use crate::db::init_db;
 use hypertext::{html_elements, maud, rsx, GlobalAttributes, Renderable};
 use std::fmt;
 use tauri::webview::WebviewWindowBuilder;
+use tauri;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -30,7 +31,7 @@ async fn window_open_test(app: tauri::AppHandle) -> String {
 async fn get_test_table(webview_window: tauri::WebviewWindow) -> String {
     // https://maud.lambda.xyz/
     let label = webview_window.label();
-    return rsx!(
+    rsx!(
             <table>
                 <thead>
                     <tr>
@@ -55,7 +56,7 @@ async fn get_test_table(webview_window: tauri::WebviewWindow) -> String {
                     </tr>
                 </tbody>
             </table>
-    ).render().into();
+    ).render().into()
 }
 
 
@@ -63,7 +64,7 @@ async fn get_test_table(webview_window: tauri::WebviewWindow) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // lua_api::demotest().unwrap();
-    lua_api::mt_test().unwrap();
+    // lua_api::mt_test().unwrap();
     let t = tauri::Builder::default()
         //.plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet])

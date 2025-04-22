@@ -24,6 +24,7 @@ pub fn demotest() -> LuaResult<()> {
     Ok(())
 }
 
+/*
 #[tokio::main]
 pub async fn mt_test() -> LuaResult<()> {
     const BASIC_TESTING_SCRIPT: &'static str = include_str!("./basic_testing.luau");
@@ -49,6 +50,7 @@ pub async fn mt_test() -> LuaResult<()> {
     
     Ok(())
 }
+*/
 
 pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
     let lua = Lua::new_with(
