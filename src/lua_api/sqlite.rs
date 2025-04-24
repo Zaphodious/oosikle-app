@@ -6,7 +6,7 @@ use rusqlite::{
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use mlua::{ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value};
+use mlua::{chunk, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value};
 use anyhow::Result;
 use std::fmt;
 
@@ -23,7 +23,7 @@ impl SQLua {
     }
 
     pub fn inject_into(self, lua: &Lua) -> Result<()> {
-        lua.globals().set("SQLua", self)?;
+        lua.globals().set("SQL", self)?;
         Ok(())
     }
 }
@@ -38,6 +38,7 @@ fn value_to_lua(lua: &Lua, value: ValueRef) -> luaResult<Value> {
     }
 }
 
+#[derive(Debug)]
 pub struct ValueWrap(Value);
 
 impl ToSql for ValueWrap {
@@ -59,21 +60,49 @@ impl FromLua for ValueWrap {
 }
 
 impl SQLua {
+
     pub fn with_sql(lua: &Lua, this: &mut Self, sqlstring: String) -> luaResult<()> {
         this.sql_str = Some(sqlstring);
         Ok(())
     }
+
     pub fn query(lua: &Lua, this: &SQLua, params: Vec<ValueWrap>) -> luaResult<Vec<Table>> {
+        if let Some(s) = &this.sql_str {
+            println!("sql is {}", s);
+        }
+        for param in &params {
+            println!("{:?}", param);
+        }
         let mut stmt = this.conn.prepare_cached(this.sql_str.clone().or(Some("".to_string())).expect("see prev").as_str()).into_lua_err()?;
         let headers = (stmt).column_names().iter().map(|s|s.to_string()).collect::<Vec<String>>();
+        for header in &headers {
+            println!("header: {}", header);
+        }
+        let mut query_result = (stmt).query(params_from_iter(params)).map_err(mlua::Error::external)?;
+        let mut ret: Vec<Table> = vec![];
+        println!("length of return from db {}", ret.len());
+        while let Some(row) = query_result.next().map_err(mlua::Error::external)? {
+            let t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
+            for head in &headers {
+                t.set(head.as_str(), value_to_lua(lua, row.get_ref_unwrap(head.as_str())).unwrap()).unwrap();
+                println!("The header is {}", head);
+            }
+            ret.push(t);
+        }
+        /*
         let res = (stmt).query_map(params_from_iter(params), |r| {
             let t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
             for head in &headers {
                 t.set(head.as_str(), value_to_lua(lua, r.get_ref_unwrap(head.as_str())).unwrap()).unwrap();
+                println!("The header is {}", head);
             }
             Ok(t)
         }).map_err(mlua::Error::external)?.filter_map(|r| r.ok()).collect::<Vec<Table>>();
-        Ok(res)
+        */
+
+        println!("Does anything fucking work in this fucking shithole?");
+
+        Ok(ret)
     }
 }
 
@@ -113,9 +142,10 @@ mod test {
 
     #[test]
     fn can_do_simple_get() -> Result<()> {
-        let lua = init(); 
-        lua.load("SQLuaFetches()").exec()?;
-        assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
+        let mut lua = init(); 
+        let res = lua.load("SQLuaFetches()").eval::<String>()?;
+        assert!(res == "Welcome File");
+        //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
         Ok(())
     }
 }
