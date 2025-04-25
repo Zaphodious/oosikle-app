@@ -4,14 +4,13 @@ use micromap::Map;
 use rusqlite::types::{FromSql, ToSqlOutput, Value};
 use rusqlite::{
     params, types::ValueRef, CachedStatement, Connection, Error, OptionalExtension, Params, Result,
-    Row, ToSql,
+    Row, Rows, ToSql,
 };
 use serde::{Deserialize, Serialize};
 use core::fmt;
 use std::any::type_name;
 use std::fmt::Debug;
 use std::vec::Vec;
-use uuid::{uuid, Uuid};
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
 
@@ -248,7 +247,7 @@ create table MediaTypes (
 #[check("./init_db.sql")]
 pub struct FileRecord {
     #[column("file_uuid")]
-    pub uuid: Uuid,
+    pub uuid: String,
     #[column("file_name")]
     pub name: String,
     #[column("file_size_bytes")]
@@ -269,7 +268,7 @@ pub struct FileRecord {
     pub read_only: bool,
 }
 
-impl Fetchable1<&Uuid> for FileRecord {}
+impl Fetchable1<&str> for FileRecord {}
 impl WithSQL for FileRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Files where Files.file_uuid = ?1 limit 1"
@@ -283,18 +282,18 @@ impl FileRecord {
     
     pub fn as_object_attrs(self) -> Result<Vec<ObjectAttr>> {
         Ok(vec![
-            ObjectAttr {object_uuid: self.uuid, name: "filename".to_string(), data: AttrValue::STRING(self.name)},
-            ObjectAttr {object_uuid: self.uuid, name: "size".to_string(), data: AttrValue::INT(self.size_bytes)},
-            ObjectAttr {object_uuid: self.uuid, name: "hash".to_string(), data: AttrValue::STRING(self.hash)},
-            ObjectAttr {object_uuid: self.uuid, name: "dir".to_string(), data: AttrValue::STRING(self.dir_path)},
-            ObjectAttr {object_uuid: self.uuid, name: "extension".to_string(), data: AttrValue::STRING(self.extension_tag)},
-            ObjectAttr {object_uuid: self.uuid, name: "encoding".to_string(), data: AttrValue::STRING(self.encoding)},
-            ObjectAttr {object_uuid: self.uuid, name: "media_type".to_string(), data: match self.media_type_override {
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "filename".to_string(), data: AttrValue::STRING(self.name)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "size".to_string(), data: AttrValue::INT(self.size_bytes)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "hash".to_string(), data: AttrValue::STRING(self.hash)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "dir".to_string(), data: AttrValue::STRING(self.dir_path)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "extension".to_string(), data: AttrValue::STRING(self.extension_tag)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "encoding".to_string(), data: AttrValue::STRING(self.encoding)},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "media_type".to_string(), data: match self.media_type_override {
                 Some(s) => AttrValue::STRING(s),
                 None => AttrValue::NONE
             }},
-            ObjectAttr {object_uuid: self.uuid, name: "read_only".to_string(), data: AttrValue::INT(if self.read_only {1} else {0})},
-            ObjectAttr {object_uuid: self.uuid, name: "id".to_string(), data: AttrValue::BYTES(self.uuid.into_bytes().to_vec())},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "read_only".to_string(), data: AttrValue::INT(if self.read_only {1} else {0})},
+            ObjectAttr {object_uuid: self.uuid.clone(), name: "id".to_string(), data: AttrValue::BYTES(self.uuid.into_bytes().to_vec())},
         ])
     }
 
@@ -322,7 +321,7 @@ impl FileRecord {
     }
 
     pub fn get_art_by_role(&self, conn: &Connection, role: &str) -> Result<Option<FileArtworkRecord>> {
-        FileArtworkRecord::get_art_by_role(conn, self.uuid, role)
+        FileArtworkRecord::get_art_by_role(conn, &self.uuid, role)
     }
 
     pub fn get_cover_art(&self, conn: &Connection) -> Result<Option<FileArtworkRecord>> {
@@ -355,13 +354,13 @@ impl FileRecord {
 #[table("FileArtwork")]
 #[check("./init_db.sql")]
 pub struct FileArtworkRecord {
-    pub file_uuid: Uuid,
-    pub artwork_file_uuid: Uuid,
+    pub file_uuid: String,
+    pub artwork_file_uuid: String,
     #[column("artwork_role")]
     pub note: String,
 }
 
-impl Fetchable2<&Uuid, &Uuid> for FileArtworkRecord {}
+impl Fetchable2<&str, &str> for FileArtworkRecord {}
 impl WithSQL for FileArtworkRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_file_uuid = ?2 limit 1;"
@@ -372,7 +371,7 @@ impl FileArtworkRecord {
     pub fn get_artwork_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
         FileRecord::get_from_id(conn, &self.artwork_file_uuid)
     }
-    pub fn get_art_by_role(conn: &Connection, file_uuid: Uuid, role: &str) -> Result<Option<FileArtworkRecord>> {
+    pub fn get_art_by_role(conn: &Connection, file_uuid: &str, role: &str) -> Result<Option<FileArtworkRecord>> {
         conn.prepare_cached( "select * from FileArtwork FA where FA.file_uuid = ?1 and FA.artwork_role = ?2 limit 1;")?
         .query_row(params![file_uuid, role], FileArtworkRecord::from_row).optional()
     }
@@ -430,14 +429,14 @@ impl ToSql for AttrValue {
 #[table("ObjectAttributes")]
 #[check("./init_db.sql")]
 pub struct ObjectAttr {
-    pub object_uuid: Uuid,
+    pub object_uuid: String,
     #[column("attribute_name")]
     pub name: String,
     #[column("attribute_value")]
     pub data: AttrValue,
 }
 
-impl Fetchable2<&Uuid, &str> for ObjectAttr {}
+impl Fetchable2<&str, &str> for ObjectAttr {}
 impl WithSQL for ObjectAttr {
     fn get_fetch_sql() -> &'static str {
         "select * from ObjectAttributes OA where OA.object_uuid = ?1 and OA.attribute_name = ?2 limit 1;"
@@ -447,12 +446,12 @@ impl WithSQL for ObjectAttr {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("ObjectAttributes")]
 pub struct ObjectExtraFileRecord {
-    pub object_uuid: Uuid,
-    pub file_uuid: Uuid,
+    pub object_uuid: String,
+    pub file_uuid: String,
     pub file_note: String,
 }
 
-impl Fetchable2<&Uuid, &Uuid> for ObjectExtraFileRecord {}
+impl Fetchable2<&str, &str> for ObjectExtraFileRecord {}
 impl WithSQL for ObjectExtraFileRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from ExtraFilesForObjects EF where EF.object_uuid = ?1 and EF.file_uuid = ?2 limit 1;"
@@ -511,7 +510,7 @@ impl ObjectAttr {}
 #[check("./init_db.sql")]
 pub struct ObjectRecord {
     #[column("object_uuid")]
-    pub uuid: Uuid,
+    pub uuid: String,
     #[column("object_name")]
     pub name: String,
     #[column("plugin_package_name")]
@@ -532,7 +531,7 @@ impl DBSimpleRecord for ObjectRecord {
     }
 }*/
 
-impl Fetchable1<&Uuid> for ObjectRecord {}
+impl Fetchable1<&str> for ObjectRecord {}
 impl WithSQL for ObjectRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Objects where Objects.object_uuid = ?1 limit 1;"
@@ -592,7 +591,7 @@ impl ObjectRecord {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ObjectsInCollection {
-    pub collection_uuid: Uuid,
+    pub collection_uuid: String,
     pub pagesize: i64,
     pub pageno: i64,
     pub objects: Vec<ObjectRecord>,
@@ -604,7 +603,7 @@ pub struct ObjectsInCollection {
 #[check("./init_db.sql")]
 pub struct CollectionRecord {
     #[column("collection_uuid")]
-    pub uuid: Uuid,
+    pub uuid: String,
     #[column("collection_name")]
     pub name: String,
     #[column("collection_visible")]
@@ -615,7 +614,7 @@ pub struct CollectionRecord {
     pub deleted: bool,
 }
 
-impl Fetchable1<&Uuid> for CollectionRecord {}
+impl Fetchable1<&str> for CollectionRecord {}
 impl WithSQL for CollectionRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Collections where Collections.collection_uuid = ?1 limit 1;"
@@ -645,7 +644,7 @@ impl ObjectsInCollection {
 
     pub fn get_object_page(
         conn: &Connection,
-        collection_id: &Uuid,
+        collection_id: &str,
         pagesize: i64,
         pageno: i64,
     ) -> Result<ObjectsInCollection, Error> {
@@ -671,7 +670,7 @@ impl ObjectsInCollection {
             .map(|t| t.expect("Should be an object here"))
             .collect();
         Ok(ObjectsInCollection {
-            collection_uuid: *collection_id,
+            collection_uuid: collection_id.to_string(),
             objects,
             pagesize,
             pageno,
@@ -685,7 +684,7 @@ impl ObjectsInCollection {
 #[check("./init_db.sql")]
 pub struct DeviceRecord {
     #[column("device_uuid")]
-    pub uuid: Uuid,
+    pub uuid: String,
     #[column("device_name")]
     pub name: String,
     #[column("device_description")]
@@ -694,7 +693,7 @@ pub struct DeviceRecord {
     pub icon_path: Option<String>,
 }
 
-impl Fetchable1<&Uuid> for DeviceRecord {}
+impl Fetchable1<&str> for DeviceRecord {}
 impl WithSQL for DeviceRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from Devices where Devices.device_uuid = ?1 limit 1;"
@@ -707,14 +706,14 @@ impl DeviceRecord {}
 #[table("DeviceSyncLists")]
 #[check("./init_db.sql")]
 pub struct DeviceSyncListRecord {
-    pub device_uuid: Uuid,
-    pub collection_uuid: Uuid,
+    pub device_uuid: String,
+    pub collection_uuid: String,
     pub plugin_package_name: String,
     pub dsl_directory_on_device: String,
     pub last_sync_time: i32,
 }
 
-impl Fetchable2<&Uuid, &Uuid> for DeviceSyncListRecord {}
+impl Fetchable2<&str, &str> for DeviceSyncListRecord {}
 impl WithSQL for DeviceSyncListRecord {
     fn get_fetch_sql() -> &'static str {
         "select * from DeviceSyncLists DSL where DSL.device_uuid = ?1 and DSL.collection_uuid = ?2 limit 1;"
@@ -769,6 +768,16 @@ mod simple_read_tests {
     }
 
     #[test]
+    fn plain_sql_works() -> Result<(), Error> {
+        let conn = init()?;
+        let the_query = "select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';";
+        let mut stmt = conn.prepare_cached(the_query)?;
+        let mut res1 = stmt.query([])?;
+        res1.next().unwrap();
+        return Ok(());
+    }
+
+    #[test]
     fn gets_media_category_by_id() -> Result<(), Error> {
         let conn = init()?;
         let mcat = MediaCategoryRecord::get_from_id(&conn, "DOCUMENT")?
@@ -802,7 +811,7 @@ mod simple_read_tests {
     #[test]
     fn gets_an_object_by_uuid() -> Result<(), Error> {
         let conn = init()?;
-        let obj = ObjectRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let obj = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
         assert!(obj.name == "Welcome File");
         return Ok(());
@@ -811,7 +820,7 @@ mod simple_read_tests {
     #[test]
     fn doesnt_get_an_object_that_doesnt_exist() -> Result<(), Error> {
         let conn = init()?;
-        let no_obj = ObjectRecord::get_from_id(&conn, &uuid!("ABADCAFEABADCAFEABADCAFEABADCAF1"))?;
+        let no_obj = ObjectRecord::get_from_id(&conn, ("ABADCAFEABADCAFEABADCAFEABADCAF1"))?;
         if no_obj.is_some() {
             assert!(false, "There should not be an entity with this fake UUID")
         };
@@ -821,7 +830,7 @@ mod simple_read_tests {
     #[test]
     fn gets_attributes_for_an_object() -> Result<(), Error> {
         let conn = init()?;
-        let attrs = ObjectRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let attrs = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There should be an object here")
             .get_attributes(&conn)?;
         //let attrs = get_attributes_for_object(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?;
@@ -835,7 +844,7 @@ mod simple_read_tests {
     #[test]
     fn gets_a_spcific_attribute_for_an_object() -> Result<(), Error> {
         let conn = init()?;
-        let attr = ObjectRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let attr = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There should be an object here")
             .get_attribute(&conn, "author")?
             .expect("There should be an attribute here");
@@ -849,7 +858,7 @@ mod simple_read_tests {
     #[test]
     fn gets_type_override_for_object() -> Result<(), Error> {
         let conn = init()?;
-        let mt = ObjectRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let mt = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There should be an object here")
             .get_override_media_type_record(&conn)?;
         assert!(mt == None);
@@ -860,7 +869,7 @@ mod simple_read_tests {
     fn gets_a_collection_by_uuid() -> Result<(), Error> {
         let conn = init()?;
         let coll =
-            CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
+            CollectionRecord::get_from_id(&conn, ("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
                 .expect("There is no collection here");
         assert!(coll.name == "Default Briefcase");
         return Ok(());
@@ -870,7 +879,7 @@ mod simple_read_tests {
     fn gets_objects_in_collection() -> Result<(), Error> {
         let conn = init()?;
         let objcol =
-            CollectionRecord::get_from_id(&conn, &uuid!("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
+            CollectionRecord::get_from_id(&conn, ("BADC0FFEE0DDF00DBADC0FFEE0DDF00D"))?
                 .expect("There is no collection here")
                 .get_objects(&conn, 10, 0)?;
         assert!(objcol.total_length == 1);
@@ -881,7 +890,7 @@ mod simple_read_tests {
     #[test]
     fn gets_a_file_by_uuid() -> Result<(), Error> {
         let conn = init()?;
-        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let fr = FileRecord::get_from_id(&conn, "DEADBEEFDEADBEEFDEADBEEFDEADBEEF")?
             .expect("There is no entity here");
         assert!(fr.name == "welcome.txt");
         return Ok(());
@@ -890,7 +899,7 @@ mod simple_read_tests {
     #[test]
     fn file_gets_blob() -> Result<(), Error> {
         let conn = init()?;
-        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let fr = FileRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
         let blob = fr.get_blob_contents(&conn)?;
         assert!(blob == Some("Welcome to Oosikle!".as_bytes().to_vec()));
@@ -900,7 +909,7 @@ mod simple_read_tests {
     #[test]
     fn file_gets_extension_gets_types() -> Result<(), Error> {
         let conn = init()?;
-        let fr = FileRecord::get_from_id(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let fr = FileRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
         let rec = fr
             .get_extension_record(&conn)?
@@ -925,7 +934,7 @@ mod simple_read_tests {
     #[test]
     fn gets_device_record() -> Result<(), Error> {
         let conn = init()?;
-        let dr = DeviceRecord::get_from_id(&conn, &uuid!("0DE2C3400DE2C3400DE2C3400DE2C340"))?
+        let dr = DeviceRecord::get_from_id(&conn, ("0DE2C3400DE2C3400DE2C3400DE2C340"))?
             .expect("There is no entity here");
         assert!(dr.name == "Example Flash Drive");
         Ok(())

@@ -16,7 +16,7 @@ create table FileExtensions (
 );
 
 create table MediaTypesForFileExtensions (
-    file_extension_tag blob not null,
+    file_extension_tag text not null,
     media_type_id text not null,
     primary key (file_extension_tag, media_type_id),
     foreign key (file_extension_tag) references FileExtensions(file_extension_tag),
@@ -24,7 +24,7 @@ create table MediaTypesForFileExtensions (
 );
 
 create table Files (
-    file_uuid blob primary key,
+    file_uuid text primary key,
     file_name text not null,
     file_size_bytes integer not null,
     file_hash text not null,
@@ -39,7 +39,7 @@ create table Files (
 );
 
 create table FileBlobs (
-    file_uuid blob primary key,
+    file_uuid text primary key,
     blob_value blob,
     foreign key (file_uuid) references Files(file_uuid)
 );
@@ -59,7 +59,7 @@ create table MediaTypesForPlugins (
 );
 
 create table Objects (
-    object_uuid blob primary key,
+    object_uuid text primary key,
     object_name text not null,
     plugin_package_name text not null,
     object_deleted integer,
@@ -68,7 +68,7 @@ create table Objects (
 );
 
 create table ObjectAttributes (
-    object_uuid blob not null,
+    object_uuid text not null,
     attribute_name text not null,
     attribute_value blob,
     primary key (object_uuid, attribute_name),
@@ -76,8 +76,8 @@ create table ObjectAttributes (
 );
 
 create table ExtraFilesForObjects (
-    object_uuid blob not null,
-    file_uuid blob not null,
+    object_uuid text not null,
+    file_uuid text not null,
     file_note text not null,
     primary key (object_uuid, file_uuid),
     foreign key (object_uuid) references Objects(object_uuid),
@@ -85,8 +85,8 @@ create table ExtraFilesForObjects (
 );
 
 create table FileArtwork (
-    file_uuid blob not null,
-    artwork_file_uuid blob not null,
+    file_uuid text not null,
+    artwork_file_uuid text not null,
     artwork_role text not null,
     primary key (file_uuid, artwork_file_uuid, artwork_role),
     foreign key (file_uuid) references Files(file_uuid),
@@ -94,7 +94,7 @@ create table FileArtwork (
 );
 
 create table Collections (
-    collection_uuid blob primary key,
+    collection_uuid text primary key,
     collection_name text not null,
     collection_visible integer not null,
     collection_location text not null,
@@ -102,14 +102,14 @@ create table Collections (
 );
 
 create table CollectionHiddenColumns (
-    collection_uuid blob not null,
+    collection_uuid text not null,
     column_name text not null,
     primary key (collection_uuid, column_name),
     foreign key (collection_uuid) references Collections(collection_uuid)
 );
 
 create table MediaCategoriesForCollections (
-    collection_uuid blob not null,
+    collection_uuid text not null,
     media_category_id text not null,
     primary key ( collection_uuid, media_category_id),
     foreign key (collection_uuid) references Collections(collection_uuid),
@@ -117,8 +117,8 @@ create table MediaCategoriesForCollections (
 );
 
 create table ObjectsInCollections (
-    object_uuid blob not null,
-    collection_uuid blob not null,
+    object_uuid text not null,
+    collection_uuid text not null,
     idx integer,
     primary key (object_uuid, collection_uuid),
     foreign key (object_uuid) references Objects(object_uuid),
@@ -127,15 +127,15 @@ create table ObjectsInCollections (
 );
 
 create table Devices (
-    device_uuid blob primary key,
+    device_uuid text primary key,
     device_name text not null,
     device_description text not null,
     device_icon_path text
 );
 
 create table DeviceSyncLists (
-    device_uuid blob not null,
-    collection_uuid blob not null,
+    device_uuid text not null,
+    collection_uuid text not null,
     plugin_package_name text not null,
     dsl_directory_on_device text not null,
     last_sync_time integer not null,

@@ -70,15 +70,18 @@ impl SQLua {
         if let Some(s) = &this.sql_str {
             println!("sql is {}", s);
         }
-        for param in &params {
+        let nu_params: Vec<_> = (&params).into_iter().map(|v| v.to_sql().expect("Falat error parsing lua")).collect();
+        for param in &nu_params{
             println!("{:?}", param);
         }
-        let mut stmt = this.conn.prepare_cached(this.sql_str.clone().or(Some("".to_string())).expect("see prev").as_str()).into_lua_err()?;
+        let donething = this.sql_str.clone().or(Some("".to_string())).unwrap();
+        println!("done thing is '{}'", &donething);
+        let mut stmt = this.conn.prepare_cached(donething.as_str()).into_lua_err()?;
         let headers = (stmt).column_names().iter().map(|s|s.to_string()).collect::<Vec<String>>();
         for header in &headers {
             println!("header: {}", header);
         }
-        let mut query_result = (stmt).query(params_from_iter(params)).map_err(mlua::Error::external)?;
+        let mut query_result = (stmt).query(params_from_iter(nu_params)).map_err(mlua::Error::external)?;
         let mut ret: Vec<Table> = vec![];
         println!("length of return from db {}", ret.len());
         while let Some(row) = query_result.next().map_err(mlua::Error::external)? {

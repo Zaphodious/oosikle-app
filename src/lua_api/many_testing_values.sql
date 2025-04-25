@@ -159,7 +159,7 @@ insert into MediaTypesForPlugins values (
 );
 
 insert into Files values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     "welcome.txt",
     0,
     'a38bcfa83e52932d49e36146950db40423daeb89a2e1f1b9734401bc98f1c79e',
@@ -172,12 +172,12 @@ insert into Files values (
 );
 
 insert into FileBlobs values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome to Oosikle!'
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000000',
+    'DEADBEEF000000000000000000000000',
     "something.png",
     0,
     '',
@@ -190,7 +190,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000001',
+    'DEADBEEF000000000000000000000001',
     "celeste.p8.png",
     0,
     '',
@@ -203,7 +203,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000002',
+    'DEADBEEF000000000000000000000002',
     "zzzsplore.p8",
     0,
     '',
@@ -216,7 +216,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000003',
+    'DEADBEEF000000000000000000000003',
     "ultimate_soccer.sms",
     0,
     '',
@@ -229,7 +229,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000004',
+    'DEADBEEF000000000000000000000004',
     "aladdin.zip",
     0,
     '',
@@ -242,7 +242,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000005',
+    'DEADBEEF000000000000000000000005',
     "sample1.mp3",
     0,
     '',
@@ -255,7 +255,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000006',
+    'DEADBEEF000000000000000000000006',
     "sample2.mp3",
     0,
     '',
@@ -268,7 +268,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000007',
+    'DEADBEEF000000000000000000000007',
     "abook1.m4b",
     0,
     '',
@@ -281,7 +281,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000008',
+    'DEADBEEF000000000000000000000008',
     "there_and_back_again.epub",
     0,
     '',
@@ -294,7 +294,7 @@ insert into Files values (
 );
 
 insert into Files values (
-    X'DEADBEEF000000000000000000000009',
+    'DEADBEEF000000000000000000000009',
     "intrepreterbook.md",
     0,
     '',
@@ -307,34 +307,34 @@ insert into Files values (
 );
 
 insert into Objects values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome File',
     'oosikle.manager.text',
     FALSE
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'author',
     'TheHotFish'
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'revision',
     4
 ), (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'rating',
     3.9
 ), (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'editable',
     TRUE
 );
 
 insert into Collections values (
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'Default Briefcase',
     TRUE,
     '',
@@ -342,26 +342,26 @@ insert into Collections values (
 );
 
 insert into MediaCategoriesForCollections values (
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'DOCUMENT'
 );
 
 insert into ObjectsInCollections values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     0
 );
 
 insert into Devices values (
-    X'0DE2C3400DE2C3400DE2C3400DE2C340',
+    '0DE2C3400DE2C3400DE2C3400DE2C340',
     'Example Flash Drive',
     'This is a flash drive that is used to test the program',
     NULL
 );
 
 insert into DeviceSyncLists values (
-    X'0DE2C3400DE2C3400DE2C3400DE2C340',
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    '0DE2C3400DE2C3400DE2C3400DE2C340',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'oosikle.manager.text',
     'documents',
     0

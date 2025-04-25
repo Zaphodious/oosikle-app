@@ -7,7 +7,7 @@ insert into FileExtensions values ('TXT', 'Ordinary text file');
 insert into MediaTypesForFileExtensions values ('TXT', 'PLAINTEXT');
 
 insert into Files values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     "welcome.txt",
     0,
     'a38bcfa83e52932d49e36146950db40423daeb89a2e1f1b9734401bc98f1c79e',
@@ -20,7 +20,7 @@ insert into Files values (
 );
 
 insert into FileBlobs values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome to Oosikle!'
 );
 
@@ -36,38 +36,38 @@ insert into MediaTypesForPlugins values (
 );
 
 insert into Objects values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome File',
     'oosikle.manager.text',
     FALSE
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'author',
     'TheHotFish'
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'revision',
     4
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'rating',
     3.9
 );
 
 insert into ObjectAttributes values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'editable',
     TRUE
 );
 
 insert into Collections values (
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'Default Briefcase',
     TRUE,
     '',
@@ -75,26 +75,26 @@ insert into Collections values (
 );
 
 insert into MediaCategoriesForCollections values (
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'DOCUMENT'
 );
 
 insert into ObjectsInCollections values (
-    X'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     0
 );
 
 insert into Devices values (
-    X'0DE2C3400DE2C3400DE2C3400DE2C340',
+    '0DE2C3400DE2C3400DE2C3400DE2C340',
     'Example Flash Drive',
     'This is a flash drive that is used to test the program',
     NULL
 );
 
 insert into DeviceSyncLists values (
-    X'0DE2C3400DE2C3400DE2C3400DE2C340',
-    X'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
+    '0DE2C3400DE2C3400DE2C3400DE2C340',
+    'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
     'oosikle.manager.text',
     'documents',
     0
