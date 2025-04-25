@@ -4,24 +4,25 @@ TestReturn = "OK"
 print("We loaded!")
 
 function SQLuaFetches()
-    print("We're starting the function")
-    print(SQL)
-    --SQL:with_sql([[select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';]])
-    --SQL:with_sql([[select * from Objects;]])
-    SQL:with_sql([[select count(*) from Objects;]])
-    print("We have set the query")
-    local ret = SQL:query({})
-    print("We have called the query")
-    print(ret)
-    --TestReturn = ret.get(1).object_name
-    print(ret.get(0).count)
-    print("And we should be done")
-    print(TestReturn)
+    return SQL:query([[select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';]], {})[1].object_name
 end
+
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 
 function Foo()
     print("hello")
 end
 
 print(SQLuaFetches)
-
