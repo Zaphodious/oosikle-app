@@ -2,7 +2,7 @@ use crate::db::*;
 use exemplar::Model;
 use hypertext::html_elements::object;
 use rusqlite::{
-    params, params_from_iter, types::ValueRef, types::{ToSqlOutput, Value as rValue}, CachedStatement, Connection, Error, OptionalExtension, Params, ParamsFromIter, Result as rResult, Row, ToSql
+    fallible_streaming_iterator::FallibleStreamingIterator, params, params_from_iter, types::{ToSqlOutput, Value as rValue, ValueRef}, CachedStatement, Connection, Error, OptionalExtension, Params, ParamsFromIter, Result as rResult, Row, ToSql
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -70,7 +70,7 @@ impl SQLua {
         if let Some(s) = &this.sql_str {
             println!("sql is {}", s);
         }
-        let nu_params: Vec<_> = (&params).into_iter().map(|v| v.to_sql().expect("Falat error parsing lua")).collect();
+        let nu_params = (&params).into_iter().map(|v| v.to_sql().expect("Falat error parsing lua")).collect::<Vec<_>>();
         for param in &nu_params{
             println!("{:?}", param);
         }
@@ -81,10 +81,10 @@ impl SQLua {
         for header in &headers {
             println!("header: {}", header);
         }
-        let mut query_result = (stmt).query(params_from_iter(nu_params)).map_err(mlua::Error::external)?;
+        let mut query_result = (stmt).query([]).map_err(mlua::Error::external)?;
         let mut ret: Vec<Table> = vec![];
-        println!("length of return from db {}", ret.len());
         while let Some(row) = query_result.next().map_err(mlua::Error::external)? {
+            println!("thingamabob is {:?}", row);
             let t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
             for head in &headers {
                 t.set(head.as_str(), value_to_lua(lua, row.get_ref_unwrap(head.as_str())).unwrap()).unwrap();
@@ -92,16 +92,7 @@ impl SQLua {
             }
             ret.push(t);
         }
-        /*
-        let res = (stmt).query_map(params_from_iter(params), |r| {
-            let t = lua.create_table().expect("If lua cannot make a table, the app cannot continue");
-            for head in &headers {
-                t.set(head.as_str(), value_to_lua(lua, r.get_ref_unwrap(head.as_str())).unwrap()).unwrap();
-                println!("The header is {}", head);
-            }
-            Ok(t)
-        }).map_err(mlua::Error::external)?.filter_map(|r| r.ok()).collect::<Vec<Table>>();
-        */
+        println!("length of return from db {}", ret.len());
 
         println!("Does anything fucking work in this fucking shithole?");
 
@@ -133,14 +124,25 @@ mod test {
 
 
     fn init() -> Lua {
-        let conn = db::init_db(":memory:").unwrap();
-        conn.execute(TESTING_VALUES, []).unwrap();
+        let conn = db::init_db("./testingdb.sqlite3").unwrap();
+        //conn.execute(TESTING_VALUES, []).unwrap();
 
         let mut lua = lua_api::init(None).unwrap();
         let _ = lua.load(TESTING_LUA).exec();
 
         SQLua::init(conn).unwrap().inject_into(&lua).unwrap();
         lua
+    }
+
+    #[test]
+    fn plain_sql_works() -> Result<(), Error> {
+        let conn = db::init_db("./testingdb.sqlite3")?;
+        // conn.execute(TESTING_VALUES, []).unwrap();
+        let the_query = "select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';";
+        let mut stmt = conn.prepare_cached(the_query)?;
+        let mut res1 = stmt.query([])?;
+        res1.next().unwrap();
+        return Ok(());
     }
 
     #[test]
