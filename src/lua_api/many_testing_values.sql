@@ -190,17 +190,114 @@ insert into Files values (
 );
 
 insert into Files values (
-    'DEADBEEF000000000000000000000001',
+    'DEADBEEF100000000000000000000001',
     "celeste.p8.png",
-    0,
-    '',
-    'oroot://image',
-    'PNG',
-    'BIN',
-    NULL,
-    FALSE,
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000001',
+    'Celeste Classic', 'oosikle.manager.p8',
     FALSE
 );
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000001', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000001', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000001', 'Genre', 'platformer'),
+( 'DEADBEEF100000000000000000000001', 'Series', 'Celeste'),
+( 'DEADBEEF100000000000000000000001', 'Developer', '@noel');
+
+insert into Files values (
+    'DEADBEEF100000000000000000000002',
+    "pico_off_road.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000002',
+    'Pico Off Road', 'oosikle.manager.p8',
+    FALSE
+);
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000002', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000002', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000002', 'Genre', 'racing'),
+( 'DEADBEEF100000000000000000000002', 'Developer', '@assemblerbot');
+
+insert into Files values (
+    'DEADBEEF100000000000000000000003',
+    "air_delivery.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000003',
+    'Air Delivery', 'oosikle.manager.p8',
+    FALSE
+);
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000003', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000003', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000003', 'Genre', 'platformer'),
+( 'DEADBEEF100000000000000000000003', 'Developer', '@pianoman373');
+
+insert into Files values (
+    'DEADBEEF100000000000000000000004',
+    "celeste2.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000004',
+    'Celeste Classic 2', 'oosikle.manager.p8',
+    FALSE
+); 
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000004', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000004', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000004', 'Genre', 'platformer'),
+( 'DEADBEEF100000000000000000000004', 'Series', 'Celeste'),
+( 'DEADBEEF100000000000000000000004', 'Developer', 'Maddy Thorson, Noel Berry, and Lena Raine');
+
+insert into Files values (
+    'DEADBEEF100000000000000000000005',
+    "air_delivery.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000005',
+    'Air Delivery', 'oosikle.manager.p8',
+    FALSE
+);
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000005', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000005', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000005', 'Genre', 'action'),
+( 'DEADBEEF100000000000000000000005', 'Developer', '@bridgs');
+
+insert into Files values (
+    'DEADBEEF100000000000000000000006',
+    "picolumia-v1.2.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000006',
+    'Picolumia v1.2', 'oosikle.manager.p8',
+    FALSE
+);
+
+insert into ObjectAttributes values
+( 'DEADBEEF100000000000000000000006', 'Region', 'W'),
+( 'DEADBEEF100000000000000000000006', 'Language', 'EN'),
+( 'DEADBEEF100000000000000000000006', 'Genre', 'puzzle'),
+( 'DEADBEEF100000000000000000000006', 'Developer', '@andrewedstrom');
 
 insert into Files values (
     'DEADBEEF000000000000000000000002',
@@ -332,6 +429,7 @@ insert into ObjectAttributes values (
     'editable',
     TRUE
 );
+
 
 insert into Collections values (
     'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
