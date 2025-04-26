@@ -443,6 +443,16 @@ impl WithSQL for ObjectAttr {
     }
 }
 
+impl ObjectAttr {
+    pub fn get_attributes_for_object_uuid(conn: &Connection, object_uuid: &str) -> Result<Vec<ObjectAttr>> {
+        fetch_vec_of(
+            conn,
+            object_uuid,
+            "select * from ObjectAttributes where ObjectAttributes.object_uuid = ?",
+        )
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("ObjectAttributes")]
 pub struct ObjectExtraFileRecord {
@@ -503,7 +513,6 @@ create table ObjectAttributes (
 );
  */
 
-impl ObjectAttr {}
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Objects")]
