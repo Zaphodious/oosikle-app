@@ -679,7 +679,7 @@ impl ObjectsInCollection {
                 where OC.collection_uuid = ?1
                 and Objects.object_deleted=0
                 and Files.file_deleted=0
-                order by OC.idx, Objects.object_name
+                order by OC.index_in_collection, Objects.object_name
                 limit ?2
                 offset ?3;",
         )?;

@@ -124,13 +124,13 @@ create table if not exists MediaCategoriesForCollections (
 );
 
 create table if not exists ObjectsInCollections (
-    object_uuid text not null collate nocase,
     collection_uuid text not null collate nocase,
-    idx integer,
-    primary key (object_uuid, collection_uuid),
+    index_in_collection integer,
+    object_uuid text not null collate nocase,
+    primary key (collection_uuid, index_in_collection),
     foreign key (object_uuid) references Objects(object_uuid),
     foreign key (collection_uuid) references Collections(collection_uuid),
-    unique(collection_uuid, idx)
+    unique(collection_uuid, index_in_collection)
 );
 
 create table if not exists Devices (
