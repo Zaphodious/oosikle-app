@@ -513,6 +513,45 @@ values (
         'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
         0
     );
+
+insert into Collections
+values (
+        'BADBEEF7DEADBEEF4242424242424242',
+        'Pico 8 Favorites',
+        TRUE,
+        '',
+        FALSE
+);
+insert into MediaCategoriesForCollections
+values (
+        'BADBEEF7DEADBEEF4242424242424242',
+        'videogame'
+    );
+
+insert into ObjectsInCollections
+values (
+        'DEADBEEF100000000000000000000001',
+        'BADBEEF7DEADBEEF4242424242424242',
+        0
+), (
+        'DEADBEEF100000000000000000000003',
+        'BADBEEF7DEADBEEF4242424242424242',
+        1
+), (
+        'DEADBEEF100000000000000000000002',
+        'BADBEEF7DEADBEEF4242424242424242',
+        3
+), (
+        'DEADBEEF100000000000000000000004',
+        'BADBEEF7DEADBEEF4242424242424242',
+        2
+), (
+        'DEADBEEF100000000000000000000006',
+        'BADBEEF7DEADBEEF4242424242424242',
+        4
+
+);
+
 insert into Devices
 values (
         '0DE2C3400DE2C3400DE2C3400DE2C340',

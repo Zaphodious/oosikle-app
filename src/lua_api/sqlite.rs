@@ -30,8 +30,7 @@ impl SQLua {
             db_loc: db_loc.to_string(),
             init_script: init_script.to_string(),
         };
-        lua.globals().set("SQL", this)?;
-        lua.load("SQL.__connect_to_db()").exec();
+        lua.globals().set("DB", this)?;
         Ok(())
     }
 }

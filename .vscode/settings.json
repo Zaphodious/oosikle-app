@@ -1,3 +1,6 @@
 {
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "Lua.diagnostics.globals": [
+        "DB"
+    ]
 }
