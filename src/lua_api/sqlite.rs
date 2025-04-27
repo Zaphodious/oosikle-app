@@ -192,50 +192,24 @@ impl UserData for SQLua {
 impl UserData for CollectionRecord {}
 
 #[cfg(test)]
-mod test {
+mod basic_functionality_tests {
     use super::*;
     use crate::{db, lua_api};
     use rusqlite::Connection;
 
     static TESTING_VALUES: &'static str = include_str!("../db/testing_values.sql");
     static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
-    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.lua");
-
-    fn init() -> Lua {
-        let conn = db::init_db("./testingdb.sqlite3").unwrap();
-        //conn.execute(TESTING_VALUES, []).unwrap();
-
-        let mut lua = lua_api::init(None).unwrap();
-        let _ = lua.load(TESTING_LUA).exec();
-
-        let _ = SQLua::add_to_lua(
-            ":memory:",
-            &(INIT_DB_STR.to_string() + TESTING_VALUES),
-            &lua,
-        );
-        //SQLua::init(conn).unwrap().inject_into(&lua).unwrap();
-        lua
-    }
 
     #[test]
     fn plain_sql_works() -> Result<(), Error> {
-        let conn = db::init_db("./testingdb.sqlite3")?;
-        //conn.execute(TESTING_VALUES, []).unwrap();
+        let conn = db::init_db(":memory:")?;
+        conn.execute(TESTING_VALUES, []).unwrap();
         let the_query =
             "select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';";
         let mut stmt = conn.prepare_cached(the_query)?;
         let mut res1 = stmt.query([])?;
         res1.next().unwrap();
         return Ok(());
-    }
-
-    #[test]
-    fn can_do_simple_get() -> Result<()> {
-        let mut lua = init();
-        let res = lua.load("SQLuaFetches()").eval::<String>()?;
-        assert!(res == "Welcome File");
-        //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
-        Ok(())
     }
 
     #[test]
@@ -246,4 +220,37 @@ mod test {
         assert!(!detect_reset_sqlite_connection(&conn)?);
         Ok(())
     }
+}
+#[cfg(test)]
+mod read_from_lua_tests {
+    use super::*;
+    use crate::{db, lua_api};
+    use rusqlite::Connection;
+
+    static TESTING_VALUES: &'static str = include_str!("../db/testing_values.sql");
+    static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
+    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.lua");
+
+    fn init() -> Lua {
+        let mut lua = lua_api::init(None).expect("Lua failed to initialize");
+        lua.load(TESTING_LUA).exec().expect("Lua failed to load the testing script");
+
+        SQLua::add_to_lua(
+            ":memory:",
+            &(INIT_DB_STR.to_string() + TESTING_VALUES),
+            &lua,
+        ).expect("SQLua failed to properly initialize");
+        lua
+    }
+
+
+    #[test]
+    fn can_do_simple_get() -> Result<()> {
+        let mut lua = init();
+        let res = lua.load("SQLuaFetches()").eval::<String>()?;
+        assert!(res == "Welcome File");
+        //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
+        Ok(())
+    }
+
 }
