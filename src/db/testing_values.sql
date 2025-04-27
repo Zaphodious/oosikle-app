@@ -190,16 +190,117 @@ insert into Files values (
 );
 
 insert into Files values (
-    'DEADBEEF000000000000000000000001',
+    'DEADBEEF100000000000000000000001',
     "celeste.p8.png",
-    0,
-    '',
-    'oroot://image',
-    'PNG',
-    'BIN',
-    NULL,
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000001',
+    'Celeste Classic', 'oosikle.manager.p8',
     FALSE,
-    FALSE
+    'platformer',
+    'Celeste',
+    1,
+    'w',
+    'en',
+    '@noel',
+    'Maddy Makes Games'
+);
+
+insert into Files values (
+    'DEADBEEF100000000000000000000002',
+    "pico_off_road.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000002',
+    'Pico Off Road', 'oosikle.manager.p8',
+    FALSE,
+    'racing',
+    '',
+    0,
+    'w',
+    'en',
+    '@assemblerbot',
+    ''
+);
+
+insert into Files values (
+    'DEADBEEF100000000000000000000003',
+    "air_delivery.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000003',
+    'Air Delivery', 'oosikle.manager.p8',
+    FALSE,
+    'platformer',
+    '',
+    0,
+    'w',
+    'en',
+    '@pianoman373',
+    ''
+);
+
+insert into Files values (
+    'DEADBEEF100000000000000000000004',
+    "celeste_classic2.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000004',
+    'Celeste Classic 2', 'oosikle.manager.p8',
+    FALSE,
+    'platformer',
+    'celeste',
+    1,
+    'w',
+    'en',
+    'Maddy Thorson, Noel Berry, and Lena Raine',
+    'Maddy Makes Games'
+); 
+
+insert into Files values (
+    'DEADBEEF100000000000000000000005',
+    "air_delivery.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000005',
+    'Air Delivery', 'oosikle.manager.p8',
+    FALSE,
+    'action',
+    '',
+    1,
+    'w',
+    'en',
+    '@bridgs',
+    ''
+);
+
+insert into Files values (
+    'DEADBEEF100000000000000000000006',
+    "picolumia-v1.2.p8.png",
+    0, '', 'oroot://image', 'PNG', 'BIN', NULL, FALSE, FALSE
+);
+
+insert into Objects values (
+    'DEADBEEF100000000000000000000006',
+    'Picolumia v1.2', 'oosikle.manager.p8',
+    FALSE,
+    'puzzle',
+    '',
+    1,
+    'w',
+    'en',
+    '@andrewedstrom',
+    ''
 );
 
 insert into Files values (
@@ -310,13 +411,8 @@ insert into Objects values (
     'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
     'Welcome File',
     'oosikle.manager.text',
-    FALSE
-);
-
-insert into ObjectAttributes values (
-    'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
-    'author',
-    'TheHotFish'
+    FALSE,
+    '', '', 0, 'w', 'en', 'TheHotFish', ''
 );
 
 insert into ObjectAttributes values (
@@ -332,6 +428,7 @@ insert into ObjectAttributes values (
     'editable',
     TRUE
 );
+
 
 insert into Collections values (
     'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',

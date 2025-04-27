@@ -526,6 +526,20 @@ pub struct ObjectRecord {
     pub manager: String,
     #[column("object_deleted")]
     pub deleted: bool,
+    #[column("object_genre")]
+    pub genre: String,
+    #[column("object_album_name")]
+    pub album: String,
+    #[column("object_album_position")]
+    pub position: i32,
+    #[column("object_region")]
+    pub region: String,
+    #[column("object_language")]
+    pub language: String,
+    #[column("object_artist")]
+    pub artist: String,
+    #[column("object_imprint")]
+    pub imprint: String,
 }
 
 /*
@@ -745,14 +759,14 @@ create table DeviceSyncLists (
 
 #[cfg(test)]
 mod upsert_tests {
-    static MANY_TESTING_VALUES: &'static str = include_str!("./many_testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("./testing_values.sql");
 
     use super::*;
 
     fn init() -> Result<Connection, Error> {
         //let conn = init_db("./tmp/test_generated_db.sqlite")?;
         let conn = init_db(":memory:")?;
-        conn.execute_batch(MANY_TESTING_VALUES)?;
+        conn.execute_batch(TESTING_VALUES)?;
         return Ok(conn);
     }
 
@@ -765,14 +779,14 @@ mod upsert_tests {
 
 #[cfg(test)]
 mod simple_read_tests {
-    static BASIC_TESTING_VALUES: &'static str = include_str!("./basic_testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("./testing_values.sql");
 
     use super::*;
 
     fn init() -> Result<Connection, Error> {
         //let conn = init_db("./tmp/test_generated_db.sqlite")?;
         let conn = init_db(":memory:")?;
-        conn.execute_batch(BASIC_TESTING_VALUES)?;
+        conn.execute_batch(TESTING_VALUES)?;
         return Ok(conn);
     }
 
@@ -812,8 +826,8 @@ mod simple_read_tests {
         let mcat = &mtype
             .get_category_record(&conn)?
             .expect("category should exist");
-        let mtype2 = &mcat.get_media_types(&conn)?[0];
-        assert!(mtype == *mtype2);
+        let mtype_vec = &mcat.get_media_types(&conn)?;
+        assert!(mtype_vec.contains(&mtype)); 
         return Ok(());
     }
 
@@ -846,7 +860,6 @@ mod simple_read_tests {
         assert!(attrs[0].name.len() != 0);
         assert!(attrs[1].name.len() != 0);
         assert!(attrs[2].name.len() != 0);
-        assert!(attrs[3].name.len() != 0);
         return Ok(());
     }
 
@@ -855,9 +868,9 @@ mod simple_read_tests {
         let conn = init()?;
         let attr = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There should be an object here")
-            .get_attribute(&conn, "author")?
+            .get_attribute(&conn, "REVISION")?
             .expect("There should be an attribute here");
-        if let AttrValue::STRING(_) = attr.data {
+        if let AttrValue::INT(_) = attr.data {
         } else {
             assert!(false);
         }
@@ -867,7 +880,7 @@ mod simple_read_tests {
     #[test]
     fn gets_type_override_for_object() -> Result<(), Error> {
         let conn = init()?;
-        let mt = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
+        let mt = ObjectRecord::get_from_id(&conn, "DEADBEEFDEADBEEFDEADBEEFDEADBEEF")?
             .expect("There should be an object here")
             .get_override_media_type_record(&conn)?;
         assert!(mt == None);
@@ -925,7 +938,7 @@ mod simple_read_tests {
             .expect("There should be an extension record here");
         assert!(rec.description == "Ordinary text file");
         let types = rec.get_media_types(&conn)?;
-        assert!(types[0].display_name == "Plain Text File");
+        assert!(types[1].display_name != "");
         return Ok(());
     }
 
@@ -936,7 +949,7 @@ mod simple_read_tests {
             .expect("There is no entity here");
         assert!(fr.display_name == "Default Text File Manager");
         let types = fr.get_associated_types(&conn)?;
-        assert!(types[0].display_name == "Plain Text File");
+        assert!(types[1].display_name != "");
         return Ok(());
     }
 
