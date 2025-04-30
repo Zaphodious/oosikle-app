@@ -7,7 +7,7 @@ use mlua::{
 };
 
 mod sqlite;
-
+mod plugin;
 
 
 pub fn demotest() -> LuaResult<()> {

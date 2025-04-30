@@ -14,7 +14,6 @@ use rusqlite::{
 };
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct SQLua {
