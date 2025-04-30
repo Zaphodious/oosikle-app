@@ -223,7 +223,8 @@ values (
         'w',
         'en',
         '@noel',
-        'Maddy Makes Games'
+        'Maddy Makes Games',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -250,7 +251,8 @@ values (
         'w',
         'en',
         '@assemblerbot',
-        ''
+        '',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -277,7 +279,8 @@ values (
         'w',
         'en',
         '@pianoman373',
-        ''
+        '',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -304,7 +307,8 @@ values (
         'w',
         'en',
         'Maddy Thorson, Noel Berry, and Lena Raine',
-        'Maddy Makes Games'
+        'Maddy Makes Games',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -331,7 +335,8 @@ values (
         'w',
         'en',
         '@bridgs',
-        ''
+        '',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -358,7 +363,8 @@ values (
         'w',
         'en',
         '@andrewedstrom',
-        ''
+        '',
+        '1970-01-01T00:00:00'
     );
 insert into Files
 values (
@@ -476,7 +482,8 @@ values (
         'w',
         'en',
         'TheHotFish',
-        ''
+        '',
+        '1970-01-01T00:00:00'
     );
 insert into ObjectAttributes
 values (

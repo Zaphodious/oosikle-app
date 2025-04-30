@@ -2625,6 +2625,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-opener",
+ "time",
  "tokio",
  "uuid",
 ]
@@ -3330,6 +3331,7 @@ dependencies = [
  "libsqlite3-sys",
  "rusqlite-macros",
  "smallvec",
+ "time",
  "uuid",
 ]
 

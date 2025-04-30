@@ -152,14 +152,15 @@ impl SQLua {
                 .iter()
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>();
+            /*
             for header in &headers {
                 println!("header: {}", header);
-            }
-            let mut query_result = (stmt).query([]).map_err(mlua::Error::external)?;
+            } */
+            let mut query_result = (stmt).query(params_from_iter(params)).map_err(mlua::Error::external)?;
             //let mut ret: Vec<Table> = vec![];
             let mut ret = lua.create_table()?;
             while let Some(row) = query_result.next().map_err(mlua::Error::external)? {
-                println!("thingamabob is {:?}", row);
+                // println!("thingamabob is {:?}", row);
                 let t = lua.create_table()?;
                 for head in &headers {
                     t.set(
@@ -167,7 +168,7 @@ impl SQLua {
                         value_to_lua(lua, row.get_ref_unwrap(head.as_str())).unwrap(),
                     )
                     .unwrap();
-                    println!("The header is {}", head);
+                    // println!("The header is {}", head);
                 }
                 ret.push(t)?;
             }
@@ -228,7 +229,7 @@ mod read_from_lua_tests {
 
     static TESTING_VALUES: &'static str = include_str!("../db/testing_values.sql");
     static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
-    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.lua");
+    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.luau");
 
     fn init() -> Lua {
         let mut lua = lua_api::init(None).expect("Lua failed to initialize");
@@ -250,6 +251,15 @@ mod read_from_lua_tests {
         assert!(res == "Welcome File");
         //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
         Ok(())
+    }
+
+    #[test]
+    fn can_make_html_for_list() -> Result<()> {
+        let mut lua = init();
+        let res = lua.load("SQLuaCreatesHTMLBasic([[BADC0FFEE0DDF00DBADC0FFEE0DDF00D]])").eval::<String>()?;
+        assert!(res.contains("<tr draggable=\"true\"> <td>Welcome File</td> <td>TheHotFish</td> <td></td> <td>1970-01-01</td> </tr>"));
+        //print!("{:?}", res);
+        Ok(()) 
     }
 
 }

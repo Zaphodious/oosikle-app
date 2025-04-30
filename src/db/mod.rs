@@ -11,6 +11,7 @@ use core::fmt;
 use std::any::type_name;
 use std::fmt::Debug;
 use std::vec::Vec;
+use time::OffsetDateTime;
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
 
@@ -540,6 +541,8 @@ pub struct ObjectRecord {
     pub artist: String,
     #[column("object_imprint")]
     pub imprint: String,
+    #[column("object_publish_timestamp")]
+    pub publish_timestamp: OffsetDateTime,
 }
 
 /*
