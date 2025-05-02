@@ -61,6 +61,7 @@ pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
     let search_path = search_path.unwrap_or_else(|| {
         let mut path = std::env::current_dir().unwrap();
         path.push("plugins");
+        path.push("testplugins");
 
         path
     });

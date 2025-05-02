@@ -32,5 +32,5 @@ hypertext = "0.6.2"
 mlua = {version = "0.10.3", features = ["luau-jit", "anyhow", "serialize", "async", "send", "macros"] }
 anyhow = "1.0.98"
 time = {version = "=0.3.41", features = ["serde", "formatting", "parsing"]}
-rust_search = "=2.0.0"
+rust_search = "=2.1.0"
 
