@@ -10,3 +10,6 @@ target/
 # Keep our tmp scratch files from showing up
 tmp/
 .vscode/debug.log
+
+# Lua-related misc stuff
+*.kate-swp
