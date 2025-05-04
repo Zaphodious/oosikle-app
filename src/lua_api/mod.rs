@@ -80,7 +80,7 @@ mod lua_tests {
     static BASIC_TESTING_SCRIPT: &'static str = include_str!("../testing_data/lua/basic_testing.luau");
 
     fn test_init() -> LuaResult<Lua> {
-        let mut lua = init(Some("src/testing_data/plugins".into()))?;
+        let mut lua = init(Some("src/testing_data/lua/plugins".into()))?;
 
         lua.load(BASIC_TESTING_SCRIPT).exec()?;
         Ok(lua)

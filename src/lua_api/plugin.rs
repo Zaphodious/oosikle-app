@@ -5,7 +5,7 @@ use hypertext::html_elements::object;
 use mlua::{
     chunk, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value,
 };
-use std::{fs::canonicalize, io, path::{Path, PathBuf}};
+use std::{fs::canonicalize, io, path::{Path, PathBuf}, collections::{HashSet}};
 use rust_search::{FilterExt, SearchBuilder};
 
 #[derive(Debug)]
@@ -122,12 +122,23 @@ fn discover_plugins(plugin_root: &str) -> io::Result<Vec<UninitializedLuaPlugin>
 mod plugin_resoltuion_tests {
     use super::*;
 
+    const PLUGIN_DIR: &str = "src/testing_data/lua/plugins";
+
     #[test]
-    fn finds_plugins_by_plugin_dot_lua() -> Result<()> {
+    fn plugin_finder_doesnt_error() -> Result<()> {
         // let res = find_plugin_lua_files("testplugins")?;
-        let res = discover_plugins("src/testing_data/lua/plugins");
-        print!("{:?}", res);
+        let res = discover_plugins(PLUGIN_DIR);
         // assert!(false);
+        Ok(())
+    }
+
+    #[test]
+    fn plugin_finder_finds_what_it_should() -> Result<()> {
+        let res = discover_plugins(PLUGIN_DIR)?;
+        let names = res.into_iter().map(|p: UninitializedLuaPlugin| (&p).name().to_string()).collect::<HashSet<_>>();
+        println!("{:?}", names);
+        assert!(names.contains("foo"));
+        assert!(names.contains("bar"));
         Ok(())
     }
 }
