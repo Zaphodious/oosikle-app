@@ -40,6 +40,7 @@ struct UninitializedLuaPlugin {
     name: String,
     namespace: String,
     entry_point: PathBuf,
+    script_contents: String
 }
 
 impl UninitializedLuaPlugin {
@@ -65,10 +66,14 @@ impl UninitializedLuaPlugin {
             .unwrap_or("")
             .to_owned();
 
+
+        let script_contents = std::fs::read_to_string(&entry_point).expect("There was a problem reading the file");
+
         UninitializedLuaPlugin {
             name,
             namespace,
             entry_point,
+            script_contents
         }
     }
 
@@ -90,6 +95,10 @@ impl UninitializedLuaPlugin {
 
     fn entry_point(&self) -> &Path {
         &self.entry_point
+    }
+
+    pub fn script_contents(&self) -> &str {
+        &self.script_contents
     }
 }
 
@@ -116,9 +125,9 @@ mod plugin_resoltuion_tests {
     #[test]
     fn finds_plugins_by_plugin_dot_lua() -> Result<()> {
         // let res = find_plugin_lua_files("testplugins")?;
-        let res = discover_plugins("testplugins");
+        let res = discover_plugins("src/testing_data/lua/plugins");
         print!("{:?}", res);
-        assert!(false);
+        // assert!(false);
         Ok(())
     }
 }

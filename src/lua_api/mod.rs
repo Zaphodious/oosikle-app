@@ -61,12 +61,12 @@ pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
     let search_path = search_path.unwrap_or_else(|| {
         let mut path = std::env::current_dir().unwrap();
         path.push("plugins");
-        path.push("testplugins");
 
         path
     });
 
     let search_path = format!("{0}/?.luau;{0}/?.lua;{0}/?/init.luau;{0}/?/init.lua;{0}", search_path.display());
+    println!("{:?}", search_path);
 
     let packages: Table = lua.globals().get("package")?;
     packages.set("path", search_path)?;
@@ -77,10 +77,11 @@ pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
 #[cfg(test)]
 mod lua_tests {
     use super::*;
-    static BASIC_TESTING_SCRIPT: &'static str = include_str!("./basic_testing.luau");
+    static BASIC_TESTING_SCRIPT: &'static str = include_str!("../testing_data/lua/basic_testing.luau");
 
     fn test_init() -> LuaResult<Lua> {
-        let mut lua = init(None)?;
+        let mut lua = init(Some("src/testing_data/plugins".into()))?;
+
         lua.load(BASIC_TESTING_SCRIPT).exec()?;
         Ok(lua)
     }

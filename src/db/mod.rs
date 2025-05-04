@@ -762,7 +762,7 @@ create table DeviceSyncLists (
 
 #[cfg(test)]
 mod upsert_tests {
-    static TESTING_VALUES: &'static str = include_str!("./testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
 
     use super::*;
 
@@ -782,7 +782,7 @@ mod upsert_tests {
 
 #[cfg(test)]
 mod simple_read_tests {
-    static TESTING_VALUES: &'static str = include_str!("./testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
 
     use super::*;
 

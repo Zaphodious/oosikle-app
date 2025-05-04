@@ -196,7 +196,7 @@ mod basic_functionality_tests {
     use crate::{db, lua_api};
     use rusqlite::Connection;
 
-    static TESTING_VALUES: &'static str = include_str!("../db/testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
     static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
 
     #[test]
@@ -226,9 +226,9 @@ mod read_from_lua_tests {
     use crate::{db, lua_api};
     use rusqlite::Connection;
 
-    static TESTING_VALUES: &'static str = include_str!("../db/testing_values.sql");
+    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
     static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
-    static TESTING_LUA: &'static str = include_str!("./sqlua_testing.luau");
+    static TESTING_LUA: &'static str = include_str!("../testing_data/lua/sqlua_testing.luau");
 
     fn init() -> Lua {
         let mut lua = lua_api::init(None).expect("Lua failed to initialize");
