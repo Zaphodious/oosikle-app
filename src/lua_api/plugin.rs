@@ -135,10 +135,25 @@ mod plugin_resoltuion_tests {
     #[test]
     fn plugin_finder_finds_what_it_should() -> Result<()> {
         let res = discover_plugins(PLUGIN_DIR)?;
-        let names = res.into_iter().map(|p: UninitializedLuaPlugin| (&p).name().to_string()).collect::<HashSet<_>>();
+        let names = res.into_iter().map(|p| (&p).name().to_string()).collect::<HashSet<_>>();
         println!("{:?}", names);
+        assert!(names.contains("basic"));
+        assert!(names.contains("test"));
+        assert!(names.contains("bang"));
         assert!(names.contains("foo"));
         assert!(names.contains("bar"));
+        assert!(false);
+        Ok(())
+    }
+
+    #[test]
+    fn plugin_finder_doesnt_find_what_it_shouldnt() -> Result<()> {
+        let res = discover_plugins(PLUGIN_DIR)?;
+        let names = res.into_iter().map(|p| (&p).name().to_string()).collect::<HashSet<_>>();
+        println!("{:?}", names);
+        assert!(!names.contains("nota"));
+        assert!(!names.contains("stillnota"));
+        assert!(false);
         Ok(())
     }
 }
