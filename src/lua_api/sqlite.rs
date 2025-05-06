@@ -13,20 +13,20 @@ use rusqlite::{
     Result as rResult, Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
-use std::fmt;
+use std::{fmt, path::PathBuf};
 
 #[derive(Debug)]
 pub struct SQLua {
     conn: Option<Connection>,
-    db_loc: String,
+    db_loc: PathBuf,
     init_script: String,
 }
 
 impl SQLua {
-    pub fn add_to_lua(db_loc: &str, init_script: &str, lua: &Lua) -> Result<()> {
+    pub fn add_to_lua(db_loc: PathBuf, init_script: &str, lua: &Lua) -> Result<()> {
         let this = SQLua {
             conn: None,
-            db_loc: db_loc.to_string(),
+            db_loc,
             init_script: init_script.to_string(),
         };
         lua.globals().set("DB", this)?;
@@ -235,7 +235,7 @@ mod read_from_lua_tests {
         lua.load(TESTING_LUA).exec().expect("Lua failed to load the testing script");
 
         SQLua::add_to_lua(
-            ":memory:",
+            ":memory:".into(),
             &(INIT_DB_STR.to_string() + TESTING_VALUES),
             &lua,
         ).expect("SQLua failed to properly initialize");

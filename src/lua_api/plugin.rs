@@ -8,42 +8,23 @@ use mlua::{
 use std::{fs::canonicalize, io, path::{Path, PathBuf}};
 use rust_search::{FilterExt, SearchBuilder};
 
-#[derive(Debug)]
-struct LuaPluginUnparsed {
-    package: String,
-    path: String,
-    source: String
-}
+use super::{init as lua_init, sqlite::SQLua};
 
-fn find_plugin_lua_files (plugin_root_dir: &str) -> Result<Vec<LuaPluginUnparsed>> {
-   let search :Vec<String> = SearchBuilder::default()
-    .location(plugin_root_dir)
-    .search_input("/*.plugin.(lua|luau)").depth(8).ignore_case().build().collect();
-    let results = search.into_iter().map(|path| {
-        let package = path.split(&['.', '\\', '/']).skip(1).collect::<Vec<&str>>()
-        .into_iter().rev().skip(2).rev()
-            .fold(None, |s1: Option<String>, s2| {
-                Some(match s1 {
-                    Some(s) => format!("{}.{}", s, s2),
-                    None => s2.to_string()
-                })
-            }).expect("If there is no valid plugin package name we are sunk");
-        LuaPluginUnparsed { path, package, source: "".to_string() }}).collect::<Vec<_>>();
-    print!("results of searching: {:?}", results);
-
-    assert!(false);
-    Ok(vec![])
+#[derive(Debug, Clone)]
+struct InitializedLuaPlugin {
+    package_name: String,
+    lua: Lua
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct UninitializedLuaPlugin {
+struct UnparsedLuaPlugin {
     name: String,
     namespace: String,
     entry_point: PathBuf,
-    script_contents: String
+    script_contents: String,
 }
 
-impl UninitializedLuaPlugin {
+impl UnparsedLuaPlugin {
     fn new(entry_point: PathBuf, plugin_root: &Path) -> Self {
         let fqpn = canonicalize(&entry_point)
             .expect("SearchBuilder returned invalid path")
@@ -69,7 +50,7 @@ impl UninitializedLuaPlugin {
 
         let script_contents = std::fs::read_to_string(&entry_point).expect("There was a problem reading the file");
 
-        UninitializedLuaPlugin {
+        UnparsedLuaPlugin {
             name,
             namespace,
             entry_point,
@@ -77,6 +58,17 @@ impl UninitializedLuaPlugin {
         }
     }
 
+    fn parse(&self, lua: Lua) -> Result<InitializedLuaPlugin> {
+        lua.load(&self.script_contents).exec()?;
+
+        Ok(InitializedLuaPlugin { 
+            package_name: self.full_name(),
+            lua
+         })
+    }
+}
+
+impl UnparsedLuaPlugin {
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -102,7 +94,7 @@ impl UninitializedLuaPlugin {
     }
 }
 
-fn discover_plugins(plugin_root: &str) -> io::Result<Vec<UninitializedLuaPlugin>> {
+fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
     let plugin_root = canonicalize(plugin_root)?;
     Ok(SearchBuilder::default()
         .location(&plugin_root)
@@ -113,7 +105,7 @@ fn discover_plugins(plugin_root: &str) -> io::Result<Vec<UninitializedLuaPlugin>
             entry.path().is_dir() || (entry.depth() == 1) ^ (entry.file_name().eq_ignore_ascii_case("plugin.lua"))
         )
         .build()
-        .map(|entry_point| UninitializedLuaPlugin::new(entry_point.into(), &plugin_root))
+        .map(|entry_point| UnparsedLuaPlugin::new(entry_point.into(), &plugin_root))
         .collect()
     )
 }

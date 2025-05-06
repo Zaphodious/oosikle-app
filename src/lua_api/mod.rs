@@ -52,7 +52,10 @@ pub async fn mt_test() -> LuaResult<()> {
 }
 */
 
+const EXTLIB: &str = include_str!("extlib.lua");
+
 pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
+
     let lua = Lua::new_with(
         StdLib::ALL,
         LuaOptions::default()
@@ -70,6 +73,8 @@ pub fn init(search_path: Option<PathBuf>) -> LuaResult<Lua> {
 
     let packages: Table = lua.globals().get("package")?;
     packages.set("path", search_path)?;
+
+    lua.load(EXTLIB).exec()?;
 
     return Ok(lua);
 }
