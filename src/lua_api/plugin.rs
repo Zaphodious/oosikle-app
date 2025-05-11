@@ -5,17 +5,61 @@ use hypertext::html_elements::object;
 use mlua::{
     chunk, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value,
 };
-use std::{fs::canonicalize, io, path::{Path, PathBuf}};
 use rust_search::{FilterExt, SearchBuilder};
+use std::{
+    fs::canonicalize,
+    io,
+    path::{Path, PathBuf},
+};
 
 use super::{init as lua_init, sqlite::SQLua};
 
 #[derive(Debug, Clone)]
 struct LuaPluginRegistrar {
-    media_categories: Table,
-    view_adapters: Table,
+    plugin_credit: Option<Table>,
+    media_categories: Vec<Table>,
+    media_types: Vec<Table>,
+    file_extensions: Vec<Table>,
+    view_adapters: Vec<Table>,
     package_name: String,
-    lua: Lua,
+}
+
+impl LuaPluginRegistrar {
+    pub fn new(package_name: String) -> Result<LuaPluginRegistrar> {
+        Ok(LuaPluginRegistrar {
+            plugin_credit: None,
+            media_categories: vec![],
+            media_types: vec![],
+            file_extensions: vec![],
+            view_adapters: vec![],
+            package_name,
+        })
+    }
+    pub fn define_plugin_credit(
+        &mut self,
+        credit_table: Table,
+    ) -> luaResult<()> {
+        self.plugin_credit = Some(credit_table);
+        Ok(())
+    }
+    pub fn define_media_category(&mut self, addition: Table) -> luaResult<()> {
+        self.media_categories.push(addition);
+        Ok(())
+    }
+    pub fn define_media_type(&mut self, addition: Table) -> luaResult<()> {
+        self.media_types.push(addition);
+        Ok(())
+    }
+}
+
+impl UserData for LuaPluginRegistrar {
+    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {}
+
+    fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
+        methods.add_method_mut("Credit", |_, s, t: Table| s.define_plugin_credit(t));
+        methods.add_method_mut("DefineMediaCategory", |_, s, t: Table| s.define_media_category(t));
+        methods.add_method_mut("DefineMediaType", |_, s, t: Table| s.define_media_type(t));
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -37,38 +81,29 @@ impl UnparsedLuaPlugin {
             .reduce(|acc, s| format!("{acc}.{s}"))
             .expect("Empty canon path");
 
-        let mut spliterator = fqpn.rsplitn(4, '.')
-            .skip(2); // Skip lua(u) and plugin
+        let mut spliterator = fqpn.rsplitn(4, '.').skip(2); // Skip lua(u) and plugin
 
         let name = spliterator
             .next()
             .expect("Failed to get plugin name")
             .to_owned();
-        let namespace = spliterator
-            .next()
-            .unwrap_or("")
-            .to_owned();
+        let namespace = spliterator.next().unwrap_or("").to_owned();
 
-
-        let script_contents = std::fs::read_to_string(&entry_point).expect("There was a problem reading the file");
+        let script_contents =
+            std::fs::read_to_string(&entry_point).expect("There was a problem reading the file");
 
         UnparsedLuaPlugin {
             name,
             namespace,
             entry_point,
-            script_contents
+            script_contents,
         }
     }
 
     fn parse(&self, lua: Lua) -> Result<LuaPluginRegistrar> {
         lua.load(&self.script_contents).exec()?;
-
-        Ok(LuaPluginRegistrar { 
-            media_categories: lua.create_table()?,
-            view_adapters: lua.create_table()?,
-            package_name: self.full_name(),
-            lua
-         })
+        let registrar = LuaPluginRegistrar::new(self.full_name())?;
+        Ok(registrar)
     }
 }
 
@@ -105,13 +140,13 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
         .search_input(r#"^([\w\-]+\.)*plugin"#)
         .ext("luau?")
         .ignore_case()
-        .custom_filter(|entry| 
-            entry.path().is_dir() || (entry.depth() == 1) ^ (entry.file_name().eq_ignore_ascii_case("plugin.lua"))
-        )
+        .custom_filter(|entry| {
+            entry.path().is_dir()
+                || (entry.depth() == 1) ^ (entry.file_name().eq_ignore_ascii_case("plugin.lua"))
+        })
         .build()
         .map(|entry_point| UnparsedLuaPlugin::new(entry_point.into(), &plugin_root))
-        .collect()
-    )
+        .collect())
 }
 
 #[cfg(test)]
@@ -132,7 +167,10 @@ mod plugin_resoltuion_tests {
     #[test]
     fn plugin_finder_finds_what_it_should() -> Result<()> {
         let res = discover_plugins(PLUGIN_DIR)?;
-        let names = res.into_iter().map(|p| (&p).name().to_string()).collect::<HashSet<_>>();
+        let names = res
+            .into_iter()
+            .map(|p| (&p).name().to_string())
+            .collect::<HashSet<_>>();
         println!("{:?}", names);
         assert!(names.contains("basic"));
         assert!(names.contains("test"));
@@ -145,7 +183,10 @@ mod plugin_resoltuion_tests {
     #[test]
     fn plugin_finder_doesnt_find_what_it_shouldnt() -> Result<()> {
         let res = discover_plugins(PLUGIN_DIR)?;
-        let names = res.into_iter().map(|p| (&p).name().to_string()).collect::<HashSet<_>>();
+        let names = res
+            .into_iter()
+            .map(|p| (&p).name().to_string())
+            .collect::<HashSet<_>>();
         println!("{:?}", names);
         assert!(!names.contains("nota"));
         assert!(!names.contains("stillnota"));
