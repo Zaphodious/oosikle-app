@@ -98,7 +98,7 @@ impl FromLua for LuaPluginRegistrar {
                     panic!("Could not convert to LuaPluginRegistrar")
                 }
             }
-            _ => panic!("Could not convert to LuaPluginRegistrar")
+            _ => panic!("Could not convert to LuaPluginRegistrar"),
         }
     }
 }
@@ -143,7 +143,8 @@ impl UnparsedLuaPlugin {
 
     fn parse(&self, lua: Lua) -> Result<LuaPluginRegistrar> {
         lua.load(&self.script_contents).exec()?;
-        lua.globals().set("Plugin", LuaPluginRegistrar::new(self.full_name())?)?;
+        lua.globals()
+            .set("Plugin", LuaPluginRegistrar::new(self.full_name())?)?;
         lua.load(&self.script_contents).exec()?;
         let registrar = lua.globals().get("Plugin")?;
         Ok(registrar)
@@ -195,7 +196,7 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
 #[cfg(test)]
 mod plugin_resoltuion_tests {
     use super::*;
-    use std::collections::HashSet;
+    use std::collections::{HashMap, HashSet};
 
     const PLUGIN_DIR: &str = "src/testing_data/lua/plugins";
 
@@ -233,6 +234,29 @@ mod plugin_resoltuion_tests {
         println!("{:?}", names);
         assert!(!names.contains("nota"));
         assert!(!names.contains("stillnota"));
+        Ok(())
+    }
+
+    #[test]
+    fn unparsed_plugin_parses_without_error() -> Result<()> {
+        let plugin = UnparsedLuaPlugin {
+            name: "testing".into(),
+            namespace: "testing.testing".into(),
+            entry_point: "".into(),
+            script_contents: "".into(),
+        };
+        let lua = Lua::new();
+        plugin.parse(lua)?;
+        Ok(())
+    }
+
+    #[test]
+    fn plugin_finder_generates_unparsed_plugin() -> Result<()> {
+        let res = discover_plugins(PLUGIN_DIR)?;
+        let mut plugin_map = res.into_iter().map(|up| (up.full_name(), up)).collect::<HashMap<String, UnparsedLuaPlugin>>();
+        let testing_unparsed_plugin = plugin_map.get_mut("test").expect("The testing plugin was not here for some reason");
+        assert!(testing_unparsed_plugin.name == "test");
+        assert!(testing_unparsed_plugin.script_contents.contains("Plugin:Credit({")); 
         Ok(())
     }
 }
