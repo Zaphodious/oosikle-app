@@ -3,7 +3,8 @@ use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
 use mlua::{
-    chunk, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value,
+    chunk, AnyUserData, Error, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table,
+    UserData, Value,
 };
 use rust_search::{FilterExt, SearchBuilder};
 use std::{
@@ -21,6 +22,8 @@ struct LuaPluginRegistrar {
     media_types: Vec<Table>,
     file_extensions: Vec<Table>,
     view_adapters: Vec<Table>,
+    object_adapters: Vec<Table>,
+    extensions: Vec<Table>,
     package_name: String,
 }
 
@@ -32,33 +35,71 @@ impl LuaPluginRegistrar {
             media_types: vec![],
             file_extensions: vec![],
             view_adapters: vec![],
+            object_adapters: vec![],
+            extensions: vec![],
             package_name,
         })
     }
-    pub fn define_plugin_credit(
-        &mut self,
-        credit_table: Table,
-    ) -> luaResult<()> {
+    pub fn def_credit(&mut self, credit_table: Table) -> luaResult<()> {
         self.plugin_credit = Some(credit_table);
         Ok(())
     }
-    pub fn define_media_category(&mut self, addition: Table) -> luaResult<()> {
+    pub fn def_media_category(&mut self, addition: Table) -> luaResult<()> {
         self.media_categories.push(addition);
         Ok(())
     }
-    pub fn define_media_type(&mut self, addition: Table) -> luaResult<()> {
+    pub fn def_media_type(&mut self, addition: Table) -> luaResult<()> {
         self.media_types.push(addition);
+        Ok(())
+    }
+    pub fn def_view_adapter(&mut self, addition: Table) -> luaResult<()> {
+        self.view_adapters.push(addition);
+        Ok(())
+    }
+    pub fn def_object_adapter(&mut self, addition: Table) -> luaResult<()> {
+        self.object_adapters.push(addition);
+        Ok(())
+    }
+    pub fn def_file_extension(&mut self, addition: Table) -> luaResult<()> {
+        self.file_extensions.push(addition);
+        Ok(())
+    }
+    pub fn def_extension(&mut self, addition: Table) -> luaResult<()> {
+        self.extensions.push(addition);
         Ok(())
     }
 }
 
 impl UserData for LuaPluginRegistrar {
-    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {}
+    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {
+        fields.add_field_method_get("package_name", |_, this: &LuaPluginRegistrar| {
+            Ok(this.package_name.clone())
+        });
+    }
 
     fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method_mut("Credit", |_, s, t: Table| s.define_plugin_credit(t));
-        methods.add_method_mut("DefineMediaCategory", |_, s, t: Table| s.define_media_category(t));
-        methods.add_method_mut("DefineMediaType", |_, s, t: Table| s.define_media_type(t));
+        methods.add_method_mut("Credit", |_, s, t| s.def_credit(t));
+        methods.add_method_mut("DefMediaCategory", |_, s, t| s.def_media_category(t));
+        methods.add_method_mut("DefMediaType", |_, s, t| s.def_media_type(t));
+        methods.add_method_mut("DefViewAdapter", |_, s, t| s.def_view_adapter(t));
+        methods.add_method_mut("DefObjectAdapter", |_, s, t| s.def_object_adapter(t));
+        methods.add_method_mut("DefFileExtension", |_, s, t| s.def_extension(t));
+        methods.add_method_mut("DefExtension", |_, s, t| s.def_extension(t));
+    }
+}
+
+impl FromLua for LuaPluginRegistrar {
+    fn from_lua(value: Value, _lua: &Lua) -> luaResult<Self> {
+        match value {
+            Value::UserData(s) => {
+                if s.is::<LuaPluginRegistrar>() {
+                    Ok(s.take::<LuaPluginRegistrar>()?)
+                } else {
+                    panic!("Could not convert to LuaPluginRegistrar")
+                }
+            }
+            _ => panic!("Could not convert to LuaPluginRegistrar")
+        }
     }
 }
 
@@ -102,7 +143,9 @@ impl UnparsedLuaPlugin {
 
     fn parse(&self, lua: Lua) -> Result<LuaPluginRegistrar> {
         lua.load(&self.script_contents).exec()?;
-        let registrar = LuaPluginRegistrar::new(self.full_name())?;
+        lua.globals().set("Plugin", LuaPluginRegistrar::new(self.full_name())?)?;
+        lua.load(&self.script_contents).exec()?;
+        let registrar = lua.globals().get("Plugin")?;
         Ok(registrar)
     }
 }

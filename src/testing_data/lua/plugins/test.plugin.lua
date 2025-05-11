@@ -4,7 +4,7 @@ Plugin:Credit({
     date = "2025-05-04"
 })
 
-Plugin:DefineMediaCategory {
+Plugin:DefMediaCategory {
     name = "videogame",
     types = {
         { name = "pico8",
@@ -12,7 +12,7 @@ Plugin:DefineMediaCategory {
     },
 }
 
-Plugin:DefineFileExtension {
+Plugin:DefFileExtension {
     tag = "p8.png",
     type = "pico8"
 }
