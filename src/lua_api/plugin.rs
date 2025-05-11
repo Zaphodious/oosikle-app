@@ -28,8 +28,8 @@ struct LuaPluginRegistrar {
 }
 
 impl LuaPluginRegistrar {
-    pub fn new(package_name: String) -> Result<LuaPluginRegistrar> {
-        Ok(LuaPluginRegistrar {
+    pub fn new(package_name: String) -> LuaPluginRegistrar {
+        LuaPluginRegistrar {
             plugin_credit: None,
             media_categories: vec![],
             media_types: vec![],
@@ -38,7 +38,7 @@ impl LuaPluginRegistrar {
             object_adapters: vec![],
             extensions: vec![],
             package_name,
-        })
+        }
     }
     pub fn def_credit(&mut self, credit_table: Table) -> luaResult<()> {
         self.plugin_credit = Some(credit_table);
@@ -93,7 +93,7 @@ impl FromLua for LuaPluginRegistrar {
         match value {
             Value::UserData(s) => {
                 if s.is::<LuaPluginRegistrar>() {
-                    Ok(s.take::<LuaPluginRegistrar>()?)
+                    Ok(s.borrow_mut::<LuaPluginRegistrar>()?.clone())
                 } else {
                     panic!("Could not convert to LuaPluginRegistrar")
                 }
@@ -141,10 +141,11 @@ impl UnparsedLuaPlugin {
         }
     }
 
-    fn parse(&self, lua: Lua) -> Result<LuaPluginRegistrar> {
-        lua.load(&self.script_contents).exec()?;
+    fn parse(&self, lua: &Lua) -> Result<LuaPluginRegistrar> {
         lua.globals()
-            .set("Plugin", LuaPluginRegistrar::new(self.full_name())?)?;
+
+            .set("Plugin", LuaPluginRegistrar::new(self.full_name()))?;
+        //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
         lua.load(&self.script_contents).exec()?;
         let registrar = lua.globals().get("Plugin")?;
         Ok(registrar)
@@ -246,17 +247,31 @@ mod plugin_resoltuion_tests {
             script_contents: "".into(),
         };
         let lua = Lua::new();
-        plugin.parse(lua)?;
+        plugin.parse(&lua)?;
         Ok(())
     }
 
+    fn grab_testing_plugin_unparsed() -> Result<UnparsedLuaPlugin> {
+        Ok(discover_plugins(PLUGIN_DIR)?
+            .into_iter()
+            .filter(|p| p.full_name() == "test")
+            .nth(0)
+            .expect("Testing plugin not found"))
+    }
+
     #[test]
-    fn plugin_finder_generates_unparsed_plugin() -> Result<()> {
-        let res = discover_plugins(PLUGIN_DIR)?;
-        let mut plugin_map = res.into_iter().map(|up| (up.full_name(), up)).collect::<HashMap<String, UnparsedLuaPlugin>>();
-        let testing_unparsed_plugin = plugin_map.get_mut("test").expect("The testing plugin was not here for some reason");
-        assert!(testing_unparsed_plugin.name == "test");
-        assert!(testing_unparsed_plugin.script_contents.contains("Plugin:Credit({")); 
+    fn plugin_finder_generates_unparsed_plugin_correctly() -> Result<()> {
+        let plugin = grab_testing_plugin_unparsed()?;
+        assert!(plugin.script_contents.contains("Plugin:Credit({"));
+        Ok(())
+    }
+    #[test]
+    fn unparsed_plugin_correctly_parses() -> Result<()> {
+        let unparsed_plugin = grab_testing_plugin_unparsed()?;
+        let lua = Lua::new();
+        let registrar = unparsed_plugin.parse(&lua)?;
+        assert!(registrar.package_name == unparsed_plugin.full_name());
+        assert!(registrar.plugin_credit.expect("Credit table not found").get::<Table>("authors")?.get::<String>(1)? == "HotFish");
         Ok(())
     }
 }

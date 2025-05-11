@@ -17,7 +17,7 @@ Plugin:DefFileExtension {
     type = "pico8"
 }
 
-Plugin:ViewAdapter {
+Plugin:DefViewAdapter {
     -- could be media_category or media_type
     media_category = "videogame",
     -- there will be a default sql query, but if a view really really needs to do something special there's the option.
@@ -82,7 +82,7 @@ Plugin:ViewAdapter {
 
 -- For handling individual objects, an adapter can be registered to ensure that
 -- the special needs of the object are taken care of
-Plugin:ObjectAdapter {
+Plugin:DefObjectAdapter {
     -- Used to determine not only an assigned object's type,
     -- but so that the app knows which object adapters to
     -- offer to be a givne object's handler. For example, if a
@@ -126,7 +126,7 @@ Plugin:ObjectAdapter {
 }
 
 -- Extensions are bundles of additional functionality, and can add new features to the app.
-Plugin:Extension {
+Plugin:DefExtension {
     -- While the package name for adapters is computed automatically, each extension
     -- must provide its own, which is appended to the fully qualified package name of
     -- its containing plugin.
