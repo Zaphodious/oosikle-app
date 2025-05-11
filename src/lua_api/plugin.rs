@@ -11,9 +11,11 @@ use rust_search::{FilterExt, SearchBuilder};
 use super::{init as lua_init, sqlite::SQLua};
 
 #[derive(Debug, Clone)]
-struct InitializedLuaPlugin {
+struct LuaPluginRegistrar {
+    media_categories: Table,
+    view_adapters: Table,
     package_name: String,
-    lua: Lua
+    lua: Lua,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -58,10 +60,12 @@ impl UnparsedLuaPlugin {
         }
     }
 
-    fn parse(&self, lua: Lua) -> Result<InitializedLuaPlugin> {
+    fn parse(&self, lua: Lua) -> Result<LuaPluginRegistrar> {
         lua.load(&self.script_contents).exec()?;
 
-        Ok(InitializedLuaPlugin { 
+        Ok(LuaPluginRegistrar { 
+            media_categories: lua.create_table()?,
+            view_adapters: lua.create_table()?,
             package_name: self.full_name(),
             lua
          })

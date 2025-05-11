@@ -119,9 +119,17 @@ create table if not exists CollectionHiddenColumns (
 create table if not exists MediaCategoriesForCollections (
     collection_uuid text not null collate nocase,
     media_category_id text not null collate nocase,
-    primary key ( collection_uuid, media_category_id),
+    primary key (collection_uuid, media_category_id),
     foreign key (collection_uuid) references Collections(collection_uuid),
     foreign key (media_category_id) references MediaCategories(media_category_id)
+);
+
+create table if not exists MediaTypesForCollections (
+    collection_uuid text not null collate nocase,
+    media_type_id text not null collate nocase,
+    primary key (collection_uuid, media_type_id),
+    foreign key (collection_uuid) references Collections(collection_uuid),
+    foreign key (media_type_id) references MediaTypes(media_type_id)
 );
 
 create table if not exists ObjectsInCollections (
