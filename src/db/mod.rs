@@ -114,6 +114,7 @@ pub trait DBQuickUpdatable<U: ToSql>: DBSimpleRecord + Serialize {
     }
 }*/
 
+/*/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("Plugins")]
 #[check("./init_db.sql")]
@@ -156,6 +157,7 @@ impl PluginRecord {
         return Ok(rows_effected == 1);
     }
 }
+    */
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
 #[table("MediaCategories")]
@@ -163,8 +165,8 @@ impl PluginRecord {
 pub struct MediaCategoryRecord {
     #[column("media_category_id")]
     pub id: String,
-    #[column("media_category_display_name")]
-    pub display_name: String,
+    #[column("media_category_string_key")]
+    pub string_key: String,
 }
 
 impl Fetchable1<&str> for MediaCategoryRecord {}
@@ -190,8 +192,8 @@ impl MediaCategoryRecord {
 pub struct MediaTypeRecord {
     #[column("media_type_id")]
     id: String,
-    #[column("media_type_display_name")]
-    display_name: String,
+    #[column("media_type_string_key")]
+    string_key: String,
     media_category_id: String,
 }
 
@@ -214,8 +216,8 @@ impl MediaTypeRecord {
 pub struct FileExtensionRecord {
     #[column("file_extension_tag")]
     tag: String,
-    #[column("file_extension_description")]
-    description: String,
+    #[column("file_extension_desc_string_key")]
+    string_key: String,
 }
 
 impl Fetchable1<&str> for FileExtensionRecord {}
@@ -595,12 +597,13 @@ impl ObjectRecord {
             .optional()?;
         return Ok(record);
     }
+    /*
     pub fn get_manager_plugin_record(
         &self,
         conn: &Connection,
     ) -> Result<Option<PluginRecord>, Error> {
         PluginRecord::get_from_id(conn, &self.manager)
-    }
+    } */
     pub fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
         fetch_vec_of(
             conn,
@@ -810,7 +813,7 @@ mod simple_read_tests {
         let conn = init()?;
         let mcat = MediaCategoryRecord::get_from_id(&conn, "DOCUMENT")?
             .expect("Document category should exsit");
-        assert!(mcat.display_name == "Document");
+        assert!(mcat.string_key == "media_category_document");
         return Ok(());
     }
 
@@ -819,7 +822,7 @@ mod simple_read_tests {
         let conn = init()?;
         let mtype =
             MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?.expect("Plaintext type should exsit");
-        assert!(mtype.display_name == "Plain Text File");
+        assert!(mtype.string_key == "media_type_plain_text");
         return Ok(());
     }
 
@@ -941,22 +944,23 @@ mod simple_read_tests {
         let rec = fr
             .get_extension_record(&conn)?
             .expect("There should be an extension record here");
-        assert!(rec.description == "Ordinary text file");
+        assert!(rec.string_key == "file_ext_txt");
         let types = rec.get_media_types(&conn)?;
-        assert!(types[1].display_name != "");
+        assert!(types[1].string_key != "");
         return Ok(());
     }
 
+    /*
     #[test]
     fn gets_plugin_record_gets_types() -> Result<(), Error> {
         let conn = init()?;
-        let fr = PluginRecord::get_from_id(&conn, "oosikle.manager.text")?
+        let fr = PluginRecord::get_from_id(&conn, "oosikle.adapter.text")?
             .expect("There is no entity here");
         assert!(fr.display_name == "Default Text File Manager");
         let types = fr.get_associated_types(&conn)?;
         assert!(types[1].display_name != "");
         return Ok(());
-    }
+    } */
 
     #[test]
     fn gets_device_record() -> Result<(), Error> {

@@ -14,7 +14,10 @@ Plugin "oosikle.builtin.pico8" {
 
     ViewAdapter {
         media_type = "pico8",
-        page_sql = [[select * from Objects o inner join ObjectsInCollections oc on o.object_uuid=oc.object_uuid where oc.collection_uuid=:collection_uuid order by oc.index_in_collection;]],
+        page_sql = [[select * from Objects o
+                    inner join ObjectsInCollections oc on o.object_uuid=oc.object_uuid
+                    where oc.collection_uuid=:collection_uuid
+                    order by oc.index_in_collection;]],
         columns = {
             object_name = "title",
             object_artist = "developer",
@@ -31,8 +34,7 @@ Plugin "oosikle.builtin.pico8" {
         },
     },
 
-    ObjectAdapter {
-        media_type = "pico8",
+    ObjectAdapter "pico8" {
         custom_detail_view = function(object_uuid, settings) end,
         play_action = function(object_uuid, settings)
             return { action = "run", exe = "path_from_settings", args = "run=path_to_p8_file" }

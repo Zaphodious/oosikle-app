@@ -1,83 +1,83 @@
 insert into MediaCategories
-values ('DOCUMENT', 'Document');
+values ('DOCUMENT', 'media_category_document');
 insert into MediaTypes
-values ('DOCUMENT', 'General Document', 'DOCUMENT');
+values ('DOCUMENT', 'plain_text_general_doc', 'DOCUMENT');
 insert into MediaTypes
-values ('PLAINTEXT', 'Plain Text File', 'DOCUMENT');
+values ('PLAINTEXT', 'media_type_plain_text', 'DOCUMENT');
 insert into MediaTypes
-values ('EBOOK', 'Electronic Book file', 'DOCUMENT');
+values ('EBOOK', 'media_type_ebook', 'DOCUMENT');
 insert into MediaCategories
 values ('IMAGE', 'Image');
 insert into MediaTypes
-values ('RASTER', 'Raster Image File', 'IMAGE');
+values ('RASTER', 'media_type_raster_img', 'IMAGE');
 insert into MediaTypes
-values ('VECTOR', 'Vector Image File', 'IMAGE');
+values ('VECTOR', 'media_type_vector_img', 'IMAGE');
 insert into MediaCategories
 values ('AUDIO', 'Audio');
 insert into MediaTypes
-values ('MUSIC', 'Music File', 'AUDIO');
+values ('MUSIC', 'media_type_music', 'AUDIO');
 insert into MediaTypes
-values ('AUDIOBOOK', 'Audio book file', 'AUDIO');
+values ('AUDIOBOOK', 'media_type_audiobook', 'AUDIO');
 insert into MediaCategories
-values ('VIDEOGAME', 'Video Game');
+values ('VIDEOGAME', 'media_category_videogame');
 insert into MediaTypes
-values ('MS', 'Master System Game', 'VIDEOGAME');
+values ('MS', 'media_type_master_system_game', 'VIDEOGAME');
 insert into MediaTypes
-values ('PICO8', 'Pico8 Game', 'VIDEOGAME');
+values ('PICO8', 'media_type_pico8_game', 'VIDEOGAME');
 insert into MediaCategories
-values ('ARCHIVE', 'Archive of one or more files');
+values ('ARCHIVE', 'media_category_archive');
 insert into MediaTypes
-values ('ARCHIVE', 'Compressed Archive', 'ARCHIVE');
+values ('ARCHIVE', 'media_type_archive', 'ARCHIVE');
 insert into FileExtensions
-values ('TXT', 'Ordinary text file');
+values ('TXT', 'file_ext_txt');
 insert into MediaTypesForFileExtensions
 values ('TXT', 'PLAINTEXT');
 insert into MediaTypesForFileExtensions
 values ('TXT', 'EBOOK');
 insert into FileExtensions
-values ('MD', 'Markdown text file');
+values ('MD', 'file_ext_md');
 insert into MediaTypesForFileExtensions
 values ('MD', 'PLAINTEXT');
 insert into MediaTypesForFileExtensions
 values ('MD', 'EBOOK');
 insert into FileExtensions
-values ('EPUB', 'Epub book file');
+values ('EPUB', 'file_ext_epub');
 insert into MediaTypesForFileExtensions
 values ('EPUB', 'EBOOK');
 insert into FileExtensions
-values ('SVG', 'Scalable Vector Graphics file');
+values ('SVG', 'file_ext_svg');
 insert into MediaTypesForFileExtensions
 values ('SVG', 'PLAINTEXT');
 insert into MediaTypesForFileExtensions
 values ('SVG', 'VECTOR');
 insert into FileExtensions
-values ('PNG', 'Portable Network Graphics file');
+values ('PNG', 'file_ext_png');
 insert into MediaTypesForFileExtensions
 values ('PNG', 'RASTER');
 insert into MediaTypesForFileExtensions
 values ('PNG', 'PICO8');
 insert into FileExtensions
-values ('JPEG', 'JPEG Image File');
+values ('JPEG', 'file_ext_jpeg');
 insert into MediaTypesForFileExtensions
 values ('JPEG', 'RASTER');
 insert into FileExtensions
-values ('JPG', 'JPEG Image File');
+values ('JPG', 'file_ext_jpeg');
 insert into MediaTypesForFileExtensions
 values ('JPG', 'RASTER');
 insert into FileExtensions
-values ('SMS', 'Master System Game ROM');
+values ('SMS', 'file_ext_sega_master_system');
 insert into MediaTypesForFileExtensions
 values ('SMS', 'MS');
 insert into FileExtensions
-values ('BIN', 'Binary file');
+values ('BIN', 'file_ext_bin');
 insert into MediaTypesForFileExtensions
 values ('BIN', 'MS');
 insert into FileExtensions
-values ('P8', 'Pico 8 File');
+values ('P8', 'file_ext_p8');
 insert into MediaTypesForFileExtensions
 values ('P8', 'PICO8');
 insert into FileExtensions
-values ('ZIP', 'Zip File');
+values ('ZIP', 'file_ext_zip');
 insert into MediaTypesForFileExtensions
 values ('ZIP', 'ARCHIVE');
 insert into MediaTypesForFileExtensions
@@ -85,7 +85,7 @@ values ('ZIP', 'MS');
 insert into MediaTypesForFileExtensions
 values ('ZIP', 'EBOOK');
 insert into FileExtensions
-values ('7Z', '7Zip File');
+values ('7Z', 'file_ext_7z');
 insert into MediaTypesForFileExtensions
 values ('7Z', 'ARCHIVE');
 insert into MediaTypesForFileExtensions
@@ -93,80 +93,21 @@ values ('7Z', 'MS');
 insert into MediaTypesForFileExtensions
 values ('7Z', 'EBOOK');
 insert into FileExtensions
-values ('DOCX', 'Microsoft Word Document File');
+values ('DOCX', 'file_ext_docx');
 insert into MediaTypesForFileExtensions
 values ('DOCX', 'ARCHIVE');
 insert into MediaTypesForFileExtensions
 values ('DOCX', 'DOCUMENT');
 insert into FileExtensions
-values ('MP3', 'MPEG-3 Audio File');
+values ('MP3', 'file_ext_mp3');
 insert into MediaTypesForFileExtensions
 values ('MP3', 'MUSIC');
 insert into MediaTypesForFileExtensions
 values ('MP3', 'AUDIOBOOK');
 insert into FileExtensions
-values ('M4B', 'MPEG-3 Audiobook File');
+values ('M4B', 'file_ext_m4b');
 insert into MediaTypesForFileExtensions
 values ('M4B', 'AUDIOBOOK');
-insert into Plugins
-values (
-        'oosikle.manager.text',
-        'Default Text File Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.text', 'PLAINTEXT');
-insert into MediaTypesForPlugins
-values ('oosikle.manager.text', 'DOCUMENT');
-insert into Plugins
-values (
-        'oosikle.manager.books',
-        'Default Book Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.books', 'EBOOK');
-insert into MediaTypesForPlugins
-values (
-        'oosikle.manager.books',
-        'AUDIOBOOK'
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.books', 'DOCUMENT');
-insert into Plugins
-values (
-        'oosikle.manager.images',
-        'Default Images Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.images', 'RASTER');
-insert into MediaTypesForPlugins
-values ('oosikle.manager.images', 'VECTOR');
-insert into Plugins
-values (
-        'oosikle.manager.roms',
-        'Default Games Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.roms', 'MS');
-insert into Plugins
-values (
-        'oosikle.manager.p8',
-        'Default Pico 8 Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.p8', 'PICO8');
-insert into Plugins
-values (
-        'oosikle.manager.music',
-        'Default Music Manager',
-        1
-    );
-insert into MediaTypesForPlugins
-values ('oosikle.manager.music', 'MUSIC');
 insert into Files
 values (
         'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
@@ -215,7 +156,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000001',
         'Celeste Classic',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'platformer',
         'Celeste',
@@ -244,7 +185,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000002',
         'Pico Off Road',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'racing',
         '',
@@ -273,7 +214,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000003',
         'Air Delivery',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'platformer',
         '',
@@ -302,7 +243,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000004',
         'Celeste Classic 2',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'platformer',
         'celeste',
@@ -331,7 +272,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000005',
         'Hot Wax',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'puzzle',
         '',
@@ -360,7 +301,7 @@ insert into Objects
 values (
         'DEADBEEF100000000000000000000006',
         'Picolumia v1.2',
-        'oosikle.manager.p8',
+        'oosikle.adapter.p8',
         FALSE,
         'puzzle',
         '',
@@ -480,7 +421,7 @@ insert into Objects
 values (
         'DEADBEEFDEADBEEFDEADBEEFDEADBEEF',
         'Welcome File',
-        'oosikle.manager.text',
+        'oosikle.adapter.text',
         FALSE,
         '',
         '',
@@ -527,7 +468,6 @@ values (
         0,
         'DEADBEEFDEADBEEFDEADBEEFDEADBEEF'
     );
-
 insert into Collections
 values (
         'BADBEEF7DEADBEEF4242424242424242',
@@ -535,37 +475,38 @@ values (
         TRUE,
         '',
         FALSE
-);
+    );
 insert into MediaCategoriesForCollections
 values (
         'BADBEEF7DEADBEEF4242424242424242',
         'videogame'
     );
-
 insert into ObjectsInCollections
 values (
         'BADBEEF7DEADBEEF4242424242424242',
         0,
         'DEADBEEF100000000000000000000001'
-), (
+    ),
+    (
         'BADBEEF7DEADBEEF4242424242424242',
         1,
         'DEADBEEF100000000000000000000003'
-), (
+    ),
+    (
         'BADBEEF7DEADBEEF4242424242424242',
         3,
         'DEADBEEF100000000000000000000002'
-), (
+    ),
+    (
         'BADBEEF7DEADBEEF4242424242424242',
         2,
         'DEADBEEF100000000000000000000004'
-), (
+    ),
+    (
         'BADBEEF7DEADBEEF4242424242424242',
         4,
         'DEADBEEF100000000000000000000006'
-
-);
-
+    );
 insert into Devices
 values (
         '0DE2C3400DE2C3400DE2C3400DE2C340',
@@ -577,7 +518,7 @@ insert into DeviceSyncLists
 values (
         '0DE2C3400DE2C3400DE2C3400DE2C340',
         'BADC0FFEE0DDF00DBADC0FFEE0DDF00D',
-        'oosikle.manager.text',
+        'oosikle.adapter.text',
         'documents',
         0
     );

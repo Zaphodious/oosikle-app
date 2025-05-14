@@ -1,18 +1,18 @@
 create table if not exists MediaCategories (
     media_category_id text primary key collate nocase, 
-    media_category_display_name text not null collate nocase
+    media_category_string_key text not null collate nocase
 );
 
 create table if not exists MediaTypes (
     media_type_id text primary key collate nocase,
-    media_type_display_name text not null collate nocase,
+    media_type_string_key text not null collate nocase,
     media_category_id text not null collate nocase,
     foreign key (media_category_id) references MediaCategories(media_category_id)
 );
 
 create table if not exists FileExtensions (
     file_extension_tag text primary key collate nocase,
-    file_extension_description text not null collate nocase
+    file_extension_desc_string_key text not null collate nocase
 );
 
 create table if not exists MediaTypesForFileExtensions (
@@ -44,20 +44,6 @@ create table if not exists FileBlobs (
     foreign key (file_uuid) references Files(file_uuid)
 );
 
-create table if not exists Plugins (
-    plugin_package_name text primary key collate nocase,
-    plugin_display_name text not null,
-    plugin_version integer not null
-);
-
-create table if not exists MediaTypesForPlugins (
-    plugin_package_name text not null,
-    media_type_id text not null,
-    primary key (plugin_package_name, media_type_id),
-    foreign key (plugin_package_name) references Plugins(plugin_package_name),
-    foreign key (media_type_id) references MediaTypes(media_type_id)
-);
-
 create table if not exists Objects (
     object_uuid text primary key collate nocase,
     object_name text not null collate nocase,
@@ -72,8 +58,7 @@ create table if not exists Objects (
     object_imprint text default '' collate nocase,
     object_publish_timestamp text default '1970-00-00T00:00:00' collate nocase,
     object_website text default '' collate nocase,
-    foreign key (object_uuid) references Files(file_uuid),
-    foreign key (plugin_package_name) references Plugins(plugin_package_name)
+    foreign key (object_uuid) references Files(file_uuid)
 );
 
 create table if not exists ObjectAttributes (
@@ -158,7 +143,6 @@ create table if not exists DeviceSyncLists (
     last_sync_time integer not null,
     primary key (device_uuid, collection_uuid),
     foreign key (device_uuid) references Devices(device_uuid),
-    foreign key (plugin_package_name) references Plugins(plugin_package_name),
     foreign key (collection_uuid) references Collections(collection_uuid)
 );
 

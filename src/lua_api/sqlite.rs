@@ -1,4 +1,5 @@
 use crate::db::*;
+use crate::db;
 use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
@@ -130,6 +131,12 @@ impl SQLua {
         }
         Ok(t)
     }
+
+    /*
+    pub fn add_media_category(lua: &Lua, this: &mut SQLua, media_category_name: String) -> luaResult<Table> {
+
+    }
+     */
 
     pub fn query(
         lua: &Lua,

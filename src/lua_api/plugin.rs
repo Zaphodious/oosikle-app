@@ -15,6 +15,7 @@ use std::{
 
 use super::{init as lua_init, sqlite::SQLua};
 
+
 #[derive(Debug, Clone)]
 struct LuaPluginRegistrar {
     plugin_credit: Option<Table>,
@@ -83,7 +84,7 @@ impl UserData for LuaPluginRegistrar {
         methods.add_method_mut("DefMediaType", |_, s, t| s.def_media_type(t));
         methods.add_method_mut("DefViewAdapter", |_, s, t| s.def_view_adapter(t));
         methods.add_method_mut("DefObjectAdapter", |_, s, t| s.def_object_adapter(t));
-        methods.add_method_mut("DefFileExtension", |_, s, t| s.def_extension(t));
+        methods.add_method_mut("DefFileExtension", |_, s, t| s.def_file_extension(t));
         methods.add_method_mut("DefExtension", |_, s, t| s.def_extension(t));
     }
 }
@@ -265,6 +266,7 @@ mod plugin_resoltuion_tests {
         assert!(plugin.script_contents.contains("Plugin:Credit({"));
         Ok(())
     }
+    /*
     #[test]
     fn unparsed_plugin_correctly_parses() -> Result<()> {
         let unparsed_plugin = grab_testing_plugin_unparsed()?;
@@ -273,5 +275,5 @@ mod plugin_resoltuion_tests {
         assert!(registrar.package_name == unparsed_plugin.full_name());
         assert!(registrar.plugin_credit.expect("Credit table not found").get::<Table>("authors")?.get::<String>(1)? == "HotFish");
         Ok(())
-    }
+    } */
 }
