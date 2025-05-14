@@ -543,6 +543,8 @@ pub struct ObjectRecord {
     pub imprint: String,
     #[column("object_publish_timestamp")]
     pub publish_timestamp: OffsetDateTime,
+    #[column("object_website")]
+    pub website: String,
 }
 
 /*

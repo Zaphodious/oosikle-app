@@ -224,7 +224,8 @@ values (
         'en',
         '@noel',
         'Maddy Makes Games',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?tid=2145'
     );
 insert into Files
 values (
@@ -252,7 +253,8 @@ values (
         'en',
         '@assemblerbot',
         '',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?tid=41897'
     );
 insert into Files
 values (
@@ -280,7 +282,8 @@ values (
         'en',
         '@pianoman373',
         '',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?tid=52598'
     );
 insert into Files
 values (
@@ -308,12 +311,13 @@ values (
         'en',
         'Maddy Thorson, Noel Berry, and Lena Raine',
         'Maddy Makes Games',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?tid=41282'
     );
 insert into Files
 values (
         'DEADBEEF100000000000000000000005',
-        "air_delivery.p8.png",
+        "hotwax.p8.png",
         0,
         '',
         'oroot://image',
@@ -326,17 +330,18 @@ values (
 insert into Objects
 values (
         'DEADBEEF100000000000000000000005',
-        'Air Delivery',
+        'Hot Wax',
         'oosikle.manager.p8',
         FALSE,
-        'action',
+        'puzzle',
         '',
         1,
         'w',
         'en',
-        '@bridgs',
+        '@TRASEVOL_DOG',
         '',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?pid=146729'
     );
 insert into Files
 values (
@@ -364,7 +369,8 @@ values (
         'en',
         '@andrewedstrom',
         '',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        'https://www.lexaloffle.com/bbs/?tid=39935'
     );
 insert into Files
 values (
@@ -483,7 +489,8 @@ values (
         'en',
         'TheHotFish',
         '',
-        '1970-01-01T00:00:00'
+        '1970-01-01T00:00:00',
+        ''
     );
 insert into ObjectAttributes
 values (

@@ -71,6 +71,7 @@ create table if not exists Objects (
     object_artist text default '' collate nocase,
     object_imprint text default '' collate nocase,
     object_publish_timestamp text default '1970-00-00T00:00:00' collate nocase,
+    object_website text default '' collate nocase,
     foreign key (object_uuid) references Files(file_uuid),
     foreign key (plugin_package_name) references Plugins(plugin_package_name)
 );
