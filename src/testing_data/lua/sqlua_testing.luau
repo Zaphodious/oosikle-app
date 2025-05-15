@@ -35,6 +35,12 @@ function SQLuaCreatesHTMLBasic(collection_uuid)
     return ret
 end
 
+function SQLuaAddsMediaCategory(category_id, category_key)
+    DB:add_media_category(category_id, category_key)
+    local query_res = DB:query([[select * from MediaCategories M where M.media_category_id=?;]], {category_id})[1]
+    return query_res.media_category_string_key
+end
+
 function Foo()
     print("hello")
 end

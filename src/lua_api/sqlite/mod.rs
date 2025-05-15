@@ -16,6 +16,8 @@ use rusqlite::{
 use serde::{Deserialize, Serialize};
 use std::{fmt, path::PathBuf};
 
+mod from_lua_defs;
+
 #[derive(Debug)]
 pub struct SQLua {
     conn: Option<Connection>,
@@ -132,11 +134,16 @@ impl SQLua {
         Ok(t)
     }
 
-    /*
-    pub fn add_media_category(lua: &Lua, this: &mut SQLua, media_category_name: String) -> luaResult<Table> {
-
+    pub fn add_media_category(lua: &Lua, this: &mut SQLua, (media_category_id, media_category_key): (String, String)) -> luaResult<bool> {
+        SQLua::connect_to_db(lua, this, ())?;
+        let mut conn = this.conn.as_mut().expect("failed to secure a sql handle");
+        let cat = db::MediaCategoryRecord {
+            id: media_category_id, string_key: media_category_key
+        };
+        cat.insert_or(conn, exemplar::OnConflict::Replace).into_lua_err()?;
+        return Ok(true)
     }
-     */
+
 
     pub fn query(
         lua: &Lua,
@@ -191,6 +198,7 @@ impl UserData for SQLua {
 
     fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method_mut("query", SQLua::query);
+        methods.add_method_mut("add_media_category", SQLua::add_media_category);
         methods.add_method_mut("__connect_to_db", SQLua::connect_to_db);
     }
 }
@@ -203,8 +211,8 @@ mod basic_functionality_tests {
     use crate::{db, lua_api};
     use rusqlite::Connection;
 
-    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
-    static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
+    static TESTING_VALUES: &'static str = include_str!("../../testing_data/sql/testing_values.sql");
+    static INIT_DB_STR: &'static str = include_str!("../../db/init_db.sql");
 
     #[test]
     fn plain_sql_works() -> Result<(), Error> {
@@ -233,9 +241,9 @@ mod read_from_lua_tests {
     use crate::{db, lua_api};
     use rusqlite::Connection;
 
-    static TESTING_VALUES: &'static str = include_str!("../testing_data/sql/testing_values.sql");
-    static INIT_DB_STR: &'static str = include_str!("../db/init_db.sql");
-    static TESTING_LUA: &'static str = include_str!("../testing_data/lua/sqlua_testing.luau");
+    static TESTING_VALUES: &'static str = include_str!("../../testing_data/sql/testing_values.sql");
+    static INIT_DB_STR: &'static str = include_str!("../../db/init_db.sql");
+    static TESTING_LUA: &'static str = include_str!("../../testing_data/lua/sqlua_testing.luau");
 
     fn init() -> Lua {
         let mut lua = lua_api::init(None).expect("Lua failed to initialize");
@@ -256,6 +264,15 @@ mod read_from_lua_tests {
         let res = lua.load("SQLuaFetches()").eval::<String>()?;
         assert!(res == "Welcome File");
         //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
+        Ok(())
+    }
+
+    #[test]
+    fn can_insert_media_categories() -> Result<()> {
+        let mut lua = init();
+        let res = lua.load("SQLuaAddsMediaCategory([[foob]], [[foob_key]])").eval::<String>()?;
+        println!("what is the key? {:?}", res);
+        assert!(res == "foob_key");
         Ok(())
     }
 

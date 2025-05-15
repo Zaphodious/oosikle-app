@@ -191,10 +191,10 @@ impl MediaCategoryRecord {
 #[check("./init_db.sql")]
 pub struct MediaTypeRecord {
     #[column("media_type_id")]
-    id: String,
+    pub id: String,
     #[column("media_type_string_key")]
-    string_key: String,
-    media_category_id: String,
+    pub string_key: String,
+    pub media_category_id: String,
 }
 
 impl Fetchable1<&str> for MediaTypeRecord {}
@@ -215,9 +215,9 @@ impl MediaTypeRecord {
 #[check("./init_db.sql")]
 pub struct FileExtensionRecord {
     #[column("file_extension_tag")]
-    tag: String,
+    pub tag: String,
     #[column("file_extension_desc_string_key")]
-    string_key: String,
+    pub string_key: String,
 }
 
 impl Fetchable1<&str> for FileExtensionRecord {}
