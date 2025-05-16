@@ -13,7 +13,7 @@ Plugin "oosikle.builtin.pico8" {
     },
 
     ViewAdapter {
-        media_type = "pico8",
+        media_category = "videogame",
         page_sql = [[select * from Objects o
                     inner join ObjectsInCollections oc on o.object_uuid=oc.object_uuid
                     where oc.collection_uuid=:collection_uuid
