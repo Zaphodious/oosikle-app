@@ -41,6 +41,11 @@ function SQLuaAddsMediaCategory(category_id, category_key)
     return query_res.media_category_string_key
 end
 
+function SerdeWorksAsExpected(category_id)
+    local query_res = DB:query([[select * from MediaCategories M where M.media_category_id=? limit 1;]], {category_id})[1]
+    return query_res
+end
+
 function Foo()
     print("hello")
 end

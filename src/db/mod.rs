@@ -163,10 +163,8 @@ impl PluginRecord {
 #[table("MediaCategories")]
 #[check("./init_db.sql")]
 pub struct MediaCategoryRecord {
-    #[column("media_category_id")]
-    pub id: String,
-    #[column("media_category_string_key")]
-    pub string_key: String,
+    pub media_category_id: String,
+    pub media_category_string_key: String,
 }
 
 impl Fetchable1<&str> for MediaCategoryRecord {}
@@ -180,7 +178,7 @@ impl MediaCategoryRecord {
     pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
         fetch_vec_of(
             conn,
-            &self.id,
+            &self.media_category_id,
             "select * from MediaTypes where MediaTypes.media_category_id = ?",
         )
     }
@@ -190,10 +188,8 @@ impl MediaCategoryRecord {
 #[table("MediaTypes")]
 #[check("./init_db.sql")]
 pub struct MediaTypeRecord {
-    #[column("media_type_id")]
-    pub id: String,
-    #[column("media_type_string_key")]
-    pub string_key: String,
+    pub media_type_id: String,
+    pub media_type_string_key: String,
     pub media_category_id: String,
 }
 
@@ -214,10 +210,8 @@ impl MediaTypeRecord {
 #[table("FileExtensions")]
 #[check("./init_db.sql")]
 pub struct FileExtensionRecord {
-    #[column("file_extension_tag")]
-    pub tag: String,
-    #[column("file_extension_desc_string_key")]
-    pub string_key: String,
+    pub file_extension_tag: String,
+    pub file_extension_desc_string_key: String,
 }
 
 impl Fetchable1<&str> for FileExtensionRecord {}
@@ -229,7 +223,7 @@ impl WithSQL for FileExtensionRecord {
 
 impl FileExtensionRecord {
     pub fn get_media_types(&self, conn: &Connection) -> Result<Vec<MediaTypeRecord>> {
-        fetch_vec_of(conn, &self.tag, "
+        fetch_vec_of(conn, &self.file_extension_tag, "
             select * from MediaTypesForFileExtensions
                 inner join MediaTypes on MediaTypesForFileExtensions.media_type_id = MediaTypes.media_type_id
                 where MediaTypesForFileExtensions.file_Extension_tag = ?;")
@@ -249,26 +243,16 @@ create table MediaTypes (
 #[table("Files")]
 #[check("./init_db.sql")]
 pub struct FileRecord {
-    #[column("file_uuid")]
-    pub uuid: String,
-    #[column("file_name")]
-    pub name: String,
-    #[column("file_size_bytes")]
-    pub size_bytes: i64,
-    #[column("file_hash")]
-    pub hash: String,
-    #[column("file_dir_path")]
-    pub dir_path: String,
-    #[column("file_extension_tag")]
-    pub extension_tag: String,
-    #[column("file_encoding")]
-    pub encoding: String,
-    #[column("media_type_override_id")]
-    pub media_type_override: Option<String>,
-    #[column("file_deleted")]
-    pub deleted: bool,
-    #[column("file_read_only")]
-    pub read_only: bool,
+    pub file_uuid: String,
+    pub file_name: String,
+    pub file_size_bytes: i64,
+    pub file_hash: String,
+    pub file_dir_path: String,
+    pub file_extension_tag: String,
+    pub file_encoding: String,
+    pub media_type_override_id: Option<String>,
+    pub file_deleted: bool,
+    pub file_read_only: bool,
 }
 
 impl Fetchable1<&str> for FileRecord {}
@@ -280,36 +264,36 @@ impl WithSQL for FileRecord {
 
 impl FileRecord {
     pub fn get_object_record(&self, conn: &Connection) -> Result<Option<ObjectRecord>> {
-        ObjectRecord::get_from_id(conn, &self.uuid)
+        ObjectRecord::get_from_id(conn, &self.file_uuid)
     }
     
     pub fn as_object_attrs(self) -> Result<Vec<ObjectAttr>> {
         Ok(vec![
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "filename".to_string(), data: AttrValue::STRING(self.name)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "size".to_string(), data: AttrValue::INT(self.size_bytes)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "hash".to_string(), data: AttrValue::STRING(self.hash)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "dir".to_string(), data: AttrValue::STRING(self.dir_path)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "extension".to_string(), data: AttrValue::STRING(self.extension_tag)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "encoding".to_string(), data: AttrValue::STRING(self.encoding)},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "media_type".to_string(), data: match self.media_type_override {
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "filename".to_string(), attribute_value: AttrValue::STRING(self.file_name)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "size".to_string(), attribute_value: AttrValue::INT(self.file_size_bytes)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "hash".to_string(), attribute_value: AttrValue::STRING(self.file_hash)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "dir".to_string(), attribute_value: AttrValue::STRING(self.file_dir_path)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "extension".to_string(), attribute_value: AttrValue::STRING(self.file_extension_tag)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "encoding".to_string(), attribute_value: AttrValue::STRING(self.file_encoding)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "media_type".to_string(), attribute_value: match self.media_type_override_id {
                 Some(s) => AttrValue::STRING(s),
                 None => AttrValue::NONE
             }},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "read_only".to_string(), data: AttrValue::INT(if self.read_only {1} else {0})},
-            ObjectAttr {object_uuid: self.uuid.clone(), name: "id".to_string(), data: AttrValue::BYTES(self.uuid.into_bytes().to_vec())},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "read_only".to_string(), attribute_value: AttrValue::INT(if self.file_read_only {1} else {0})},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "id".to_string(), attribute_value: AttrValue::BYTES(self.file_uuid.into_bytes().to_vec())},
         ])
     }
 
 
     pub fn get_extension_record(&self, conn: &Connection) -> Result<Option<FileExtensionRecord>> {
-        FileExtensionRecord::get_from_id(conn, &self.extension_tag)
+        FileExtensionRecord::get_from_id(conn, &self.file_extension_tag)
     }
 
     pub fn get_override_media_type_record(
         &self,
         conn: &Connection,
     ) -> Result<Option<MediaTypeRecord>> {
-        Ok(match &self.media_type_override {
+        Ok(match &self.media_type_override_id {
             Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
             None => None,
         })
@@ -318,13 +302,13 @@ impl FileRecord {
     pub fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
         fetch_vec_of(
             conn,
-            &self.uuid,
+            &self.file_uuid,
             "select * from FileArtwork FA where FA.file_uuid = ?",
         )
     }
 
     pub fn get_art_by_role(&self, conn: &Connection, role: &str) -> Result<Option<FileArtworkRecord>> {
-        FileArtworkRecord::get_art_by_role(conn, &self.uuid, role)
+        FileArtworkRecord::get_art_by_role(conn, &self.file_uuid, role)
     }
 
     pub fn get_cover_art(&self, conn: &Connection) -> Result<Option<FileArtworkRecord>> {
@@ -336,7 +320,7 @@ impl FileRecord {
             "select FileBlobs.blob_value from FileBlobs where FileBlobs.file_uuid = ?1 limit 1;",
         )?;
         let record = stmt
-            .query_row(params![self.uuid], |row| {
+            .query_row(params![self.file_uuid], |row| {
                 let thingy = row.get_ref("blob_value")?;
                 Ok(match thingy {
                     // It would be really weird for these first three to be here
@@ -359,8 +343,7 @@ impl FileRecord {
 pub struct FileArtworkRecord {
     pub file_uuid: String,
     pub artwork_file_uuid: String,
-    #[column("artwork_role")]
-    pub note: String,
+    pub artwork_role: String,
 }
 
 impl Fetchable2<&str, &str> for FileArtworkRecord {}
@@ -433,10 +416,8 @@ impl ToSql for AttrValue {
 #[check("./init_db.sql")]
 pub struct ObjectAttr {
     pub object_uuid: String,
-    #[column("attribute_name")]
-    pub name: String,
-    #[column("attribute_value")]
-    pub data: AttrValue,
+    pub attribute_name: String,
+    pub attribute_value: AttrValue,
 }
 
 impl Fetchable2<&str, &str> for ObjectAttr {}
@@ -521,32 +502,19 @@ create table ObjectAttributes (
 #[table("Objects")]
 #[check("./init_db.sql")]
 pub struct ObjectRecord {
-    #[column("object_uuid")]
-    pub uuid: String,
-    #[column("object_name")]
-    pub name: String,
-    #[column("plugin_package_name")]
-    pub manager: String,
-    #[column("object_deleted")]
-    pub deleted: bool,
-    #[column("object_genre")]
-    pub genre: String,
-    #[column("object_album_name")]
-    pub album: String,
-    #[column("object_album_position")]
-    pub position: i32,
-    #[column("object_region")]
-    pub region: String,
-    #[column("object_language")]
-    pub language: String,
-    #[column("object_artist")]
-    pub artist: String,
-    #[column("object_imprint")]
-    pub imprint: String,
-    #[column("object_publish_timestamp")]
-    pub publish_timestamp: OffsetDateTime,
-    #[column("object_website")]
-    pub website: String,
+    pub object_uuid: String,
+    pub object_name: String,
+    pub plugin_package_name: String,
+    pub object_deleted: bool,
+    pub object_genre: String,
+    pub object_album_name: String,
+    pub object_album_position: u32,
+    pub object_region: String,
+    pub object_language: String,
+    pub object_artist: String,
+    pub object_imprint: String,
+    pub object_publish_timestamp: OffsetDateTime,
+    pub object_website: String,
 }
 
 /*
@@ -572,15 +540,15 @@ impl ObjectRecord {
     pub fn get_attributes(&self, conn: &Connection) -> Result<Vec<ObjectAttr>> {
         fetch_vec_of(
             conn,
-            &self.uuid,
+            &self.object_uuid,
             "select * from ObjectAttributes where ObjectAttributes.object_uuid = ?",
         )
     }
     pub fn get_attribute(&self, conn: &Connection, name: &str) -> Result<Option<ObjectAttr>> {
-        ObjectAttr::get_from_id(conn, &self.uuid, name)
+        ObjectAttr::get_from_id(conn, &self.object_uuid, name)
     }
     pub fn get_file_record(&self, conn: &Connection) -> Result<Option<FileRecord>> {
-        FileRecord::get_from_id(conn, &self.uuid)
+        FileRecord::get_from_id(conn, &self.object_uuid)
     }
     pub fn get_override_media_type_record(
         &self,
@@ -593,7 +561,7 @@ impl ObjectRecord {
             where Files.file_uuid = ?1",
         )?;
         let record = stmt
-            .query_row(params![self.uuid], MediaTypeRecord::from_row)
+            .query_row(params![self.object_uuid], MediaTypeRecord::from_row)
             .optional()?;
         return Ok(record);
     }
@@ -607,21 +575,37 @@ impl ObjectRecord {
     pub fn get_extra_files(&self, conn: &Connection) -> Result<Vec<ObjectExtraFileRecord>> {
         fetch_vec_of(
             conn,
-            &self.uuid,
+            &self.object_uuid,
             "select * from ExtraFilesForObjects EF where EF.object_uuid = ?",
         )
     }
     pub fn get_artwork_records(&self, conn: &Connection) -> Result<Vec<FileArtworkRecord>> {
         fetch_vec_of(
             conn,
-            &self.uuid,
+            &self.object_uuid,
             "select * from FileArtwork FA where FA.file_uuid = ?",
         )
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[table("ObjectsInCollections")]
+#[check("./init_db.sql")]
+pub struct ObjectInCollection {
+    pub collection_uuid: String,
+    pub index_in_collection: i32,
+    pub object_uuid: String,
+}
+
+impl Fetchable2<&str, &str> for ObjectInCollection {}
+impl WithSQL for ObjectInCollection {
+    fn get_fetch_sql() -> &'static str {
+        "select * from ObjectsInCollctions OC where OC.collection_uuid = ?1 and OC.object_uuid = ?2 limit 1;"
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct ObjectsInCollection {
+pub struct PageOfObjectsInCollection {
     pub collection_uuid: String,
     pub pagesize: i64,
     pub pageno: i64,
@@ -658,14 +642,14 @@ impl CollectionRecord {
         conn: &Connection,
         pagesize: i64,
         pageno: i64,
-    ) -> Result<ObjectsInCollection, Error> {
-        return ObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno);
+    ) -> Result<PageOfObjectsInCollection, Error> {
+        return PageOfObjectsInCollection::get_object_page(conn, &self.uuid, pagesize, pageno);
     }
 }
 
-impl ObjectsInCollection {
-    pub fn get_next_page(&mut self, conn: &Connection) -> Result<ObjectsInCollection> {
-        return ObjectsInCollection::get_object_page(
+impl PageOfObjectsInCollection {
+    pub fn get_next_page(&mut self, conn: &Connection) -> Result<PageOfObjectsInCollection> {
+        return PageOfObjectsInCollection::get_object_page(
             conn,
             &self.collection_uuid,
             self.pagesize,
@@ -678,7 +662,7 @@ impl ObjectsInCollection {
         collection_id: &str,
         pagesize: i64,
         pageno: i64,
-    ) -> Result<ObjectsInCollection, Error> {
+    ) -> Result<PageOfObjectsInCollection, Error> {
         let mut obj_stmt = conn.prepare_cached(
             "
             select * from ObjectsInCollections OC
@@ -700,7 +684,7 @@ impl ObjectsInCollection {
             )?
             .map(|t| t.expect("Should be an object here"))
             .collect();
-        Ok(ObjectsInCollection {
+        Ok(PageOfObjectsInCollection {
             collection_uuid: collection_id.to_string(),
             objects,
             pagesize,
@@ -714,14 +698,10 @@ impl ObjectsInCollection {
 #[table("Devices")]
 #[check("./init_db.sql")]
 pub struct DeviceRecord {
-    #[column("device_uuid")]
-    pub uuid: String,
-    #[column("device_name")]
-    pub name: String,
-    #[column("device_description")]
-    pub description: String,
-    #[column("device_icon_path")]
-    pub icon_path: Option<String>,
+    pub device_uuid: String,
+    pub device_name: String,
+    pub device_description: String,
+    pub device_icon_path: Option<String>,
 }
 
 impl Fetchable1<&str> for DeviceRecord {}
@@ -813,7 +793,7 @@ mod simple_read_tests {
         let conn = init()?;
         let mcat = MediaCategoryRecord::get_from_id(&conn, "DOCUMENT")?
             .expect("Document category should exsit");
-        assert!(mcat.string_key == "media_category_document");
+        assert!(mcat.media_category_string_key == "media_category_document");
         return Ok(());
     }
 
@@ -822,7 +802,7 @@ mod simple_read_tests {
         let conn = init()?;
         let mtype =
             MediaTypeRecord::get_from_id(&conn, "PLAINTEXT")?.expect("Plaintext type should exsit");
-        assert!(mtype.string_key == "media_type_plain_text");
+        assert!(mtype.media_type_string_key == "media_type_plain_text");
         return Ok(());
     }
 
@@ -844,7 +824,7 @@ mod simple_read_tests {
         let conn = init()?;
         let obj = ObjectRecord::get_from_id(&conn, ("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?
             .expect("There is no entity here");
-        assert!(obj.name == "Welcome File");
+        assert!(obj.object_name == "Welcome File");
         return Ok(());
     }
 
@@ -865,9 +845,9 @@ mod simple_read_tests {
             .expect("There should be an object here")
             .get_attributes(&conn)?;
         //let attrs = get_attributes_for_object(&conn, &uuid!("DEADBEEFDEADBEEFDEADBEEFDEADBEEF"))?;
-        assert!(attrs[0].name.len() != 0);
-        assert!(attrs[1].name.len() != 0);
-        assert!(attrs[2].name.len() != 0);
+        assert!(attrs[0].attribute_name.len() != 0);
+        assert!(attrs[1].attribute_name.len() != 0);
+        assert!(attrs[2].attribute_name.len() != 0);
         return Ok(());
     }
 
@@ -878,7 +858,7 @@ mod simple_read_tests {
             .expect("There should be an object here")
             .get_attribute(&conn, "REVISION")?
             .expect("There should be an attribute here");
-        if let AttrValue::INT(_) = attr.data {
+        if let AttrValue::INT(_) = attr.attribute_value {
         } else {
             assert!(false);
         }
@@ -913,7 +893,7 @@ mod simple_read_tests {
                 .expect("There is no collection here")
                 .get_objects(&conn, 10, 0)?;
         assert!(objcol.total_length == 1);
-        assert!(objcol.objects[0].name == "Welcome File");
+        assert!(objcol.objects[0].object_name == "Welcome File");
         return Ok(());
     }
 
@@ -922,7 +902,7 @@ mod simple_read_tests {
         let conn = init()?;
         let fr = FileRecord::get_from_id(&conn, "DEADBEEFDEADBEEFDEADBEEFDEADBEEF")?
             .expect("There is no entity here");
-        assert!(fr.name == "welcome.txt");
+        assert!(fr.file_name == "welcome.txt");
         return Ok(());
     }
 
@@ -944,9 +924,9 @@ mod simple_read_tests {
         let rec = fr
             .get_extension_record(&conn)?
             .expect("There should be an extension record here");
-        assert!(rec.string_key == "file_ext_txt");
+        assert!(rec.file_extension_desc_string_key == "file_ext_txt");
         let types = rec.get_media_types(&conn)?;
-        assert!(types[1].string_key != "");
+        assert!(types[1].media_type_string_key != "");
         return Ok(());
     }
 
@@ -967,7 +947,7 @@ mod simple_read_tests {
         let conn = init()?;
         let dr = DeviceRecord::get_from_id(&conn, ("0DE2C3400DE2C3400DE2C3400DE2C340"))?
             .expect("There is no entity here");
-        assert!(dr.name == "Example Flash Drive");
+        assert!(dr.device_name == "Example Flash Drive");
         Ok(())
     }
 

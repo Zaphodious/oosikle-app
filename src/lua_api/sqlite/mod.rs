@@ -1,10 +1,11 @@
-use crate::db::*;
 use crate::db;
+use crate::db::*;
 use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
 use mlua::{
-    chunk, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table, UserData, Value,
+    chunk, ExternalResult, FromLua, IntoLua, Lua, LuaSerdeExt, Result as luaResult, Table,
+    UserData, Value,
 };
 use rusqlite::{
     fallible_streaming_iterator::FallibleStreamingIterator,
@@ -17,6 +18,43 @@ use serde::{Deserialize, Serialize};
 use std::{fmt, path::PathBuf};
 
 mod from_lua_defs;
+
+macro_rules! to_from_lua_impl_serde {
+    ($val:path) => {
+        impl FromLua for $val {
+            fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+                if let Value::Table(_) = value {
+                    Ok(lua.from_value::<Self>(value)?)
+                } else {
+                    panic!("Only a table can be converted to a {:?}", stringify!($val));
+                }
+            }
+        }
+        impl IntoLua for $val {
+            fn into_lua(self, lua: &Lua) -> luaResult<Value> {
+                lua.to_value(&self)
+            }
+        }
+    };
+    ($($val:path),+) => {
+        $(to_from_lua_impl_serde!($val);)+
+    }
+}
+
+to_from_lua_impl_serde![
+    db::MediaCategoryRecord,
+    db::MediaTypeRecord,
+    db::FileRecord,
+    db::FileArtworkRecord,
+    db::ObjectAttr,
+    db::ObjectExtraFileRecord,
+    db::ObjectRecord,
+    db::ObjectInCollection,
+    db::PageOfObjectsInCollection,
+    db::CollectionRecord,
+    db::DeviceRecord,
+    db::DeviceSyncListRecord
+];
 
 #[derive(Debug)]
 pub struct SQLua {
@@ -54,20 +92,19 @@ fn value_to_lua(lua: &Lua, value: ValueRef) -> luaResult<Value> {
 }
 
 fn attr_value_to_lua(lua: &Lua, value: AttrValue) -> luaResult<Value> {
-        Ok(match value {
-            AttrValue::NONE => Value::NULL,
-            AttrValue::INT(i) => Value::Integer(i.try_into().unwrap()),
-            AttrValue::FLOAT(f) => Value::Number(f.try_into().unwrap()),
-            AttrValue::STRING(s) => Value::String(lua.create_string(s)?),
-            AttrValue::BYTES(b) => Value::Table({
+    Ok(match value {
+        AttrValue::NONE => Value::NULL,
+        AttrValue::INT(i) => Value::Integer(i.try_into().unwrap()),
+        AttrValue::FLOAT(f) => Value::Number(f.try_into().unwrap()),
+        AttrValue::STRING(s) => Value::String(lua.create_string(s)?),
+        AttrValue::BYTES(b) => Value::Table({
             let t = lua.create_table()?;
             for b in b {
                 t.push(b)?;
             }
             t
         }),
-
-        })
+    })
 }
 
 #[derive(Debug)]
@@ -120,13 +157,21 @@ impl SQLua {
         }
     }
 
-    pub fn get_ext_attributes_for_object(lua: &Lua, this: &mut SQLua, object_uuid: String) -> luaResult<Table> {
+    pub fn get_ext_attributes_for_object(
+        lua: &Lua,
+        this: &mut SQLua,
+        object_uuid: String,
+    ) -> luaResult<Table> {
         SQLua::connect_to_db(lua, this, ())?;
         let t = lua.create_table()?;
         if let Some(conn) = &this.conn {
-            let attrs = ObjectAttr::get_attributes_for_object_uuid(&conn, &object_uuid).map_err(mlua::Error::external)?;
+            let attrs = ObjectAttr::get_attributes_for_object_uuid(&conn, &object_uuid)
+                .map_err(mlua::Error::external)?;
             for attr in attrs {
-                t.set(attr.name, attr_value_to_lua(lua, attr.data)?)?;
+                t.set(
+                    attr.attribute_name,
+                    attr_value_to_lua(lua, attr.attribute_value)?,
+                )?;
             }
         } else {
             panic!("Completely failed to secure a good DB connection");
@@ -134,16 +179,21 @@ impl SQLua {
         Ok(t)
     }
 
-    pub fn add_media_category(lua: &Lua, this: &mut SQLua, (media_category_id, media_category_key): (String, String)) -> luaResult<bool> {
+    pub fn add_media_category(
+        lua: &Lua,
+        this: &mut SQLua,
+        (media_category_id, media_category_key): (String, String),
+    ) -> luaResult<bool> {
         SQLua::connect_to_db(lua, this, ())?;
         let mut conn = this.conn.as_mut().expect("failed to secure a sql handle");
         let cat = db::MediaCategoryRecord {
-            id: media_category_id, string_key: media_category_key
+            media_category_id,
+            media_category_string_key: media_category_key,
         };
-        cat.insert_or(conn, exemplar::OnConflict::Replace).into_lua_err()?;
-        return Ok(true)
+        cat.insert_or(conn, exemplar::OnConflict::Replace)
+            .into_lua_err()?;
+        return Ok(true);
     }
-
 
     pub fn query(
         lua: &Lua,
@@ -169,7 +219,9 @@ impl SQLua {
             for header in &headers {
                 println!("header: {}", header);
             } */
-            let mut query_result = (stmt).query(params_from_iter(params)).map_err(mlua::Error::external)?;
+            let mut query_result = (stmt)
+                .query(params_from_iter(params))
+                .map_err(mlua::Error::external)?;
             //let mut ret: Vec<Table> = vec![];
             let mut ret = lua.create_table()?;
             while let Some(row) = query_result.next().map_err(mlua::Error::external)? {
@@ -202,8 +254,6 @@ impl UserData for SQLua {
         methods.add_method_mut("__connect_to_db", SQLua::connect_to_db);
     }
 }
-
-impl UserData for CollectionRecord {}
 
 #[cfg(test)]
 mod basic_functionality_tests {
@@ -239,6 +289,7 @@ mod basic_functionality_tests {
 mod read_from_lua_tests {
     use super::*;
     use crate::{db, lua_api};
+    use mlua::LuaSerdeExt;
     use rusqlite::Connection;
 
     static TESTING_VALUES: &'static str = include_str!("../../testing_data/sql/testing_values.sql");
@@ -247,16 +298,18 @@ mod read_from_lua_tests {
 
     fn init() -> Lua {
         let mut lua = lua_api::init(None).expect("Lua failed to initialize");
-        lua.load(TESTING_LUA).exec().expect("Lua failed to load the testing script");
+        lua.load(TESTING_LUA)
+            .exec()
+            .expect("Lua failed to load the testing script");
 
         SQLua::add_to_lua(
             ":memory:".into(),
             &(INIT_DB_STR.to_string() + TESTING_VALUES),
             &lua,
-        ).expect("SQLua failed to properly initialize");
+        )
+        .expect("SQLua failed to properly initialize");
         lua
     }
-
 
     #[test]
     fn can_do_simple_get() -> Result<()> {
@@ -270,7 +323,9 @@ mod read_from_lua_tests {
     #[test]
     fn can_insert_media_categories() -> Result<()> {
         let mut lua = init();
-        let res = lua.load("SQLuaAddsMediaCategory([[foob]], [[foob_key]])").eval::<String>()?;
+        let res = lua
+            .load("SQLuaAddsMediaCategory([[foob]], [[foob_key]])")
+            .eval::<String>()?;
         println!("what is the key? {:?}", res);
         assert!(res == "foob_key");
         Ok(())
@@ -279,10 +334,41 @@ mod read_from_lua_tests {
     #[test]
     fn can_make_html_for_list() -> Result<()> {
         let mut lua = init();
-        let res = lua.load("SQLuaCreatesHTMLBasic([[BADC0FFEE0DDF00DBADC0FFEE0DDF00D]])").eval::<String>()?;
+        let res = lua
+            .load("SQLuaCreatesHTMLBasic([[BADC0FFEE0DDF00DBADC0FFEE0DDF00D]])")
+            .eval::<String>()?;
         assert!(res.contains("<tr draggable=\"true\"> <td>Welcome File</td> <td>TheHotFish</td> <td></td> <td>1970-01-01</td> </tr>"));
         //print!("{:?}", res);
-        Ok(()) 
+        Ok(())
     }
 
+    #[test]
+    fn from_lua_serde_works() -> Result<()> {
+        let mut lua = init();
+        let res = lua
+            .load("SerdeWorksAsExpected([[VIDEOGAME]])")
+            .eval::<MediaCategoryRecord>()?;
+        let test_mc = MediaCategoryRecord {
+            media_category_id: "VIDEOGAME".into(),
+            media_category_string_key: "media_category_videogame".into(),
+        };
+        assert!(res == test_mc);
+        Ok(())
+    }
+
+    #[test]
+    fn into_lua_serde_works() -> Result<()> {
+        let mut lua = init();
+        let res = MediaCategoryRecord {
+            media_category_id: "foo".into(),
+            media_category_string_key: "oosike.foo".into(),
+        };
+        let res_conv = res.into_lua(&lua)?;
+        if let Value::Table(t) = res_conv {
+            assert!(t.get::<String>("media_category_id")? == "foo")
+        } else {
+            assert!(false);
+        }
+        Ok(())
+    }
 }

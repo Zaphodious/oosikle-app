@@ -15,7 +15,6 @@ use std::{
 
 use super::{init as lua_init, sqlite::SQLua};
 
-
 #[derive(Debug, Clone)]
 struct LuaPluginRegistrar {
     plugin_credit: Option<Table>,
@@ -45,11 +44,11 @@ impl LuaPluginRegistrar {
         self.plugin_credit = Some(credit_table);
         Ok(())
     }
-    pub fn def_media_category(&mut self, addition: Table) -> luaResult<()> {
+    pub fn def_media_category(&mut self, lua: &Lua, addition: Table) -> luaResult<()> {
         self.media_categories.push(addition);
         Ok(())
     }
-    pub fn def_media_type(&mut self, addition: Table) -> luaResult<()> {
+    pub fn def_media_type(&mut self, lua: &Lua, addition: Table) -> luaResult<()> {
         self.media_types.push(addition);
         Ok(())
     }
@@ -80,8 +79,8 @@ impl UserData for LuaPluginRegistrar {
 
     fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method_mut("Credit", |_, s, t| s.def_credit(t));
-        methods.add_method_mut("DefMediaCategory", |_, s, t| s.def_media_category(t));
-        methods.add_method_mut("DefMediaType", |_, s, t| s.def_media_type(t));
+        methods.add_method_mut("DefMediaCategory", |l, s, t| s.def_media_category(l, t));
+        methods.add_method_mut("DefMediaType", |l, s, t| s.def_media_type(l, t));
         methods.add_method_mut("DefViewAdapter", |_, s, t| s.def_view_adapter(t));
         methods.add_method_mut("DefObjectAdapter", |_, s, t| s.def_object_adapter(t));
         methods.add_method_mut("DefFileExtension", |_, s, t| s.def_file_extension(t));
@@ -144,7 +143,6 @@ impl UnparsedLuaPlugin {
 
     fn parse(&self, lua: &Lua) -> Result<LuaPluginRegistrar> {
         lua.globals()
-
             .set("Plugin", LuaPluginRegistrar::new(self.full_name()))?;
         //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
         lua.load(&self.script_contents).exec()?;
