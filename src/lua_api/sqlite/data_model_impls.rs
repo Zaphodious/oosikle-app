@@ -1,0 +1,109 @@
+use crate::db;
+use crate::db::*;
+use crate::lua_api::sqlite::SQLua;
+use anyhow::Result;
+use exemplar::Model;
+use hypertext::html_elements::object;
+use mlua::{
+    chunk, ExternalResult, FromLua, FromLuaMulti, IntoLua, IntoLuaMulti, Lua, LuaSerdeExt, MaybeSend, Result as luaResult, Table, UserData, Value
+};
+use proptest::strategy::W;
+use rusqlite::{
+    fallible_streaming_iterator::FallibleStreamingIterator,
+    params, params_from_iter,
+    types::{ToSqlOutput, Value as rValue, ValueRef},
+    CachedStatement, Connection, Error, OptionalExtension, Params, ParamsFromIter,
+    Result as rResult, Row, ToSql,
+};
+use serde::{Deserialize, Serialize};
+use std::{fmt, path::PathBuf};
+
+
+fn make_upsert_name(thestring: &str) -> String {
+    let mut accum = "upsert".to_string();
+    for ch in thestring.chars() {
+        if ch.is_ascii_uppercase() {
+            accum.push('_');
+        } 
+        accum.push(ch.to_ascii_lowercase());
+    }
+    return accum;
+}
+
+macro_rules! mut_method_upsert_record {
+    ($methods:ident, $type:path) => {
+        $methods.add_method_mut(make_upsert_name(stringify!($type)), |l, t, rec: $type| {
+            SQLua::connect_to_db(l, t, ())?;
+            let conn = t.conn.as_mut().expect("failed to secure a sql handle");
+            rec.insert_or(conn, exemplar::OnConflict::Replace)
+                .into_lua_err()?;
+            return Ok(true);
+        })
+    };
+    ($methods:ident, $($type:path),+) => {
+        $(mut_method_upsert_record!($methods, $type);)+
+    }
+}
+macro_rules! make_sql_lua_boilerplate {
+    ($val:path) => {
+        impl FromLua for $val {
+            fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+                if let Value::Table(_) = value {
+                    Ok(lua.from_value::<Self>(value)?)
+                } else {
+                    panic!("Only a table can be converted to a {:?}", stringify!($val));
+                }
+            }
+        }
+        impl IntoLua for $val {
+            fn into_lua(self, lua: &Lua) -> luaResult<Value> {
+                lua.to_value(&self)
+            }
+        }
+        impl $val {
+
+
+        }
+    };
+    ($($val:path),+) => {
+        $(make_sql_lua_boilerplate![$val];)+
+    }
+}
+
+impl UserData for SQLua {
+    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {}
+
+    fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
+        methods.add_method_mut("query", SQLua::query);
+        methods.add_method_mut("__connect_to_db", SQLua::connect_to_db);
+        mut_method_upsert_record!(methods,
+            MediaCategoryRecord,
+            MediaTypeRecord,
+            FileRecord,
+            FileArtworkRecord,
+            ObjectAttr,
+            ObjectExtraFileRecord,
+            ObjectRecord,
+            ObjectInCollection,
+            CollectionRecord,
+            DeviceRecord,
+            DeviceSyncListRecord
+        );
+    }
+}
+
+make_sql_lua_boilerplate![
+    db::MediaCategoryRecord,
+    db::MediaTypeRecord,
+    db::FileRecord,
+    db::FileArtworkRecord,
+    db::ObjectAttr,
+    db::ObjectExtraFileRecord,
+    db::ObjectRecord,
+    db::ObjectInCollection,
+    db::PageOfObjectsInCollection,
+    db::CollectionRecord,
+    db::DeviceRecord,
+    db::DeviceSyncListRecord
+];
+

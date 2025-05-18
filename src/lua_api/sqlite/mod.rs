@@ -17,44 +17,9 @@ use rusqlite::{
 use serde::{Deserialize, Serialize};
 use std::{fmt, path::PathBuf};
 
-mod from_lua_defs;
+mod data_model_impls;
 
-macro_rules! to_from_lua_impl_serde {
-    ($val:path) => {
-        impl FromLua for $val {
-            fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
-                if let Value::Table(_) = value {
-                    Ok(lua.from_value::<Self>(value)?)
-                } else {
-                    panic!("Only a table can be converted to a {:?}", stringify!($val));
-                }
-            }
-        }
-        impl IntoLua for $val {
-            fn into_lua(self, lua: &Lua) -> luaResult<Value> {
-                lua.to_value(&self)
-            }
-        }
-    };
-    ($($val:path),+) => {
-        $(to_from_lua_impl_serde!($val);)+
-    }
-}
 
-to_from_lua_impl_serde![
-    db::MediaCategoryRecord,
-    db::MediaTypeRecord,
-    db::FileRecord,
-    db::FileArtworkRecord,
-    db::ObjectAttr,
-    db::ObjectExtraFileRecord,
-    db::ObjectRecord,
-    db::ObjectInCollection,
-    db::PageOfObjectsInCollection,
-    db::CollectionRecord,
-    db::DeviceRecord,
-    db::DeviceSyncListRecord
-];
 
 #[derive(Debug)]
 pub struct SQLua {
@@ -179,22 +144,6 @@ impl SQLua {
         Ok(t)
     }
 
-    pub fn add_media_category(
-        lua: &Lua,
-        this: &mut SQLua,
-        (media_category_id, media_category_key): (String, String),
-    ) -> luaResult<bool> {
-        SQLua::connect_to_db(lua, this, ())?;
-        let mut conn = this.conn.as_mut().expect("failed to secure a sql handle");
-        let cat = db::MediaCategoryRecord {
-            media_category_id,
-            media_category_string_key: media_category_key,
-        };
-        cat.insert_or(conn, exemplar::OnConflict::Replace)
-            .into_lua_err()?;
-        return Ok(true);
-    }
-
     pub fn query(
         lua: &Lua,
         this: &mut SQLua,
@@ -245,15 +194,6 @@ impl SQLua {
     }
 }
 
-impl UserData for SQLua {
-    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {}
-
-    fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method_mut("query", SQLua::query);
-        methods.add_method_mut("add_media_category", SQLua::add_media_category);
-        methods.add_method_mut("__connect_to_db", SQLua::connect_to_db);
-    }
-}
 
 #[cfg(test)]
 mod basic_functionality_tests {
