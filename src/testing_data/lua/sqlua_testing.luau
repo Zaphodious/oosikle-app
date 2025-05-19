@@ -36,7 +36,8 @@ function SQLuaCreatesHTMLBasic(collection_uuid)
 end
 
 function SQLuaAddsMediaCategory(category_id, category_key)
-    DB:upsert_media_category_record({media_category_id=category_id, media_category_string_key=category_key})
+    --DB:upsert_media_category_record({media_category_id=category_id, media_category_string_key=category_key})
+    local q2 = DB:query([[insert into MediaCategories M values ('foob', 'foob_key')]])
     local query_res = DB:query([[select * from MediaCategories M where M.media_category_id=?;]], {category_id})[1]
     return query_res.media_category_string_key
 end

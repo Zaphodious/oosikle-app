@@ -8,6 +8,7 @@ Plugin "oosikle.builtin.pico8" {
 
     Definitions {
         MediaCategory "videogame" {
+            key = "media_category_videogame",
             pico8 = { "p8.png", "p8", "png" }
         },
     },
