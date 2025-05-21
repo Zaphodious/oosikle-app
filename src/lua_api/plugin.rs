@@ -147,7 +147,8 @@ impl UnparsedLuaPlugin {
             .set("Plugin", LuaPluginRegistrar::new(self.full_name()))?;
         //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
         let wrapped_contents = plugin_wrapper.replace("--insert_plugin_def_here--", &self.script_contents());
-        lua.load(wrapped_contents).exec()?;
+        lua.load(&wrapped_contents).exec()?;
+        let thingy = lua.load("parse_plugin_dec()").eval::<Table>()?;
         let registrar = lua.globals().get("Plugin")?;
         Ok(registrar)
     }
@@ -264,6 +265,22 @@ mod plugin_resoltuion_tests {
     fn plugin_finder_generates_unparsed_plugin_correctly() -> Result<()> {
         let plugin = grab_testing_plugin_unparsed()?;
         assert!(plugin.script_contents.contains("Plugin:Credit({"));
+        Ok(())
+    }
+
+    fn grab_videogame_basic_unparsed() -> Result<UnparsedLuaPlugin> {
+        Ok(discover_plugins(PLUGIN_DIR)?
+            .into_iter()
+            .filter(|p| p.full_name() == "videogame_basic")
+            .nth(0)
+            .expect("Testing plugin not found"))
+    }
+
+    #[test]
+    fn plugin_parser_does_the_thing() -> Result<()> {
+        let plugin = grab_videogame_basic_unparsed()?;
+        let lua = Lua::new();
+        plugin.parse(&lua)?;
         Ok(())
     }
     /*
