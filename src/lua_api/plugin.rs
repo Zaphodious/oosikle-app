@@ -142,10 +142,12 @@ impl UnparsedLuaPlugin {
     }
 
     fn parse(&self, lua: &Lua) -> Result<LuaPluginRegistrar> {
+        const plugin_wrapper: &str = include_str!("./plugin_declare_wrapper.luau");
         lua.globals()
             .set("Plugin", LuaPluginRegistrar::new(self.full_name()))?;
         //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
-        lua.load(&self.script_contents).exec()?;
+        let wrapped_contents = plugin_wrapper.replace("--insert_plugin_def_here--", &self.script_contents());
+        lua.load(wrapped_contents).exec()?;
         let registrar = lua.globals().get("Plugin")?;
         Ok(registrar)
     }
