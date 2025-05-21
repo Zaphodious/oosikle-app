@@ -1,11 +1,38 @@
 Plugin "oosikle.builtin.pico8" {
 
-    Info {
-        authors = { "HotFish", "Croug" },
-        version = 1,
-        date = "2025-05-04"
-    },
+    authors = { "HotFish", "Croug" },
+    version = 1,
+    date = "2025-05-04",
 
+    definitions = {
+        categories = {
+            {
+                media_category_id = "VIDEOGAME",
+                media_category_string_key = "media_category_videogame",
+            },
+        },
+        types = {
+            {
+                media_type_id = "PICO8",
+                media_type_string_key = "media_type_pico8",
+                media_category_id = "VIDEOGAME",
+            }
+        },
+        file_extensions = {
+            {
+                file_extension_tag = "p8",
+                file_extension_desc_string_key "file_ext_p8",
+            },
+            {
+                file_extension_tag = "p8.png",
+                file_extension_desc_string_key "file_ext_p8png",
+            },
+            {
+                file_extension_tag = "png",
+                file_extension_desc_string_key "file_ext_png",
+            },
+        }
+    },
     Definitions {
         MediaCategory "videogame" {
             key = "media_category_videogame",
