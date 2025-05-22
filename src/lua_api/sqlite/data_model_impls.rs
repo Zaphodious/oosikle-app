@@ -79,6 +79,8 @@ impl UserData for SQLua {
         mut_method_upsert_record!(methods,
             MediaCategoryRecord,
             MediaTypeRecord,
+            FileExtensionRecord,
+            MediaTypeForFileExtensionsRecord,
             FileRecord,
             FileArtworkRecord,
             ObjectAttr,
@@ -93,17 +95,19 @@ impl UserData for SQLua {
 }
 
 make_sql_lua_boilerplate![
-    db::MediaCategoryRecord,
-    db::MediaTypeRecord,
-    db::FileRecord,
-    db::FileArtworkRecord,
-    db::ObjectAttr,
-    db::ObjectExtraFileRecord,
-    db::ObjectRecord,
-    db::ObjectInCollection,
-    db::PageOfObjectsInCollection,
-    db::CollectionRecord,
-    db::DeviceRecord,
-    db::DeviceSyncListRecord
+    MediaCategoryRecord,
+    MediaTypeRecord,
+    FileExtensionRecord,
+    MediaTypeForFileExtensionsRecord,
+    FileRecord,
+    FileArtworkRecord,
+    ObjectAttr,
+    ObjectExtraFileRecord,
+    ObjectRecord,
+    ObjectInCollection,
+    PageOfObjectsInCollection,
+    CollectionRecord,
+    DeviceRecord,
+    DeviceSyncListRecord
 ];
 

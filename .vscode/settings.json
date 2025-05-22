@@ -1,7 +1,8 @@
 {
     "sqltools.useNodeRuntime": true,
     "Lua.diagnostics.globals": [
-        "DB"
+        "DB",
+        "DefineBasicPlugin"
     ],
     "luau-lsp.sourcemap.autogenerate": false
 }

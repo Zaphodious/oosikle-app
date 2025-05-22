@@ -1,7 +1,7 @@
 function parse_plugin_dec()
     local plugin_def = {}
 
-    local function RegisterPlugin(plugindef)
+    local function DefineBasicPlugin(plugindef)
         print("we are registering!")
         print(plugindef)
         plugin_def = plugindef

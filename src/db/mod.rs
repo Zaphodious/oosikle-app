@@ -159,7 +159,7 @@ impl PluginRecord {
 }
     */
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("MediaCategories")]
 #[check("./init_db.sql")]
 pub struct MediaCategoryRecord {
@@ -184,7 +184,7 @@ impl MediaCategoryRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("MediaTypes")]
 #[check("./init_db.sql")]
 pub struct MediaTypeRecord {
@@ -206,7 +206,7 @@ impl MediaTypeRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("FileExtensions")]
 #[check("./init_db.sql")]
 pub struct FileExtensionRecord {
@@ -230,6 +230,23 @@ impl FileExtensionRecord {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
+#[table("MediaTypesForFileExtensions")]
+#[check("./init_db.sql")]
+pub struct MediaTypeForFileExtensionsRecord {
+    pub file_extension_tag: String,
+    pub media_type_id: String,
+}
+
+impl Fetchable2<&str, &str> for MediaTypeForFileExtensionsRecord {}
+impl WithSQL for MediaTypeForFileExtensionsRecord {
+    fn get_fetch_sql() -> &'static str {
+        "select * from MediaTypesForFileExtensions MT where MT.file_extension_tag = ?1 and MT.media_type_id = ?2 limit 1;"
+    }
+}
+
+
+
 /*
 create table MediaTypes (
     media_type_id text primary key,
@@ -239,7 +256,7 @@ create table MediaTypes (
 );
  */
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("Files")]
 #[check("./init_db.sql")]
 pub struct FileRecord {

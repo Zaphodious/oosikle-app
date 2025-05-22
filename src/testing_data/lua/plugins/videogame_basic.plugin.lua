@@ -1,4 +1,4 @@
-RegisterPlugin {
+DefineBasicPlugin {
     namespace = "oosikle.builtin.pico8",
 
     authors = { "HotFish", "Croug" },
@@ -22,17 +22,31 @@ RegisterPlugin {
         file_extensions = {
             {
                 file_extension_tag = "p8",
-                file_extension_desc_string_key "file_ext_p8",
+                file_extension_desc_string_key = "file_ext_p8",
             },
             {
                 file_extension_tag = "p8.png",
-                file_extension_desc_string_key "file_ext_p8png",
+                file_extension_desc_string_key = "file_ext_p8png",
             },
             {
                 file_extension_tag = "png",
-                file_extension_desc_string_key "file_ext_png",
+                file_extension_desc_string_key = "file_ext_png",
             },
         },
+        types_for_file_extensions = {
+            {
+                file_extension_tag = "p8",
+                media_type_id = "PICO8"
+            },
+            {
+                file_extension_tag = "p8.png",
+                media_type_id = "PICO8"
+            },
+            {
+                file_extension_tag = "png",
+                media_type_id = "PICO8"
+            },
+        }
     },
 
     view_adapters = {

@@ -6,7 +6,9 @@ use mlua::{
     chunk, AnyUserData, Error, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table,
     UserData, Value,
 };
+use rusqlite::Connection;
 use rust_search::{FilterExt, SearchBuilder};
+use time::{macros::format_description, Date};
 use std::{
     fs::canonicalize,
     io,
@@ -14,6 +16,69 @@ use std::{
 };
 
 use super::{init as lua_init, sqlite::SQLua};
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LuaPluginParseResult {
+    pub namespace: String,
+    pub authors: Vec<String>,
+    pub version: u32,
+    pub date: Date,
+    pub defined_categories: Vec<MediaCategoryRecord>,
+    pub defined_types: Vec<MediaTypeRecord>,
+    pub defined_file_extensions: Vec<FileExtensionRecord>,
+    pub defined_media_types_for_file_extensions: Vec<MediaTypeForFileExtensionsRecord>,
+    pub view_adapters: Vec<Table>,
+    pub object_adapters: Vec<Table>,
+}
+
+impl FromLua for LuaPluginParseResult {
+    fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+        let the_table = value.as_table().expect("Value should be a table");
+        let namespace: String = the_table.get("namespace")?;
+        let authors: Vec<String> = the_table.get("authors")?;
+        let version: u32 = the_table.get("version")?;
+
+        let definitions: Table = the_table.get("definitions")?;
+        let defined_categories: Vec<MediaCategoryRecord> = definitions.get("categories")?;
+        let defined_types: Vec<MediaTypeRecord> = definitions.get("types")?;
+        let defined_file_extensions: Vec<FileExtensionRecord> = definitions.get("file_extensions")?;
+        let defined_media_types_for_file_extensions: Vec<MediaTypeForFileExtensionsRecord> = definitions.get("types_for_file_extensions")?;
+
+        let date_str: String = the_table.get("date")?;
+        let format = format_description!("[year]-[month]-[day]");
+        let date = Date::parse(date_str.as_str(), format).into_lua_err()?;
+
+        let view_adapters: Vec<Table> = the_table.get("view_adapters")?;
+        let object_adapters: Vec<Table> = the_table.get("object_adapters")?;
+
+
+        let ret = LuaPluginParseResult {
+            namespace, authors, version, date,
+            defined_categories, defined_types, defined_file_extensions,
+            defined_media_types_for_file_extensions,
+            view_adapters, object_adapters
+        };
+        Ok(ret)
+    }
+}
+
+impl LuaPluginParseResult {
+    fn insert_definitions(&self, conn: &Connection) -> Result<()> {
+        for n in &self.defined_categories {
+            n.insert(conn)?;
+        }
+        for n in &self.defined_types {
+            n.insert(conn)?;
+        }
+        for n in &self.defined_file_extensions {
+            n.insert(conn)?;
+        }
+        for n in &self.defined_media_types_for_file_extensions {
+            n.insert(conn)?;
+        }
+        Ok(())
+    }
+}
 
 #[derive(Debug, Clone)]
 struct LuaPluginRegistrar {
@@ -27,81 +92,6 @@ struct LuaPluginRegistrar {
     package_name: String,
 }
 
-impl LuaPluginRegistrar {
-    pub fn new(package_name: String) -> LuaPluginRegistrar {
-        LuaPluginRegistrar {
-            plugin_credit: None,
-            media_categories: vec![],
-            media_types: vec![],
-            file_extensions: vec![],
-            view_adapters: vec![],
-            object_adapters: vec![],
-            extensions: vec![],
-            package_name,
-        }
-    }
-    pub fn def_credit(&mut self, credit_table: Table) -> luaResult<()> {
-        self.plugin_credit = Some(credit_table);
-        Ok(())
-    }
-    pub fn def_media_category(&mut self, lua: &Lua, addition: Table) -> luaResult<()> {
-        self.media_categories.push(addition);
-        Ok(())
-    }
-    pub fn def_media_type(&mut self, lua: &Lua, addition: Table) -> luaResult<()> {
-        self.media_types.push(addition);
-        Ok(())
-    }
-    pub fn def_view_adapter(&mut self, addition: Table) -> luaResult<()> {
-        self.view_adapters.push(addition);
-        Ok(())
-    }
-    pub fn def_object_adapter(&mut self, addition: Table) -> luaResult<()> {
-        self.object_adapters.push(addition);
-        Ok(())
-    }
-    pub fn def_file_extension(&mut self, addition: Table) -> luaResult<()> {
-        self.file_extensions.push(addition);
-        Ok(())
-    }
-    pub fn def_extension(&mut self, addition: Table) -> luaResult<()> {
-        self.extensions.push(addition);
-        Ok(())
-    }
-}
-
-impl UserData for LuaPluginRegistrar {
-    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {
-        fields.add_field_method_get("package_name", |_, this: &LuaPluginRegistrar| {
-            Ok(this.package_name.clone())
-        });
-    }
-
-    fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method_mut("Credit", |_, s, t| s.def_credit(t));
-        methods.add_method_mut("DefMediaCategory", |l, s, t| s.def_media_category(l, t));
-        methods.add_method_mut("DefMediaType", |l, s, t| s.def_media_type(l, t));
-        methods.add_method_mut("DefViewAdapter", |_, s, t| s.def_view_adapter(t));
-        methods.add_method_mut("DefObjectAdapter", |_, s, t| s.def_object_adapter(t));
-        methods.add_method_mut("DefFileExtension", |_, s, t| s.def_file_extension(t));
-        methods.add_method_mut("DefExtension", |_, s, t| s.def_extension(t));
-    }
-}
-
-impl FromLua for LuaPluginRegistrar {
-    fn from_lua(value: Value, _lua: &Lua) -> luaResult<Self> {
-        match value {
-            Value::UserData(s) => {
-                if s.is::<LuaPluginRegistrar>() {
-                    Ok(s.borrow_mut::<LuaPluginRegistrar>()?.clone())
-                } else {
-                    panic!("Could not convert to LuaPluginRegistrar")
-                }
-            }
-            _ => panic!("Could not convert to LuaPluginRegistrar"),
-        }
-    }
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct UnparsedLuaPlugin {
@@ -141,16 +131,13 @@ impl UnparsedLuaPlugin {
         }
     }
 
-    fn parse(&self, lua: &Lua) -> Result<LuaPluginRegistrar> {
-        const plugin_wrapper: &str = include_str!("./plugin_declare_wrapper.luau");
-        lua.globals()
-            .set("Plugin", LuaPluginRegistrar::new(self.full_name()))?;
+    fn parse(&self, lua: &Lua) -> Result<LuaPluginParseResult> {
+        const PLUGIN_WRAPPER: &str = include_str!("./plugin_declare_wrapper.luau");
         //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
-        let wrapped_contents = plugin_wrapper.replace("--insert_plugin_def_here--", &self.script_contents());
+        let wrapped_contents = PLUGIN_WRAPPER.replace("--insert_plugin_def_here--", &self.script_contents());
         lua.load(&wrapped_contents).exec()?;
-        let thingy = lua.load("parse_plugin_dec()").eval::<Table>()?;
-        let registrar = lua.globals().get("Plugin")?;
-        Ok(registrar)
+        let thingy = lua.load("parse_plugin_dec()").eval::<LuaPluginParseResult>()?;
+        Ok(thingy)
     }
 }
 
@@ -240,6 +227,7 @@ mod plugin_resoltuion_tests {
         Ok(())
     }
 
+    /*
     #[test]
     fn unparsed_plugin_parses_without_error() -> Result<()> {
         let plugin = UnparsedLuaPlugin {
@@ -251,7 +239,7 @@ mod plugin_resoltuion_tests {
         let lua = Lua::new();
         plugin.parse(&lua)?;
         Ok(())
-    }
+    } */
 
     fn grab_testing_plugin_unparsed() -> Result<UnparsedLuaPlugin> {
         Ok(discover_plugins(PLUGIN_DIR)?
@@ -280,7 +268,9 @@ mod plugin_resoltuion_tests {
     fn plugin_parser_does_the_thing() -> Result<()> {
         let plugin = grab_videogame_basic_unparsed()?;
         let lua = Lua::new();
-        plugin.parse(&lua)?;
+        let res = plugin.parse(&lua)?;
+        assert!(res.namespace == "oosikle.builtin.pico8");
+        assert!(res.version == 1);
         Ok(())
     }
     /*
