@@ -1,4 +1,5 @@
-DefineBasicPlugin {
+return function()
+    return {
     namespace = "oosikle.builtin.pico8",
 
     authors = { "HotFish", "Croug" },
@@ -88,3 +89,4 @@ DefineBasicPlugin {
     },
 
 }
+end

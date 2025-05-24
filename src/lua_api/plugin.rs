@@ -3,8 +3,7 @@ use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
 use mlua::{
-    chunk, AnyUserData, Error, ExternalResult, FromLua, IntoLua, Lua, Result as luaResult, Table,
-    UserData, Value,
+    chunk, AnyUserData, Error, ExternalResult, FromLua, Function, IntoLua, Lua, Result as luaResult, Table, UserData, Value
 };
 use rusqlite::Connection;
 use rust_search::{FilterExt, SearchBuilder};
@@ -132,11 +131,15 @@ impl UnparsedLuaPlugin {
     }
 
     fn parse(&self, lua: &Lua) -> Result<LuaPluginParseResult> {
-        const PLUGIN_WRAPPER: &str = include_str!("./plugin_declare_wrapper.luau");
+        //const PLUGIN_WRAPPER: &str = include_str!("./plugin_declare_wrapper.luau");
+        const PLUGIN_PRELOAD_FN: &str = include_str!("./plugin_dec_pre_load.lua");
         //println!("{:?}", lua.globals().get::<LuaPluginRegistrar>("Plugin")?);
-        let wrapped_contents = PLUGIN_WRAPPER.replace("--insert_plugin_def_here--", &self.script_contents());
-        lua.load(&wrapped_contents).exec()?;
-        let thingy = lua.load("parse_plugin_dec()").eval::<LuaPluginParseResult>()?;
+        //let wrapped_contents = PLUGIN_WRAPPER.replace("--insert_plugin_def_here--", &self.script_contents());
+        //lua.load(&wrapped_contents).exec()?;
+        let plugin_wrap_fn = lua.load(PLUGIN_PRELOAD_FN).eval::<Function>()?;
+        let plugin_fn = lua.load(self.script_contents()).eval::<Function>()?;
+        //let thingy = lua.load("parse_plugin_dec()").eval::<LuaPluginParseResult>()?;
+        let thingy = plugin_wrap_fn.call::<LuaPluginParseResult>(plugin_fn)?;
         Ok(thingy)
     }
 }
