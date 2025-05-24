@@ -17,13 +17,19 @@ use time::{macros::format_description, Date};
 
 use super::{init as lua_init, sqlite::SQLua};
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum AdapterKind {
+    MediaCategory(String),
+    MediaType(String),
+}
+
 #[derive(Debug, Clone, PartialEq, FromLua)]
 pub struct LuaObjectAdapter {
-    media_type: String,
-    custom_detail_view: Function,
-    play_action: Function,
-    initialize_object: Function,
-    settings: Table,
+    media_type: AdapterKind,
+    custom_detail_view: Option<Function>,
+    play_action: Option<Function>,
+    create_from_file: Function,
+    settings_definition: Table,
 }
 
 /*
@@ -40,18 +46,35 @@ pub struct LuaObjectAdapter {
        },
 */
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum ViewAdapterKind {
-    MediaCategory(String),
-    MediaType(String),
-}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct LuaViewAdapter {
-    adapter_kind: ViewAdapterKind,
-    page_sql: String,
-    columns: Table,
-    settings: Table,
+    pub adapter_kind: AdapterKind,
+    pub page_sql: String,
+    pub columns: Table,
+    pub settings_definition: Table,
+}
+
+impl FromLua for LuaViewAdapter {
+    fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+        let the_table = value.as_table().expect("Value should be a table");
+        let kind_category: Option<String> = the_table.get("media_category")?;
+        let kind_type: Option<String> = the_table.get("media_type")?;
+        let adapter_kind = if let Some(cat) = kind_category {
+            AdapterKind::MediaCategory(cat)
+        } else if let Some(ty) = kind_type {
+            AdapterKind::MediaType(ty)
+        } else {
+            panic!("A view adapter should have either media_category or media_type")
+        };
+        Ok(Self {
+            adapter_kind,
+            page_sql: the_table.get("page_sql")?,
+            columns: the_table.get("columns")?,
+            settings_definition: the_table.get("settings")?,
+        })
+
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]

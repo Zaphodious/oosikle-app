@@ -81,7 +81,7 @@ return function()
             play_action = function(object_uuid, settings)
                 return { action = "run", exe = "path_from_settings", args = "run=path_to_p8_file" }
             end,
-            initialize_object = function(file_table, settings) end,
+            create_from_file = function(file_table, settings) end,
             settings = {
                 pico8path = { type = "filepath", default = nil }
             },
