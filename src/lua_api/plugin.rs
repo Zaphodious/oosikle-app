@@ -3,79 +3,128 @@ use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
 use mlua::{
-    chunk, AnyUserData, Error, ExternalResult, FromLua, Function, IntoLua, Lua, Result as luaResult, Table, UserData, Value
+    chunk, AnyUserData, Error, ExternalResult, FromLua, Function, IntoLua, Lua,
+    Result as luaResult, Table, UserData, Value,
 };
 use rusqlite::Connection;
 use rust_search::{FilterExt, SearchBuilder};
-use time::{macros::format_description, Date};
 use std::{
     fs::canonicalize,
     io,
     path::{Path, PathBuf},
 };
+use time::{macros::format_description, Date};
 
 use super::{init as lua_init, sqlite::SQLua};
+
+#[derive(Debug, Clone, PartialEq, FromLua)]
+pub struct LuaObjectAdapter {
+    media_type: String,
+    custom_detail_view: Function,
+    play_action: Function,
+    initialize_object: Function,
+    settings: Table,
+}
+
+/*
+       {
+           media_type = "pico8",
+           custom_detail_view = function(object_uuid, settings) end,
+           play_action = function(object_uuid, settings)
+               return { action = "run", exe = "path_from_settings", args = "run=path_to_p8_file" }
+           end,
+           initialize_object = function(file_table, settings) end,
+           settings = {
+               pico8path = { type = "filepath", default = nil }
+           },
+       },
+*/
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ViewAdapterKind {
+    MediaCategory(String),
+    MediaType(String),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LuaViewAdapter {
+    adapter_kind: ViewAdapterKind,
+    page_sql: String,
+    columns: Table,
+    settings: Table,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LuaPluginParsedDefintions {
+    file_extensions: Vec<FileExtensionRecord>,
+    types: Vec<MediaTypeRecord>,
+    categories: Vec<MediaCategoryRecord>,
+    types_for_file_extensions: Vec<MediaTypeForFileExtensionsRecord>,
+}
+
+impl FromLua for LuaPluginParsedDefintions {
+    fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+        let the_table = value.as_table().expect("Value should be a table");
+        Ok(Self {
+            categories: the_table.get("categories")?,
+            types: the_table.get("types")?,
+            file_extensions: the_table.get("file_extensions")?,
+            types_for_file_extensions: the_table.get("types_for_file_extensions")?,
+        })
+    }
+}
+
+impl LuaPluginParsedDefintions {
+    fn insert_definitions(&self, conn: &Connection) -> Result<()> {
+        for n in &self.categories {
+            n.insert(conn)?;
+        }
+        for n in &self.types {
+            n.insert(conn)?;
+        }
+        for n in &self.file_extensions {
+            n.insert(conn)?;
+        }
+        for n in &self.types_for_file_extensions {
+            n.insert(conn)?;
+        }
+        Ok(())
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct LuaPluginParseResult {
     pub namespace: String,
     pub authors: Vec<String>,
     pub version: u32,
-    pub date: Date,
-    pub defined_categories: Vec<MediaCategoryRecord>,
-    pub defined_types: Vec<MediaTypeRecord>,
-    pub defined_file_extensions: Vec<FileExtensionRecord>,
-    pub defined_media_types_for_file_extensions: Vec<MediaTypeForFileExtensionsRecord>,
-    pub view_adapters: Vec<Table>,
-    pub object_adapters: Vec<Table>,
+    pub date: String,
+    pub definitions: Option<LuaPluginParsedDefintions>,
+    pub view_adapters: Option<Vec<Table>>,
+    pub object_adapters: Option<Vec<Table>>,
 }
 
 impl FromLua for LuaPluginParseResult {
     fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
-        let the_table = value.as_table().expect("Value should be a table");
-        let namespace: String = the_table.get("namespace")?;
-        let authors: Vec<String> = the_table.get("authors")?;
-        let version: u32 = the_table.get("version")?;
-
-        let definitions: Table = the_table.get("definitions")?;
-        let defined_categories: Vec<MediaCategoryRecord> = definitions.get("categories")?;
-        let defined_types: Vec<MediaTypeRecord> = definitions.get("types")?;
-        let defined_file_extensions: Vec<FileExtensionRecord> = definitions.get("file_extensions")?;
-        let defined_media_types_for_file_extensions: Vec<MediaTypeForFileExtensionsRecord> = definitions.get("types_for_file_extensions")?;
-
-        let date_str: String = the_table.get("date")?;
         let format = format_description!("[year]-[month]-[day]");
-        let date = Date::parse(date_str.as_str(), format).into_lua_err()?;
+        let the_table = value.as_table().expect("Value should be a table");
+        Ok(Self {
+            date: Date::parse(
+                &the_table
+                    .get::<String>("date")
+                    .expect("Date string needs to be properly formatted"),
+                format,
+            )
+            .into_lua_err()?
+            .to_string(),
+            namespace: the_table.get("namespace")?,
+            authors: the_table.get("authors")?,
+            version: the_table.get("version")?,
 
-        let view_adapters: Vec<Table> = the_table.get("view_adapters")?;
-        let object_adapters: Vec<Table> = the_table.get("object_adapters")?;
+            definitions: the_table.get("definitions")?,
 
-
-        let ret = LuaPluginParseResult {
-            namespace, authors, version, date,
-            defined_categories, defined_types, defined_file_extensions,
-            defined_media_types_for_file_extensions,
-            view_adapters, object_adapters
-        };
-        Ok(ret)
-    }
-}
-
-impl LuaPluginParseResult {
-    fn insert_definitions(&self, conn: &Connection) -> Result<()> {
-        for n in &self.defined_categories {
-            n.insert(conn)?;
-        }
-        for n in &self.defined_types {
-            n.insert(conn)?;
-        }
-        for n in &self.defined_file_extensions {
-            n.insert(conn)?;
-        }
-        for n in &self.defined_media_types_for_file_extensions {
-            n.insert(conn)?;
-        }
-        Ok(())
+            view_adapters: the_table.get("view_adapters")?,
+            object_adapters: the_table.get("object_adapters")?,
+        })
     }
 }
 
@@ -90,7 +139,6 @@ struct LuaPluginRegistrar {
     extensions: Vec<Table>,
     package_name: String,
 }
-
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct UnparsedLuaPlugin {
