@@ -12,19 +12,20 @@ pub struct Miko<T> {
 }
 
 impl<T> Miko<T> where T: 'static {
-    pub fn build_shrine<S, K>(label: &str, kami_summoner: impl FnOnce() -> Result<T> + Send + 'static) -> Result<Miko<T>> {
+    pub fn build_shrine<S, K>(label: &str, kami_summoner: impl FnOnce() -> Result<T> + Send + 'static) -> Result<(Miko<T>, thread::JoinHandle<()>)> {
         let (chan, rx) = mpsc::channel::<RawMessenger<T>>();
         let b = thread::Builder::new().name(format!("miko_shrine_{}", label));
 
-        let shrine = b.spawn(
+        let shrine_handle = b.spawn(
             move || {
                 let kami = kami_summoner().expect("Failure getting the value"); 
                 for the_fn in rx {
                     the_fn(&kami).expect("There was a problem in the function");
                 }
             }
-            )?.thread().clone();
-        Ok(Miko {shrine, chan })
+            )?;
+        let shrine = shrine_handle.thread().clone();
+        Ok((Miko {shrine, chan}, shrine_handle))
     }
 
     pub fn send_raw_messenger(&self, the_fn: impl FnOnce(&T) -> Result<()> + Send + 'static) -> Result<()> {
