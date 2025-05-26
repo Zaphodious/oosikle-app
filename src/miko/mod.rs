@@ -12,7 +12,7 @@ pub struct Miko<T> {
 }
 
 impl<T> Miko<T> where T: 'static {
-    pub fn build_shrine<S, K>(label: &str, kami_summoner: S) -> Result<Miko<T>> where S: FnOnce() -> Result<T> + Send + 'static {
+    pub fn build_shrine<S, K>(label: &str, kami_summoner: impl FnOnce() -> Result<T> + Send + 'static) -> Result<Miko<T>> {
         let (chan, rx) = mpsc::channel::<RawMessenger<T>>();
         let b = thread::Builder::new().name(format!("miko_shrine_{}", label));
 
