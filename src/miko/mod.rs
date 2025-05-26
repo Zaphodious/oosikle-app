@@ -2,18 +2,18 @@ use std::sync::mpsc;
 use std::thread;
 use anyhow::Result;
 
-type RawMessenger<T> = dyn FnOnce(&T) -> Result<()> + Send + 'static;
+type RawMessenger<T> = Box<dyn FnOnce(&T) -> Result<()> + Send + 'static>;
 
 #[derive(Debug, Clone)]
 pub struct Miko<T> {
     #[allow(dead_code)]
     shrine: thread::Thread,
-    chan: mpsc::Sender<Box<RawMessenger<T>>>,
+    chan: mpsc::Sender<RawMessenger<T>>,
 }
 
 impl<T> Miko<T> where T: 'static {
     pub fn build_shrine<S, K>(label: &str, kami_summoner: S) -> Result<Miko<T>> where S: FnOnce() -> Result<T> + Send + 'static {
-        let (chan, rx) = mpsc::channel::<Box<RawMessenger<T>>>();
+        let (chan, rx) = mpsc::channel::<RawMessenger<T>>();
         let b = thread::Builder::new().name(format!("miko_shrine_{}", label));
 
         let shrine = b.spawn(
