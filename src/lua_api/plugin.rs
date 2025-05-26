@@ -23,13 +23,38 @@ pub enum AdapterKind {
     MediaType(String),
 }
 
-#[derive(Debug, Clone, PartialEq, FromLua)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct LuaObjectAdapter {
-    media_type: AdapterKind,
-    custom_detail_view: Option<Function>,
-    play_action: Option<Function>,
-    create_from_file: Function,
-    settings_definition: Table,
+    pub adapter_kind: AdapterKind,
+    pub custom_detail_view: Option<Function>,
+    pub play_action: Option<Function>,
+    pub create_from_file: Function,
+    pub import_file: Function,
+    pub settings_definition: Table,
+}
+
+impl FromLua for LuaObjectAdapter {
+    fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
+        let the_table = value.as_table().expect("Value should be a table");
+        let kind_category: Option<String> = the_table.get("media_category")?;
+        let kind_type: Option<String> = the_table.get("media_type")?;
+        let adapter_kind = if let Some(cat) = kind_category {
+            AdapterKind::MediaCategory(cat)
+        } else if let Some(ty) = kind_type {
+            AdapterKind::MediaType(ty)
+        } else {
+            panic!("An object adapter should have either media_category or media_type")
+        };
+        Ok(Self {
+            adapter_kind,
+            custom_detail_view: the_table.get("custom_detail_view")?,
+            play_action: the_table.get("play_action")?,
+            create_from_file: the_table.get("create_from_file")?,
+            import_file: the_table.get("import_file")?,
+            settings_definition: the_table.get("settings")?,
+        })
+
+    }
 }
 
 /*
@@ -122,8 +147,8 @@ pub struct LuaPluginParseResult {
     pub version: u32,
     pub date: String,
     pub definitions: Option<LuaPluginParsedDefintions>,
-    pub view_adapters: Option<Vec<Table>>,
-    pub object_adapters: Option<Vec<Table>>,
+    pub view_adapters: Option<Vec<LuaViewAdapter>>,
+    pub object_adapters: Option<Vec<LuaObjectAdapter>>,
 }
 
 impl FromLua for LuaPluginParseResult {
@@ -328,7 +353,7 @@ mod plugin_resoltuion_tests {
     fn grab_videogame_basic_unparsed() -> Result<UnparsedLuaPlugin> {
         Ok(discover_plugins(PLUGIN_DIR)?
             .into_iter()
-            .filter(|p| p.full_name() == "videogame_basic")
+            .filter(|p| p.full_name() == "simple_basic")
             .nth(0)
             .expect("Testing plugin not found"))
     }
@@ -338,8 +363,20 @@ mod plugin_resoltuion_tests {
         let plugin = grab_videogame_basic_unparsed()?;
         let lua = Lua::new();
         let res = plugin.parse(&lua)?;
-        assert!(res.namespace == "oosikle.builtin.pico8");
+        assert!(res.namespace == "oosikle.builtin.simple_basic");
         assert!(res.version == 1);
+        Ok(())
+    }
+
+    #[test]
+    fn plugin_parsed_result_can_register_definitions() -> Result<()> {
+        let plugin = grab_videogame_basic_unparsed()?;
+        let lua = Lua::new();
+        let conn = SQLua::add_to_lua(":memory:".into(), "", &lua);
+        let res = plugin.parse(&lua)?;
+        /*
+        let sqlua = lua.globals().get::<SQLua>("SQLua");
+        */
         Ok(())
     }
     /*

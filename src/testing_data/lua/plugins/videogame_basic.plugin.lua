@@ -82,6 +82,7 @@ return function()
                 return { action = "run", exe = "path_from_settings", args = "run=path_to_p8_file" }
             end,
             create_from_file = function(file_table, settings) end,
+            import_file = function(file_path, settings) end,
             settings = {
                 pico8path = { type = "filepath", default = nil }
             },
