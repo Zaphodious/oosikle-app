@@ -79,6 +79,7 @@ fn attr_value_to_lua(lua: &Lua, value: AttrValue) -> luaResult<Value> {
     })
 }
 
+#[derive(Debug, Clone)]
 pub enum LiberatedColumn {
     Bool(bool),
     String(String),
@@ -106,6 +107,19 @@ impl FromSql for LiberatedColumn {
     }
 }
 
+impl ToSql for LiberatedColumn {
+    fn to_sql(&self) -> rResult<ToSqlOutput<'_>> {
+        match self {
+            LiberatedColumn::Bool(t) => t.to_sql(),
+            LiberatedColumn::String(t) => t.to_sql(),
+            LiberatedColumn::Int(t) => t.to_sql(),
+            LiberatedColumn::Number(t) => t.to_sql(),
+            LiberatedColumn::Blob(items) => items.to_sql(),
+            LiberatedColumn::Null => Ok(ToSqlOutput::Owned(rValue::Null)),
+        }
+    }
+}
+
 impl IntoLua for LiberatedColumn {
     fn into_lua(self, lua: &Lua) -> luaResult<Value> {
         Ok(match self {
@@ -119,33 +133,17 @@ impl IntoLua for LiberatedColumn {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct ValueWrap(Value);
-
-impl ToSql for ValueWrap {
-    fn to_sql(&self) -> rResult<rusqlite::types::ToSqlOutput<'_>> {
-        match &self.0 {
-            Value::Boolean(s) => Ok(ToSqlOutput::Owned(rValue::Integer(if *s { 1 } else { 0 }))),
-            Value::Integer(s) => s.to_sql(),
-            Value::Number(s) => s.to_sql(),
-            Value::String(s) => Ok(ToSqlOutput::Owned(rValue::Text(s.to_string_lossy()))),
-            _ => Ok(ToSqlOutput::Owned(rValue::Null)),
-        }
-    }
-}
-
-impl FromLua for ValueWrap {
+impl FromLua for LiberatedColumn {
     fn from_lua(value: Value, lua: &Lua) -> luaResult<Self> {
-        Ok(ValueWrap(value))
+        Ok(match value {
+            Value::Nil => LiberatedColumn::Null,
+            Value::Boolean(t) => LiberatedColumn::Bool(t),
+            Value::Integer(t) => LiberatedColumn::Int(t.into()),
+            Value::Number(t) => LiberatedColumn::Number(t),
+            Value::String(t) => LiberatedColumn::String(t.to_string_lossy()),
+            _ => panic!("Only the above are supported"),
+        })
     }
-}
-
-fn detect_reset_sqlite_connection(conn: &Connection) -> Result<bool> {
-    let mut stmt = conn.prepare_cached("SELECT count(*) as count FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';")?;
-    Ok(stmt.query_row([], |row| {
-        let count: i32 = row.get("count")?;
-        Ok(count == 0)
-    })?)
 }
 
 impl SQLua {
@@ -175,7 +173,7 @@ impl SQLua {
     pub fn query(
         lua: &Lua,
         this: &mut SQLua,
-        (sqlstr, params): (String, Vec<ValueWrap>),
+        (sqlstr, params): (String, Vec<LiberatedColumn>),
     ) -> luaResult<Table> {
         println!("Going to send the messenger");
         /*
@@ -185,28 +183,37 @@ impl SQLua {
             .collect::<Vec<rValue>>();
         */
         let (headers, rows) = this.0.send_messenger(move |conn| {
+            /*
             let mut p1: Vec<&dyn ToSql> = vec![];
             for n in &params {
                 p1.push(n);
             }
-            let pp: &[&dyn ToSql] = p1.as_slice(); 
+            let pp: &[&dyn ToSql] = p1.as_slice();  */
             let mut stmt = conn.prepare_cached(&sqlstr)?;
             println!("getting headers");
             let headers: Vec<String> = (stmt)
-                .column_names().iter().map(|s| s.to_string()).collect();
+                .column_names()
+                .iter()
+                .map(|s| s.to_string())
+                .collect();
             println!("headers should be {:?}", headers);
+            println!("got headers, binding params");
             /*
-            let params = params_from_iter(param_clone.into_iter());
-            println!("params are {:?}", &params);
-            */
-            println!("got headers, running query");
-            let mut query_result = match (stmt).query(pp) {
+            for (ind, thingy) in params.into_iter().enumerate() {
+                print!("binding param {:?} at position {:?}", &thingy, &ind);
+                stmt.raw_bind_parameter(ind + 1, thingy)?;
+            } */
+            let the_params = params_from_iter(params.into_iter());
+            println!("params are {:?}", &the_params);
+            println!("params bound, running query");
+            let mut query_result = match (stmt).query(the_params) {
                 Ok(s) => s,
                 Err(e) => {
                     println!("There has been an error running the query: {:?}", e);
                     panic!();
                 }
-            };
+            }; 
+            //let mut query_result = stmt.raw_query();
             println!("query ran, shoving results into a vector");
             let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
             while let Some(row) = query_result.next()? {
@@ -261,14 +268,6 @@ mod basic_functionality_tests {
         return Ok(());
     }
 
-    #[test]
-    fn reset_connection_checker_checks_correctly() -> Result<()> {
-        let conn = Connection::open_in_memory()?;
-        assert!(detect_reset_sqlite_connection(&conn)?);
-        conn.execute_batch(INIT_DB_STR)?;
-        assert!(!detect_reset_sqlite_connection(&conn)?);
-        Ok(())
-    }
 }
 #[cfg(test)]
 mod read_from_lua_tests {
@@ -281,7 +280,6 @@ mod read_from_lua_tests {
     static TESTING_VALUES: &'static str = include_str!("../../testing_data/sql/testing_values.sql");
     static INIT_DB_STR: &'static str = include_str!("../../db/init_db.sql");
     static TESTING_LUA: &'static str = include_str!("../../testing_data/lua/sqlua_testing.luau");
-
 
     fn init() -> Result<(Lua, ShrineDestroyer)> {
         let lua = lua_api::init(None).expect("Lua failed to initialize");
@@ -355,7 +353,6 @@ mod read_from_lua_tests {
         Ok(())
     }
 
-    /*
     #[test]
     fn can_insert_media_categories() -> Result<()> {
         let (lua, des) = init()?;
@@ -368,6 +365,4 @@ mod read_from_lua_tests {
         println!("can insert media categories test should be ending");
         Ok(())
     }
-    */
-
 }
