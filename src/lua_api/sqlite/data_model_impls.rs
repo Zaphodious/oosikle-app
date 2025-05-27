@@ -34,7 +34,7 @@ macro_rules! mut_method_upsert_record {
     ($methods:ident, $type:path) => {
         $methods.add_method_mut(make_upsert_name(stringify!($type)), |_, t, rec: $type| {
             let reccopy = rec.clone();
-            t.0.send_messenger(move |conn| {
+            t.0.send_messenger(move |(_, conn)| {
                 reccopy.insert_or(conn, exemplar::OnConflict::Replace)?;
                 Ok(reccopy)
             })?;

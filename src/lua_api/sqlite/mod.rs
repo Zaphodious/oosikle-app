@@ -12,7 +12,7 @@ use rusqlite::{
     fallible_streaming_iterator::FallibleStreamingIterator,
     params, params_from_iter,
     types::{FromSql, ToSqlOutput, Value as rValue, ValueRef},
-    CachedStatement, Connection, Error, OptionalExtension, Params, ParamsFromIter,
+    CachedStatement, Connection, Error, OpenFlags, OptionalExtension, Params, ParamsFromIter,
     Result as rResult, Row, ToSql,
 };
 use serde::{Deserialize, Serialize};
@@ -20,27 +20,34 @@ use std::{fmt, iter::zip, path::PathBuf};
 
 mod data_model_impls;
 
+type SQMiko = Miko<(Connection, Connection)>;
 #[derive(Debug)]
-pub struct SQLua(Miko<Connection>);
+pub struct SQLua(Miko<(Connection, Connection)>);
 
-impl Miko<Connection> {
+impl SQMiko {
     pub fn construct_connection_shrine(
         db_loc: PathBuf,
         init_script: &str,
-    ) -> Result<(Miko<Connection>, miko::ShrineDestroyer)> {
+    ) -> Result<(SQMiko, miko::ShrineDestroyer)> {
         let string_script = init_script.to_string();
         Ok(Miko::build_shrine("sqlite_prime", move || {
-            let conn = Connection::open(db_loc).map_err(mlua::Error::external)?;
-            &conn
+            let writer_conn = Connection::open(&db_loc)?;
+            let read_only_conn = Connection::open_with_flags(
+                &db_loc,
+                OpenFlags::SQLITE_OPEN_READ_ONLY
+                    | OpenFlags::SQLITE_OPEN_URI
+                    | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+            )?;
+            let _ = &writer_conn
                 .execute_batch(&string_script)
                 .map_err(mlua::Error::external)?;
-            Ok(conn)
+            Ok((read_only_conn, writer_conn))
         })?)
     }
 }
 
 impl SQLua {
-    pub fn add_to_lua(sql_miko: Miko<Connection>, lua: &Lua) -> Result<()> {
+    pub fn add_to_lua(sql_miko: SQMiko, lua: &Lua) -> Result<()> {
         let this = SQLua(sql_miko);
         lua.globals().set("DB", this)?;
         Ok(())
@@ -182,14 +189,14 @@ impl SQLua {
             .map(|v| v.to_sql().expect("Falat error parsing lua"))
             .collect::<Vec<rValue>>();
         */
-        let (headers, rows) = this.0.send_messenger(move |conn| {
+        let (headers, rows) = this.0.send_messenger(move |(read_conn, _)| {
             /*
             let mut p1: Vec<&dyn ToSql> = vec![];
             for n in &params {
                 p1.push(n);
             }
             let pp: &[&dyn ToSql] = p1.as_slice();  */
-            let mut stmt = conn.prepare_cached(&sqlstr)?;
+            let mut stmt = read_conn.prepare_cached(&sqlstr)?;
             println!("getting headers");
             let headers: Vec<String> = (stmt)
                 .column_names()
@@ -212,7 +219,7 @@ impl SQLua {
                     println!("There has been an error running the query: {:?}", e);
                     panic!();
                 }
-            }; 
+            };
             //let mut query_result = stmt.raw_query();
             println!("query ran, shoving results into a vector");
             let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
@@ -258,7 +265,7 @@ mod basic_functionality_tests {
 
     #[test]
     fn plain_sql_works() -> Result<(), Error> {
-        let conn = db::init_db(":memory:")?;
+        let conn = db::init_db("file::memory:?cache=shared")?;
         conn.execute(TESTING_VALUES, []).unwrap();
         let the_query =
             "select * from Objects where Objects.object_uuid='DEADBEEFDEADBEEFDEADBEEFDEADBEEF';";
@@ -267,7 +274,6 @@ mod basic_functionality_tests {
         res1.next().unwrap();
         return Ok(());
     }
-
 }
 #[cfg(test)]
 mod read_from_lua_tests {
@@ -281,15 +287,15 @@ mod read_from_lua_tests {
     static INIT_DB_STR: &'static str = include_str!("../../db/init_db.sql");
     static TESTING_LUA: &'static str = include_str!("../../testing_data/lua/sqlua_testing.luau");
 
-    fn init() -> Result<(Lua, ShrineDestroyer)> {
+    fn init(dbname: &str) -> Result<(Lua, ShrineDestroyer)> {
         let lua = lua_api::init(None).expect("Lua failed to initialize");
         lua.load(TESTING_LUA)
             .exec()
             .expect("Lua failed to load the testing script");
 
-        let (miko, destroyer): (Miko<Connection>, ShrineDestroyer) =
+        let (miko, destroyer): (Miko<(Connection, Connection)>, ShrineDestroyer) =
             Miko::construct_connection_shrine(
-                ":memory:".into(),
+                format!("file:{}?mode=memory&cache=shared", dbname).into(),
                 &(INIT_DB_STR.to_string() + TESTING_VALUES),
             )?;
 
@@ -299,7 +305,7 @@ mod read_from_lua_tests {
 
     #[test]
     fn can_do_simple_get() -> Result<()> {
-        let (lua, des) = init()?;
+        let (lua, des) = init("simple")?;
         let res = lua.load("SQLuaFetches()").eval::<String>()?;
         assert!(res == "Welcome File");
         //assert!(lua.globals().get::<String>("TestReturn")? == "Welcome File".to_string());
@@ -308,7 +314,7 @@ mod read_from_lua_tests {
 
     #[test]
     fn can_make_html_for_list() -> Result<()> {
-        let (lua, des) = init()?;
+        let (lua, des) = init("listhtml")?;
         let res = lua
             .load("SQLuaCreatesHTMLBasic([[BADC0FFEE0DDF00DBADC0FFEE0DDF00D]])")
             .eval::<String>()?;
@@ -321,7 +327,7 @@ mod read_from_lua_tests {
 
     #[test]
     fn from_lua_serde_works() -> Result<()> {
-        let (lua, des) = init()?;
+        let (lua, des) = init("fromserde")?;
         let res = lua
             .load("SerdeWorksAsExpected([[VIDEOGAME]])")
             .eval::<MediaCategoryRecord>()?;
@@ -337,7 +343,7 @@ mod read_from_lua_tests {
 
     #[test]
     fn into_lua_serde_works() -> Result<()> {
-        let (lua, des) = init()?;
+        let (lua, des) = init("toserde")?;
         let res = MediaCategoryRecord {
             media_category_id: "foo".into(),
             media_category_string_key: "oosike.foo".into(),
@@ -355,7 +361,7 @@ mod read_from_lua_tests {
 
     #[test]
     fn can_insert_media_categories() -> Result<()> {
-        let (lua, des) = init()?;
+        let (lua, des) = init("insertcategory")?;
         let res = lua
             .load("SQLuaAddsMediaCategory([[foob]], [[foob_key]])")
             .eval::<String>()?;
