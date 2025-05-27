@@ -182,7 +182,6 @@ impl SQLua {
         this: &mut SQLua,
         (sqlstr, params): (String, Vec<LiberatedColumn>),
     ) -> luaResult<Table> {
-        println!("Going to send the messenger");
         /*
         let nu_params = (params)
             .into_iter()
@@ -197,31 +196,24 @@ impl SQLua {
             }
             let pp: &[&dyn ToSql] = p1.as_slice();  */
             let mut stmt = read_conn.prepare_cached(&sqlstr)?;
-            println!("getting headers");
             let headers: Vec<String> = (stmt)
                 .column_names()
                 .iter()
                 .map(|s| s.to_string())
                 .collect();
-            println!("headers should be {:?}", headers);
-            println!("got headers, binding params");
             /*
             for (ind, thingy) in params.into_iter().enumerate() {
                 print!("binding param {:?} at position {:?}", &thingy, &ind);
                 stmt.raw_bind_parameter(ind + 1, thingy)?;
             } */
             let the_params = params_from_iter(params.into_iter());
-            println!("params are {:?}", &the_params);
-            println!("params bound, running query");
             let mut query_result = match (stmt).query(the_params) {
                 Ok(s) => s,
                 Err(e) => {
-                    println!("There has been an error running the query: {:?}", e);
-                    panic!();
+                    panic!("There has been an error running the query: {:?}", e);
                 }
             };
             //let mut query_result = stmt.raw_query();
-            println!("query ran, shoving results into a vector");
             let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
             while let Some(row) = query_result.next()? {
                 let mut retrow: Vec<LiberatedColumn> = Vec::new();
@@ -230,7 +222,6 @@ impl SQLua {
                 }
                 ret.push(retrow);
             }
-            println!("about to return from query messenger");
             Ok((headers, ret))
         })?;
         /*
@@ -238,9 +229,7 @@ impl SQLua {
             println!("header: {}", header);
         } */
         //let mut ret: Vec<Table> = vec![];
-        println!("Making the return lua table");
         let ret = lua.create_table()?;
-        println!("Going to iterate over ret values");
         for rowvec in rows {
             let t = lua.create_table()?;
             let ziprow = zip(headers.clone(), rowvec);
