@@ -65,13 +65,7 @@ where
         }
     }
 
-    pub fn send_messenger<R>(
-        &self,
-        messenger: impl FnOnce(&T) -> Result<R> + Send + 'static,
-    ) -> Result<R>
-    where
-        R: Send + 'static,
-    {
+    pub fn send_messenger_get_channel<R: Send + 'static>(&self, messenger: impl FnOnce(&T) -> Result<R> + Send + 'static) -> Result<mpsc::Receiver<R>> {
         let (tx, rx) = mpsc::channel::<R>();
         self.send_raw_messenger(move |kami| {
             let res = messenger(kami)?;
@@ -79,7 +73,18 @@ where
             Ok(())
         })
         .expect("Something went wrong in the messenger function");
-        Ok(rx.recv()?)
+        Ok(rx)
+
+    }
+
+    pub fn send_messenger<R>(
+        &self,
+        messenger: impl FnOnce(&T) -> Result<R> + Send + 'static,
+    ) -> Result<R>
+    where
+        R: Send + 'static,
+    {
+        Ok(self.send_messenger_get_channel(messenger)?.recv()?)
     }
 }
 
