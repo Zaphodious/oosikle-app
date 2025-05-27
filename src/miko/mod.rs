@@ -34,7 +34,10 @@ where
             for fn_package in rx {
                 if let Some(the_fn) = fn_package {
                     match the_fn(&kami) {
-                        Ok(_) => {println!("A function completed successfully");continue},
+                        Ok(_) => {
+                            println!("A function completed successfully");
+                            continue;
+                        }
                         Err(_n) => break,
                     };
                 } else {
@@ -65,7 +68,10 @@ where
         }
     }
 
-    pub fn send_messenger_get_channel<R: Send + 'static>(&self, messenger: impl FnOnce(&T) -> Result<R> + Send + 'static) -> Result<mpsc::Receiver<R>> {
+    pub fn send_messenger_get_channel<R: Send + 'static>(
+        &self,
+        messenger: impl FnOnce(&T) -> Result<R> + Send + 'static,
+    ) -> Result<mpsc::Receiver<R>> {
         let (tx, rx) = mpsc::channel::<R>();
         self.send_raw_messenger(move |kami| {
             let res = messenger(kami)?;
@@ -74,16 +80,12 @@ where
         })
         .expect("Something went wrong in the messenger function");
         Ok(rx)
-
     }
 
-    pub fn send_messenger<R>(
+    pub fn send_messenger<R: Send + 'static>(
         &self,
         messenger: impl FnOnce(&T) -> Result<R> + Send + 'static,
-    ) -> Result<R>
-    where
-        R: Send + 'static,
-    {
+    ) -> Result<R> {
         Ok(self.send_messenger_get_channel(messenger)?.recv()?)
     }
 }
