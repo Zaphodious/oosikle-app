@@ -45,6 +45,13 @@ function SQLuaAddsMediaCategory(category_id, category_key)
     return query_res.media_category_string_key
 end
 
+function SQLuaDoesntAllowWritingInQuery(category_id, category_key)
+    DB:upsert_media_category_record({media_category_id=category_id, media_category_string_key=category_key})
+    local failed_query = DB:query([[insert into MediaCategories values (?1, 'a_differet_foob_key');]], {category_id})
+    local query_res = DB:query([[select * from MediaCategories M where M.media_category_id=? limit 1;]], {category_id})[1]
+    return query_res.media_category_string_key
+end
+
 function SerdeWorksAsExpected(category_id)
     local query_res = DB:query([[select * from MediaCategories M where M.media_category_id=? limit 1;]], {category_id})[1]
     return query_res

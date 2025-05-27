@@ -41,6 +41,7 @@ impl SQMiko {
             let _ = &writer_conn
                 .execute_batch(&string_script)
                 .map_err(mlua::Error::external)?;
+            let _ = &read_only_conn.execute("PRAGMA query_only=true;", ())?;
             Ok((read_only_conn, writer_conn))
         })?)
     }
@@ -188,14 +189,15 @@ impl SQLua {
             .map(|v| v.to_sql().expect("Falat error parsing lua"))
             .collect::<Vec<rValue>>();
         */
-        let (headers, rows) = this.0.send_messenger(move |(read_conn, _)| {
+        let (headers, rows) = match this.0.send_mutating_messenger(move |(read_conn, _)| {
             /*
             let mut p1: Vec<&dyn ToSql> = vec![];
             for n in &params {
                 p1.push(n);
             }
             let pp: &[&dyn ToSql] = p1.as_slice();  */
-            let mut stmt = read_conn.prepare_cached(&sqlstr)?;
+            let trans = &mut read_conn.transaction()?;
+            let stmt = &mut trans.prepare_cached(&sqlstr)?;
             let headers: Vec<String> = (stmt)
                 .column_names()
                 .iter()
@@ -207,23 +209,31 @@ impl SQLua {
                 stmt.raw_bind_parameter(ind + 1, thingy)?;
             } */
             let the_params = params_from_iter(params.into_iter());
-            let mut query_result = match (stmt).query(the_params) {
-                Ok(s) => s,
-                Err(e) => {
-                    panic!("There has been an error running the query: {:?}", e);
+            let query_result = match (*stmt).query(the_params) {
+                Ok(mut s) => {
+                    let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
+                        while let Some(row) = s.next()? {
+                            let mut retrow: Vec<LiberatedColumn> = Vec::new();
+                            for header in &headers {
+                                retrow.push(row.get::<&str, LiberatedColumn>(header.as_str())?);
+                            }
+                            ret.push(retrow);
+                        }
+                    ret
+                    },
+                Err(_e) => {
+                    vec![] 
                 }
             };
             //let mut query_result = stmt.raw_query();
-            let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
-            while let Some(row) = query_result.next()? {
-                let mut retrow: Vec<LiberatedColumn> = Vec::new();
-                for header in &headers {
-                    retrow.push(row.get::<&str, LiberatedColumn>(header.as_str())?);
-                }
-                ret.push(retrow);
+            Ok((headers, query_result))
+        }) {
+            Ok(thing) => thing,
+            Err(e) => {
+                println!("query generated an error! It is {:?}", e);
+                (vec![], vec![])
             }
-            Ok((headers, ret))
-        })?;
+        };
         /*
         for header in &headers {
             println!("header: {}", header);
@@ -360,4 +370,19 @@ mod read_from_lua_tests {
         println!("can insert media categories test should be ending");
         Ok(())
     }
+//function SQLuaDoesntAllowWritingInQuery(category_id, category_key)
+    #[test]
+    fn doesnt_allow_writing_in_query() -> Result<()> {
+        println!("doesn't write in query test start");
+        let (lua, des) = init("no_writing")?;
+        let res = lua
+            .load("SQLuaDoesntAllowWritingInQuery([[foob]], [[foob_key]])")
+            .eval::<String>()?;
+        println!("what is the key? {:?}", res);
+        assert!(res == "foob_key");
+        des.invoke();
+        println!("doesn't write in query test end");
+        Ok(())
+    }
+
 }
