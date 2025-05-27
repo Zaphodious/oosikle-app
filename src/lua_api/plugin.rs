@@ -279,6 +279,8 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
 
 #[cfg(test)]
 mod plugin_resoltuion_tests {
+    use crate::miko::Miko;
+
     use super::*;
     use std::collections::{HashMap, HashSet};
 
@@ -372,11 +374,13 @@ mod plugin_resoltuion_tests {
     fn plugin_parsed_result_can_register_definitions() -> Result<()> {
         let plugin = grab_videogame_basic_unparsed()?;
         let lua = Lua::new();
-        let conn = SQLua::add_to_lua(":memory:".into(), "", &lua);
-        let res = plugin.parse(&lua)?;
+        let (miko, destroyer) = Miko::construct_connection_shrine(":memory:".into(), "")?;
+        SQLua::add_to_lua(miko, &lua)?;
+        //let res = plugin.parse(&lua)?;
         /*
         let sqlua = lua.globals().get::<SQLua>("SQLua");
         */
+        destroyer.invoke();
         Ok(())
     }
     /*

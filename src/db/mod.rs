@@ -312,7 +312,7 @@ impl FileRecord {
     ) -> Result<Option<MediaTypeRecord>> {
         Ok(match &self.media_type_override_id {
             Some(typeid) => MediaTypeRecord::get_from_id(conn, &typeid)?,
-            None => None,
+            Option::None => None,
         })
     }
 
@@ -354,7 +354,7 @@ impl FileRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("FileArtwork")]
 #[check("./init_db.sql")]
 pub struct FileArtworkRecord {
@@ -380,7 +380,7 @@ impl FileArtworkRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum AttrValue {
     STRING(String),
@@ -428,7 +428,7 @@ impl ToSql for AttrValue {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("ObjectAttributes")]
 #[check("./init_db.sql")]
 pub struct ObjectAttr {
@@ -454,7 +454,7 @@ impl ObjectAttr {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("ObjectAttributes")]
 pub struct ObjectExtraFileRecord {
     pub object_uuid: String,
@@ -515,7 +515,7 @@ create table ObjectAttributes (
  */
 
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("Objects")]
 #[check("./init_db.sql")]
 pub struct ObjectRecord {
@@ -605,7 +605,7 @@ impl ObjectRecord {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("ObjectsInCollections")]
 #[check("./init_db.sql")]
 pub struct ObjectInCollection {
@@ -621,7 +621,7 @@ impl WithSQL for ObjectInCollection {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct PageOfObjectsInCollection {
     pub collection_uuid: String,
     pub pagesize: i64,
@@ -630,7 +630,7 @@ pub struct PageOfObjectsInCollection {
     pub total_length: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("Collections")]
 #[check("./init_db.sql")]
 pub struct CollectionRecord {
@@ -711,7 +711,7 @@ impl PageOfObjectsInCollection {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("Devices")]
 #[check("./init_db.sql")]
 pub struct DeviceRecord {
@@ -730,7 +730,7 @@ impl WithSQL for DeviceRecord {
 
 impl DeviceRecord {}
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Model)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Model, Clone)]
 #[table("DeviceSyncLists")]
 #[check("./init_db.sql")]
 pub struct DeviceSyncListRecord {

@@ -32,11 +32,12 @@ fn make_upsert_name(thestring: &str) -> String {
 
 macro_rules! mut_method_upsert_record {
     ($methods:ident, $type:path) => {
-        $methods.add_method_mut(make_upsert_name(stringify!($type)), |l, t, rec: $type| {
-            SQLua::connect_to_db(l, t, ())?;
-            let conn = t.conn.as_mut().expect("failed to secure a sql handle");
-            rec.insert_or(conn, exemplar::OnConflict::Replace)
-                .into_lua_err()?;
+        $methods.add_method_mut(make_upsert_name(stringify!($type)), |_, t, rec: $type| {
+            let reccopy = rec.clone();
+            t.0.send_messenger(move |conn| {
+                reccopy.insert_or(conn, exemplar::OnConflict::Replace)?;
+                Ok(reccopy)
+            })?;
             return Ok(true);
         })
     };
@@ -75,7 +76,6 @@ impl UserData for SQLua {
 
     fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method_mut("query", SQLua::query);
-        methods.add_method_mut("__connect_to_db", SQLua::connect_to_db);
         mut_method_upsert_record!(methods,
             MediaCategoryRecord,
             MediaTypeRecord,
