@@ -181,7 +181,7 @@ impl SQLua {
     pub fn query(
         lua: &Lua,
         this: &mut SQLua,
-        (sqlstr, params): (String, Vec<LiberatedColumn>),
+        (sqlstr, params): (String, Option<Vec<LiberatedColumn>>),
     ) -> luaResult<Table> {
         /*
         let nu_params = (params)
@@ -208,21 +208,24 @@ impl SQLua {
                 print!("binding param {:?} at position {:?}", &thingy, &ind);
                 stmt.raw_bind_parameter(ind + 1, thingy)?;
             } */
-            let the_params = params_from_iter(params.into_iter());
+            let the_params = params_from_iter(match params {
+                Some(s) => s,
+                None => vec![]
+            }.into_iter());
             let query_result = match (*stmt).query(the_params) {
                 Ok(mut s) => {
                     let mut ret: Vec<Vec<LiberatedColumn>> = Vec::new();
-                        while let Some(row) = s.next()? {
-                            let mut retrow: Vec<LiberatedColumn> = Vec::new();
-                            for header in &headers {
-                                retrow.push(row.get::<&str, LiberatedColumn>(header.as_str())?);
-                            }
-                            ret.push(retrow);
+                    while let Some(row) = s.next()? {
+                        let mut retrow: Vec<LiberatedColumn> = Vec::new();
+                        for header in &headers {
+                            retrow.push(row.get::<&str, LiberatedColumn>(header.as_str())?);
                         }
+                        ret.push(retrow);
+                    }
                     ret
-                    },
+                }
                 Err(_e) => {
-                    vec![] 
+                    vec![]
                 }
             };
             //let mut query_result = stmt.raw_query();
@@ -370,7 +373,7 @@ mod read_from_lua_tests {
         println!("can insert media categories test should be ending");
         Ok(())
     }
-//function SQLuaDoesntAllowWritingInQuery(category_id, category_key)
+    //function SQLuaDoesntAllowWritingInQuery(category_id, category_key)
     #[test]
     fn doesnt_allow_writing_in_query() -> Result<()> {
         println!("doesn't write in query test start");
@@ -384,5 +387,4 @@ mod read_from_lua_tests {
         println!("doesn't write in query test end");
         Ok(())
     }
-
 }
