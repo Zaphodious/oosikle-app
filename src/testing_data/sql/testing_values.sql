@@ -119,7 +119,8 @@ values (
         'UTF8',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/alpha/'
     );
 insert into FileBlobs
 values (
@@ -137,7 +138,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/alpha/'
     );
 insert into Files
 values (
@@ -150,7 +152,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/celeste/'
     );
 insert into Objects
 values (
@@ -179,7 +182,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/'
     );
 insert into Objects
 values (
@@ -208,7 +212,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/'
     );
 insert into Objects
 values (
@@ -237,7 +242,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/celeste/'
     );
 insert into Objects
 values (
@@ -266,7 +272,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/'
     );
 insert into Objects
 values (
@@ -295,7 +302,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/'
     );
 insert into Objects
 values (
@@ -324,7 +332,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/pico8/'
     );
 insert into Files
 values (
@@ -337,7 +346,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/mastersystem/'
     );
 insert into Files
 values (
@@ -350,7 +360,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/mastersystem/'
     );
 insert into Files
 values (
@@ -363,7 +374,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/beta/'
     );
 insert into Files
 values (
@@ -376,7 +388,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/beta/'
     );
 insert into Files
 values (
@@ -389,7 +402,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/gamma/'
     );
 insert into Files
 values (
@@ -402,7 +416,8 @@ values (
         'BIN',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/gamma/'
     );
 insert into Files
 values (
@@ -415,7 +430,8 @@ values (
         'UTF8',
         NULL,
         FALSE,
-        FALSE
+        FALSE,
+        'testingdir/booki/'
     );
 insert into Objects
 values (

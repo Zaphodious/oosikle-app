@@ -11,7 +11,9 @@ use core::fmt;
 use std::any::type_name;
 use std::fmt::Debug;
 use std::vec::Vec;
+use std::path::Path;
 use time::OffsetDateTime;
+
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
 
@@ -270,6 +272,7 @@ pub struct FileRecord {
     pub media_type_override_id: Option<String>,
     pub file_deleted: bool,
     pub file_read_only: bool,
+    pub file_vfs_path: String,
 }
 
 impl Fetchable1<&str> for FileRecord {}
