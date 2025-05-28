@@ -1,4 +1,5 @@
 use crate::db::*;
+use crate::miko::Miko;
 use anyhow::Result;
 use exemplar::Model;
 use hypertext::html_elements::object;
@@ -12,6 +13,7 @@ use std::{
     fs::canonicalize,
     io,
     path::{Path, PathBuf},
+    mem::take,
 };
 use time::{macros::format_description, Date};
 
@@ -176,17 +178,6 @@ impl FromLua for LuaPluginParseResult {
     }
 }
 
-#[derive(Debug, Clone)]
-struct LuaPluginRegistrar {
-    plugin_credit: Option<Table>,
-    media_categories: Vec<Table>,
-    media_types: Vec<Table>,
-    file_extensions: Vec<Table>,
-    view_adapters: Vec<Table>,
-    object_adapters: Vec<Table>,
-    extensions: Vec<Table>,
-    package_name: String,
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct UnparsedLuaPlugin {
@@ -226,12 +217,19 @@ impl UnparsedLuaPlugin {
         }
     }
 
-    fn parse(&self, lua: &Lua) -> Result<LuaPluginParseResult> {
+    fn parse(&self, lua: &Lua, miko: &Miko<(Connection, Connection)>) -> Result<LuaPluginParseResult> {
         const PLUGIN_PRELOAD_FN: &str = include_str!("./plugin_dec_pre_load.lua");
         let plugin_wrap_fn = lua.load(PLUGIN_PRELOAD_FN).eval::<Function>()?;
         let plugin_fn = lua.load(self.script_contents()).eval::<Function>()?;
-        let thingy = plugin_wrap_fn.call::<LuaPluginParseResult>(plugin_fn)?;
-        Ok(thingy)
+        let mut parse_result = plugin_wrap_fn.call::<LuaPluginParseResult>(plugin_fn)?;
+        let defs = take(&mut parse_result.definitions);
+        let _m = miko.send_mutating_messenger(move |(_, conn)| {
+            if let Some(d) = defs {
+                let _ = d.insert_definitions(conn)?;
+            }
+            Ok(())
+        })?;
+        Ok(parse_result)
     }
 }
 
@@ -279,12 +277,18 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
 
 #[cfg(test)]
 mod plugin_resoltuion_tests {
-    use crate::miko::Miko;
+    use tauri::Asset;
+
+    use crate::miko::{Miko, ShrineDestroyer};
 
     use super::*;
+    use crate::lua_api::sqlite::*;
+    use crate::lua_api;
     use std::collections::{HashMap, HashSet};
 
     const PLUGIN_DIR: &str = "src/testing_data/lua/plugins";
+    static TESTING_VALUES: &'static str = include_str!("../../src/testing_data/sql/testing_values.sql");
+    static INIT_DB_STR: &'static str = include_str!("../../src/db/init_db.sql");
 
     #[test]
     fn plugin_finder_doesnt_error() -> Result<()> {
@@ -360,11 +364,17 @@ mod plugin_resoltuion_tests {
             .expect("Testing plugin not found"))
     }
 
+    fn create_testing_requirements(dblabel: &str) -> Result<(UnparsedLuaPlugin, Miko<(Connection, Connection)>, ShrineDestroyer, Lua)> {
+        let plugin = grab_videogame_basic_unparsed()?;
+        let (miko, destroyer) = Miko::construct_connection_shrine(format!("file:{}?mode=memory&cache=shared", dblabel).into(), INIT_DB_STR)?;
+        let lua = lua_api::init(None)?;
+        Ok((plugin, miko, destroyer, lua))
+    }
+
     #[test]
     fn plugin_parser_does_the_thing() -> Result<()> {
-        let plugin = grab_videogame_basic_unparsed()?;
-        let lua = Lua::new();
-        let res = plugin.parse(&lua)?;
+        let (plugin, miko, _destroyer, lua) = create_testing_requirements("parse_does_the_thing")?;
+        let res = plugin.parse(&lua, &miko)?;
         assert!(res.namespace == "oosikle.builtin.simple_basic");
         assert!(res.version == 1);
         Ok(())
@@ -372,15 +382,16 @@ mod plugin_resoltuion_tests {
 
     #[test]
     fn plugin_parsed_result_can_register_definitions() -> Result<()> {
-        let plugin = grab_videogame_basic_unparsed()?;
-        let lua = Lua::new();
-        let (miko, destroyer) = Miko::construct_connection_shrine(":memory:".into(), "")?;
-        SQLua::add_to_lua(miko, &lua)?;
-        //let res = plugin.parse(&lua)?;
-        /*
-        let sqlua = lua.globals().get::<SQLua>("SQLua");
-        */
-        destroyer.invoke();
+        let (plugin, miko, _destroyer, lua) = create_testing_requirements("plugin_parse_registers")?;
+        SQLua::add_to_lua(miko.clone(), &lua)?;
+        let _res = plugin.parse(&lua, &miko)?;
+
+        let media_type = miko.send_mutating_messenger(|(_, conn)| {
+            let record = MediaTypeRecord::get_from_id(conn, "foodoc")?;
+            Ok(record)
+        })?.expect("Foodoc media type not found");
+        //let media_type = lua.load("DB:query([[select * from Mediatypes MT where MT.media_type_id == 'PICO8' limit 1;]])[0]").eval::<Option<MediaTypeRecord>>()?.expect("Media type 'Pico8' not present");
+        assert!(media_type.media_type_id == "FOODOC");
         Ok(())
     }
     /*

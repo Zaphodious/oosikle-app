@@ -7,12 +7,22 @@ use uuid;
 pub type RawMessenger<T> = Option<Box<dyn FnOnce(&mut T) -> Result<()> + Send + 'static>>;
 type ShrineDestroyingFunction = Box<dyn FnOnce() -> Result<()> + 'static>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Miko<T> {
     chan: mpsc::Sender<RawMessenger<T>>,
 }
 
-pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>, thread::Thread);
+
+impl<T> Clone for Miko<T> {
+    fn clone(&self) -> Self {
+        Miko {
+            chan: self.chan.clone()
+        }
+    }
+    
+}
+
+pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>);
 
 impl<T> Miko<T>
 where
