@@ -1,4 +1,5 @@
 use anyhow::{Error, Result};
+use mlua::Thread;
 use std::mem::replace;
 use std::sync::mpsc;
 use std::thread;
@@ -22,7 +23,7 @@ impl<T> Clone for Miko<T> {
     
 }
 
-pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>);
+pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>, thread::Thread);
 
 impl<T> Miko<T>
 where
