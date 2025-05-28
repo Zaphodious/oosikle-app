@@ -9,12 +9,10 @@ type ShrineDestroyingFunction = Box<dyn FnOnce() -> Result<()> + 'static>;
 
 #[derive(Debug, Clone)]
 pub struct Miko<T> {
-    #[allow(dead_code)]
-    shrine: thread::Thread,
     chan: mpsc::Sender<RawMessenger<T>>,
 }
 
-pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>);
+pub struct ShrineDestroyer(Option<ShrineDestroyingFunction>, thread::Thread);
 
 impl<T> Miko<T>
 where
@@ -51,12 +49,12 @@ where
         let chanclone = chan.clone();
         let shrine = shrine_handle.thread().clone();
         Ok((
-            Miko { shrine, chan },
+            Miko { chan },
             ShrineDestroyer(Some(Box::new(move || {
                 chanclone.send(None).unwrap();
                 shrine_handle.join().unwrap();
                 Ok(())
-            }))),
+            })), shrine),
         ))
     }
 
