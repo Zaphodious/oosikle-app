@@ -279,9 +279,11 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
 mod plugin_resoltuion_tests {
     use tauri::Asset;
 
-    use crate::miko::Miko;
+    use crate::miko::{Miko, ShrineDestroyer};
 
     use super::*;
+    use crate::lua_api::sqlite::*;
+    use crate::lua_api;
     use std::collections::{HashMap, HashSet};
 
     const PLUGIN_DIR: &str = "src/testing_data/lua/plugins";
@@ -362,11 +364,16 @@ mod plugin_resoltuion_tests {
             .expect("Testing plugin not found"))
     }
 
+    fn create_testing_requirements(dblabel: &str) -> Result<(UnparsedLuaPlugin, Miko<(Connection, Connection)>, ShrineDestroyer, Lua)> {
+        let plugin = grab_videogame_basic_unparsed()?;
+        let (miko, destroyer) = Miko::construct_connection_shrine(format!("file:{}?mode=memory&cache=shared", dblabel).into(), INIT_DB_STR)?;
+        let lua = lua_api::init(None)?;
+        Ok((plugin, miko, destroyer, lua))
+    }
+
     #[test]
     fn plugin_parser_does_the_thing() -> Result<()> {
-        let plugin = grab_videogame_basic_unparsed()?;
-        let (miko, _destroyer) = Miko::construct_connection_shrine("file:parse_does_the_thing?mode=memory&cache=shared".into(), INIT_DB_STR)?;
-        let lua = Lua::new();
+        let (plugin, miko, _destroyer, lua) = create_testing_requirements("parse_does_the_thing")?;
         let res = plugin.parse(&lua, &miko)?;
         assert!(res.namespace == "oosikle.builtin.simple_basic");
         assert!(res.version == 1);
@@ -375,9 +382,7 @@ mod plugin_resoltuion_tests {
 
     #[test]
     fn plugin_parsed_result_can_register_definitions() -> Result<()> {
-        let plugin = grab_videogame_basic_unparsed()?;
-        let lua = Lua::new();
-        let (miko, _destroyer) = Miko::construct_connection_shrine("file:plugin_parsed_register?mode=memory&cache=shared".into(), INIT_DB_STR)?;
+        let (plugin, miko, _destroyer, lua) = create_testing_requirements("plugin_parse_registers")?;
         SQLua::add_to_lua(miko.clone(), &lua)?;
         let _res = plugin.parse(&lua, &miko)?;
 
