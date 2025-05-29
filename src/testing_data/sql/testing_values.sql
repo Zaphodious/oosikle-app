@@ -120,7 +120,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/alpha/'
+        'alpha/'
     );
 insert into FileBlobs
 values (
@@ -139,7 +139,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/alpha/'
+        'alpha/only_one_file/'
     );
 insert into Files
 values (
@@ -153,7 +153,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/celeste/'
+        'pico8/celeste/'
     );
 insert into Objects
 values (
@@ -183,7 +183,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/'
+        'pico8/'
     );
 insert into Objects
 values (
@@ -213,7 +213,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/'
+        'pico8/'
     );
 insert into Objects
 values (
@@ -243,7 +243,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/celeste/'
+        'pico8/celeste/'
     );
 insert into Objects
 values (
@@ -273,7 +273,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/'
+        'pico8/'
     );
 insert into Objects
 values (
@@ -303,7 +303,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/'
+        'pico8/'
     );
 insert into Objects
 values (
@@ -333,7 +333,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/pico8/'
+        'pico8/'
     );
 insert into Files
 values (
@@ -347,7 +347,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/mastersystem/'
+        'mastersystem/'
     );
 insert into Files
 values (
@@ -361,7 +361,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/mastersystem/'
+        'mastersystem/'
     );
 insert into Files
 values (
@@ -375,7 +375,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/beta/'
+        'beta/'
     );
 insert into Files
 values (
@@ -389,7 +389,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/beta/'
+        'beta/'
     );
 insert into Files
 values (
@@ -403,7 +403,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/gamma/'
+        'beta/gamma/'
     );
 insert into Files
 values (
@@ -417,7 +417,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/gamma/'
+        'beta/gamma/'
     );
 insert into Files
 values (
@@ -431,7 +431,7 @@ values (
         NULL,
         FALSE,
         FALSE,
-        'testingdir/booki/'
+        'beta/gamma/theta/'
     );
 insert into Objects
 values (
