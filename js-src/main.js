@@ -1,4 +1,6 @@
 const { invoke } = window.__TAURI__.core;
+import { listen } from '@tauri-apps/api/event'
+
 
 let greetInputEl;
 let greetMsgEl;
@@ -16,3 +18,4 @@ window.addEventListener("DOMContentLoaded", () => {
     greet();
   });
 });
+

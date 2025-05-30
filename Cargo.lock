@@ -2703,6 +2703,8 @@ dependencies = [
  "micromap",
  "mlua",
  "proptest",
+ "relative-path",
+ "relative-path-utils",
  "rusqlite",
  "rust_search",
  "serde",
@@ -3360,6 +3362,27 @@ name = "regex-syntax"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
+
+[[package]]
+name = "relative-path"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bca40a312222d8ba74837cb474edef44b37f561da5f773981007a10bbaa992b0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "relative-path-utils"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f6170e29791deb4ad3036c9113904aa373aaf2938441f8ec6b7a809137e1fd20"
+dependencies = [
+ "errno",
+ "libc",
+ "relative-path",
+ "windows-sys 0.52.0",
+]
 
 [[package]]
 name = "reqwest"
