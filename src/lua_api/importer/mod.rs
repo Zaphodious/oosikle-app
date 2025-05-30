@@ -85,8 +85,8 @@ mod file_import_tests {
             PathBuf::from("c:\\media\\videogame\\pico8\\thing1.png"),
             PathBuf::from("c:\\media\\videogame\\pico8\\thing2.png"),
             PathBuf::from("c:\\media\\videogame\\pico8\\thing3.png"),
+            PathBuf::from("c:\\media\\videogame\\snes\\echo.sns"),
             PathBuf::from("c:\\media\\videogame\\mastersystem\\thing1.png"),
-            //PathBuf::from("c:\\media\\audio\\music\\blind_and_frozen.mp3"),
         ];
         let manifest = ShippingManifest::create_manifest_from_path_vec(pathvec)?;
         println!("manifest is {:?}", manifest);
