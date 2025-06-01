@@ -7,6 +7,7 @@ use std::{
     collections::HashSet,
     path::{Component as sComponent, Path, PathBuf},
 };
+use rust_search::{FilterExt, SearchBuilder};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ShippingManifest {
@@ -67,10 +68,25 @@ impl ShippingManifest {
             files: pathvec
                 .iter()
                 .map(|p| p.relative_to(&root_accumulator).unwrap())
+                .filter(|p| !p.to_string().is_empty())
                 .collect(),
             root_dir: root_accumulator,
         })
     }
+
+    fn create_from_dir_on_disk(location: PathBuf) -> Result<Self> {
+        let s: Vec<_> = SearchBuilder::default()
+            .location(&location)
+            .search_input(r#".*"#)
+            .ext("*")
+            .ignore_case()
+            .build()
+            .map(|e| PathBuf::from(e))
+            .collect();
+        //let _rootdir = s.pop(); // first is gonna be the qualified root dir itself
+        Ok(Self::create_manifest_from_path_vec(s)?)
+    }
+
 
 }
 
@@ -81,16 +97,25 @@ mod file_import_tests {
     #[test]
     fn tests_making_manifest_from_path_vec() -> Result<()> {
         let pathvec = vec![
-            PathBuf::from("c:\\media\\videogame\\pico8\\thing1.png"),
-            PathBuf::from("c:\\media\\videogame\\pico8\\thing1.png"),
-            PathBuf::from("c:\\media\\videogame\\pico8\\thing2.png"),
-            PathBuf::from("c:\\media\\videogame\\pico8\\thing3.png"),
-            PathBuf::from("c:\\media\\videogame\\snes\\echo.sns"),
-            PathBuf::from("c:\\media\\videogame\\mastersystem\\thing1.png"),
+            PathBuf::from("c:/media/videogame/pico8/thing1.png"),
+            PathBuf::from("c:/media/videogame/pico8/thing1.png"),
+            PathBuf::from("c:/media/videogame/pico8/thing2.png"),
+            PathBuf::from("c:/media/videogame/pico8/thing3.png"),
+            PathBuf::from("c:/media/videogame/snes/echo.sns"),
+            PathBuf::from("c:/media/videogame/mastersystem/thing1.png"),
         ];
         let manifest = ShippingManifest::create_manifest_from_path_vec(pathvec)?;
         println!("manifest is {:?}", manifest);
-        assert!(manifest.root_dir == PathBuf::from("C:\\media\\videogame"));
+        println!("root dir is {:?} while the thing from is {:?}", manifest.root_dir, PathBuf::from("c:/media/videogame"));
+        assert!(manifest.root_dir == PathBuf::from("c:/media/videogame"));
+        Ok(())
+    }
+
+    #[test]
+    fn tests_creates_from_dir_on_disk() -> Result<()> {
+        let manifest = ShippingManifest::create_from_dir_on_disk("~/dev/oosikle-app/src/testing_data/import_test".into())?;
+        println!("manifest is {:?}", manifest);
+        assert!(manifest.files.len() == 5);
         Ok(())
     }
 }
