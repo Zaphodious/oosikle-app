@@ -132,6 +132,11 @@ impl ShippingManifest {
         })
     }
 
+    fn resolve_file_records(&mut self) -> Result<()> {
+
+        Ok(())
+    }
+
     /*
     fn resolve_file_records(mut self) -> Result<Self> {
         let accum = vec![];
