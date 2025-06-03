@@ -14,7 +14,6 @@ use zip::{self, read::ZipFile};
 
 use crate::db::FileRecord;
 
-
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum ManifestList {
     Dir(Vec<RelativePathBuf>),
@@ -38,13 +37,17 @@ impl ShippingManifest {
     }
 
     pub fn add_relative_file(mut self, file: RelativePathBuf) -> Self {
-        if let Some(ManifestList::Dir(items)) = (&mut self.items) {items.push(file);}
+        if let Some(ManifestList::Dir(items)) = (&mut self.items) {
+            items.push(file);
+        }
         self
     }
 
     pub fn add_relative_files(mut self, files: Vec<RelativePathBuf>) -> Self {
         for f in files {
-            if let Some(ManifestList::Dir(items)) = (&mut self.items) {items.push(f);}
+            if let Some(ManifestList::Dir(items)) = (&mut self.items) {
+                items.push(f);
+            }
         }
         self
     }
@@ -84,11 +87,13 @@ impl ShippingManifest {
         }
         println!("Root accumulator is {:?}", root_accumulator);
         Ok(Self {
-            items: Some(ManifestList::Dir(pathvec
-                .iter()
-                .map(|p| p.relative_to(&root_accumulator).unwrap())
-                .filter(|p| !p.to_string().is_empty())
-                .collect())),
+            items: Some(ManifestList::Dir(
+                pathvec
+                    .iter()
+                    .map(|p| p.relative_to(&root_accumulator).unwrap())
+                    .filter(|p| !p.to_string().is_empty())
+                    .collect(),
+            )),
             root_dir: root_accumulator,
             records: None,
         })
@@ -115,7 +120,7 @@ impl ShippingManifest {
         let reader = BufReader::new(file);
         let mut archive = zip::ZipArchive::new(reader)?;
 
-        let mut path_accum= vec![];
+        let mut path_accum = vec![];
         for i in 0..archive.len() {
             let zipfile = archive.by_index(i)?;
             if zipfile.is_file() {
@@ -133,7 +138,31 @@ impl ShippingManifest {
     }
 
     fn resolve_file_records(&mut self) -> Result<()> {
+        let accum = vec![];
+        match self.items {
+            Some(ManifestList::Zip(ziplist)) => {
+                let file = fs::File::open(&self.root_dir)?;
+                let reader = BufReader::new(file);
+                let mut archive = zip::ZipArchive::new(reader)?;
+                for (i, in_zip_path) in ziplist {
+                    let thefile = archive.by_index(i);
+                    let filename = in_zip_path.file_name().unwrap().to_str().unwrap().to_string();
 
+                    accum.push(FileRecord {
+                        file_uuid: "".into(),
+                        file_name: filename.clone(),
+                        file_deleted: false,
+                        file_read_only: true,
+                        file_extension_tag: match filename.split_once(".") {
+                            Some((first, second)) => second.into(),
+                            None => "".into()
+                        },
+                    });
+                }
+            }
+            Some(ManifestList::Dir(dirlist)) => {},
+            None => {}
+        }
         Ok(())
     }
 
@@ -160,7 +189,7 @@ impl ShippingManifest {
                     file_size_bytes: in_zip_file.size(),
                     file_deleted: false,
                     file_read_only: true,
-                    file_dir_path: 
+                    file_dir_path:
                 })
 
             }
@@ -198,11 +227,16 @@ mod file_import_tests {
     //#[cfg(target_os = "unix")]
     #[test]
     fn tests_creates_from_dir_on_disk() -> Result<()> {
-        let manifest = ShippingManifest::create_from_dir_on_disk(
-            "./src/testing_data/import_test".into(),
-        )?;
+        let manifest =
+            ShippingManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
         println!("manifest is {:?}", manifest);
-        assert!(if let Some(ManifestList::Dir(d)) = manifest.items {d.len()} else {9999} == 6);
+        assert!(
+            if let Some(ManifestList::Dir(d)) = manifest.items {
+                d.len()
+            } else {
+                9999
+            } == 6
+        );
         Ok(())
     }
 
@@ -212,7 +246,13 @@ mod file_import_tests {
             "./src/testing_data/import_test/archive_with_files.zip".into(),
         )?;
         println!("manifest is {:?}", manifest);
-        assert!(if let Some(ManifestList::Zip(d)) = manifest.items {d.len()} else {9999} == 5);
+        assert!(
+            if let Some(ManifestList::Zip(d)) = manifest.items {
+                d.len()
+            } else {
+                9999
+            } == 5
+        );
         Ok(())
     }
 }

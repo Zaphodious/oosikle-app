@@ -264,7 +264,7 @@ create table MediaTypes (
 pub struct FileRecord {
     pub file_uuid: String,
     pub file_name: String,
-    pub file_size_bytes: i64,
+    pub file_size_bytes: u64,
     pub file_hash: String,
     pub file_dir_path: String,
     pub file_extension_tag: String,
@@ -290,7 +290,7 @@ impl FileRecord {
     pub fn as_object_attrs(self) -> Result<Vec<ObjectAttr>> {
         Ok(vec![
             ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "filename".to_string(), attribute_value: AttrValue::STRING(self.file_name)},
-            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "size".to_string(), attribute_value: AttrValue::INT(self.file_size_bytes)},
+            ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "size".to_string(), attribute_value: AttrValue::INT(self.file_size_bytes as i64)},
             ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "hash".to_string(), attribute_value: AttrValue::STRING(self.file_hash)},
             ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "dir".to_string(), attribute_value: AttrValue::STRING(self.file_dir_path)},
             ObjectAttr {object_uuid: self.file_uuid.clone(), attribute_name: "extension".to_string(), attribute_value: AttrValue::STRING(self.file_extension_tag)},
