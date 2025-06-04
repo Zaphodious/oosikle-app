@@ -216,11 +216,13 @@ mod file_import_tests {
         Ok(())
     }
 
+    const IMPORT_PATH_STR: &str = "./src/testing_data/import_test";
+
     //#[cfg(target_os = "unix")]
     #[test]
     fn tests_creates_from_dir_on_disk() -> Result<()> {
         let manifest =
-            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+            DirImportManifest::create_from_dir_on_disk(IMPORT_PATH_STR.into())?;
         println!("manifest is {:?}", manifest);
         assert!(manifest.items.len() == 6);
         Ok(())
@@ -229,7 +231,7 @@ mod file_import_tests {
     #[test]
     fn tests_makes_file_records_for_things() -> Result<()> {
         let manifest =
-            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+            DirImportManifest::create_from_dir_on_disk(IMPORT_PATH_STR.into())?;
         let old_root = manifest.root_dir.clone();
         let old_len = manifest.items.len();
         let inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
@@ -241,7 +243,7 @@ mod file_import_tests {
     #[test]
     fn tests_uuids_are_created_correctly() -> Result<()> {
         let manifest =
-            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+            DirImportManifest::create_from_dir_on_disk(IMPORT_PATH_STR.into())?;
         let old_len = manifest.items.len();
         let mut inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
         inbound_container.give_ids_to_records();
