@@ -6,6 +6,7 @@ use rayon::prelude::*;
 use relative_path::{Component as rComponent, PathExt, RelativePath, RelativePathBuf};
 use rust_search::{FilterExt, SearchBuilder};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use std::fs::{self, File};
 use std::io::BufReader;
 use std::{
@@ -93,7 +94,7 @@ impl DirImportManifest {
         })
     }
 
-    fn create_from_dir_on_disk(location: PathBuf) -> Result<Self> {
+    pub fn create_from_dir_on_disk(location: PathBuf) -> Result<Self> {
         let s: Vec<_> = SearchBuilder::default()
             .location(&location)
             .search_input(r#".*"#)
@@ -107,7 +108,7 @@ impl DirImportManifest {
         Ok(Self::create_manifest_from_path_vec(s)?)
     }
 
-    fn construct_container(mut self, import_session_id: &str) -> Result<InboundFileRecordContainer> {
+    pub fn construct_container(mut self, import_session_id: &str) -> Result<InboundFileRecordContainer> {
         let root_dir = self.root_dir.clone();
         let records = self
             .items
@@ -159,6 +160,7 @@ impl DirImportManifest {
             }).collect();
             Ok(InboundFileRecordContainer {
                 root_dir,
+                import_session_id: import_session_id.to_string(),
                 records
             })
     }
@@ -175,7 +177,18 @@ pub fn make_import_id_with_time() -> Result<String>{
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct InboundFileRecordContainer {
     root_dir: PathBuf,
+    import_session_id: String,
     records: Vec<FileRecord>,
+}
+
+impl InboundFileRecordContainer {
+    pub fn give_ids_to_records(&mut self) -> &mut Self {
+        (&mut self.records).into_iter().for_each(|r| {
+            let id = Uuid::now_v7();
+            r.file_uuid = id.simple().to_string();
+        }); 
+        return self;
+    }
 }
 
 #[cfg(test)]
@@ -223,6 +236,18 @@ mod file_import_tests {
         println!("the container is {:?}", inbound_container);
         assert!(inbound_container.records.len() == old_len);
         assert!(inbound_container.root_dir == old_root);
+        Ok(())
+    }
+    #[test]
+    fn tests_uuids_are_created_correctly() -> Result<()> {
+        let manifest =
+            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+        let old_len = manifest.items.len();
+        let mut inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
+        inbound_container.give_ids_to_records();
+        let uuids: HashSet<String> = inbound_container.records.into_iter().map(|r| r.file_uuid).collect();
+        println!("uuids are {:?}", uuids);
+        assert!(uuids.len() == old_len);
         Ok(())
     }
 }
