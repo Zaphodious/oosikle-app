@@ -16,8 +16,10 @@ use std::{
 use zip::{self, read::ZipFile};
 use std::time::SystemTime;
 use base64::prelude::*;
+use rusqlite::Connection;
+use exemplar::Model;
 
-use crate::db::FileRecord;
+use crate::{db::FileRecord, miko::Miko};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DirImportManifest {
@@ -189,6 +191,17 @@ impl InboundFileRecordContainer {
         }); 
         return self;
     }
+
+    pub fn commit_to_db(self, miko: Miko<(Connection, Connection)>) -> Result<()> {
+        miko.send_mutating_messenger(move |(_, conn)| {
+            for record in self.records {
+                record.insert(conn)?;
+            }
+            Ok(())
+        })?;
+        
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -240,6 +253,7 @@ mod file_import_tests {
         assert!(inbound_container.root_dir == old_root);
         Ok(())
     }
+
     #[test]
     fn tests_uuids_are_created_correctly() -> Result<()> {
         let manifest =
@@ -252,4 +266,19 @@ mod file_import_tests {
         assert!(uuids.len() == old_len);
         Ok(())
     }
+
+    #[test]
+    fn tests_commits_to_db_correctly() -> Result<()> {
+
+        let manifest =
+            DirImportManifest::create_from_dir_on_disk(IMPORT_PATH_STR.into())?;
+        let old_len = manifest.items.len();
+        let mut inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
+        inbound_container.give_ids_to_records();
+        let pre_insert_records = inbound_container.records.clone();
+        //TODO: Make the Miko instance and use it to commit the files to the db
+        //inbound_container.commit_to_db()?;
+        Ok(())
+    }
+
 }
