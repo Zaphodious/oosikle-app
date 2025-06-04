@@ -146,7 +146,7 @@ impl DirImportManifest {
                 let vfspathroot = RelativePath::new(import_session_id).join(r);
                 FileRecord {
                     file_uuid: "".into(),
-                    file_vfs_path: vfspathroot.parent().unwrap().to_string(),
+                    file_vfs_path: format!("{}/", vfspathroot.parent().unwrap().to_string()),
                     file_size_bytes: filesize,
                     file_read_only: false,
                     file_name: full_filename.into(),

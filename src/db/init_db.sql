@@ -34,7 +34,8 @@ create table if not exists Files (
     media_type_override_id text collate nocase,
     file_deleted integer,
     file_read_only integer,
-    file_vfs_path text not null collate nocase,
+    file_vfs_path text not null collate rtrim,
+    unique (file_vfs_path, file_name),
     foreign key (file_extension_tag) references FileExtensions(file_extension_tag),
     foreign key (media_type_override_id) references MediaTypes(media_type_id)
 );
