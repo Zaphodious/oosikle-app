@@ -1,7 +1,9 @@
 use anyhow::Result;
+use base64::alphabet::URL_SAFE;
 use hypertext::html_elements::div;
 use mlua::serde::de;
-use relative_path::{Component as rComponent, PathExt, RelativePathBuf};
+use rayon::prelude::*;
+use relative_path::{Component as rComponent, PathExt, RelativePath, RelativePathBuf};
 use rust_search::{FilterExt, SearchBuilder};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
@@ -11,45 +13,40 @@ use std::{
     path::{Component as sComponent, Path, PathBuf},
 };
 use zip::{self, read::ZipFile};
+use std::time::SystemTime;
+use base64::prelude::*;
 
 use crate::db::FileRecord;
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub enum ManifestList {
-    Dir(Vec<RelativePathBuf>),
-    Zip(Vec<(usize, PathBuf)>),
-}
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ShippingManifest {
+pub struct DirImportManifest {
     pub root_dir: PathBuf,
-    pub items: Option<ManifestList>,
-    pub records: Option<Vec<FileRecord>>,
+    pub items: Vec<RelativePathBuf>,
 }
 
-impl ShippingManifest {
+impl DirImportManifest {
     pub fn new(root_dir: PathBuf) -> Self {
         Self {
             root_dir: root_dir,
-            items: Some(ManifestList::Dir(vec![])),
-            records: None,
+            items: vec![],
         }
     }
 
     pub fn add_relative_file(mut self, file: RelativePathBuf) -> Self {
-        if let Some(ManifestList::Dir(items)) = (&mut self.items) {
-            items.push(file);
-        }
+        self.items.push(file);
         self
     }
 
     pub fn add_relative_files(mut self, files: Vec<RelativePathBuf>) -> Self {
         for f in files {
-            if let Some(ManifestList::Dir(items)) = (&mut self.items) {
-                items.push(f);
-            }
+            self.items.push(f);
         }
         self
+    }
+
+    pub fn add_file(mut self, file: PathBuf) -> Result<Self> {
+        self.items.push(file.relative_to(&self.root_dir)?);
+        Ok(self)
     }
 
     pub fn create_manifest_from_path_vec(pathvec: Vec<PathBuf>) -> Result<Self> {
@@ -87,15 +84,12 @@ impl ShippingManifest {
         }
         println!("Root accumulator is {:?}", root_accumulator);
         Ok(Self {
-            items: Some(ManifestList::Dir(
-                pathvec
-                    .iter()
-                    .map(|p| p.relative_to(&root_accumulator).unwrap())
-                    .filter(|p| !p.to_string().is_empty())
-                    .collect(),
-            )),
+            items: pathvec
+                .iter()
+                .map(|p| p.relative_to(&root_accumulator).unwrap())
+                .filter(|p| !p.to_string().is_empty())
+                .collect(),
             root_dir: root_accumulator,
-            records: None,
         })
     }
 
@@ -113,90 +107,75 @@ impl ShippingManifest {
         Ok(Self::create_manifest_from_path_vec(s)?)
     }
 
-    fn create_from_zip_file_as_dir(location: PathBuf) -> Result<Self> {
-        let canon = location.canonicalize()?;
-        println!("Canon path is {:?}", canon);
-        let file = fs::File::open(&canon)?;
-        let reader = BufReader::new(file);
-        let mut archive = zip::ZipArchive::new(reader)?;
-
-        let mut path_accum = vec![];
-        for i in 0..archive.len() {
-            let zipfile = archive.by_index(i)?;
-            if zipfile.is_file() {
-                if let Some(fp) = zipfile.enclosed_name() {
-                    path_accum.push((i, fp));
+    fn construct_container(mut self, import_session_id: &str) -> Result<InboundFileRecordContainer> {
+        let root_dir = self.root_dir.clone();
+        let records = self
+            .items
+            .into_iter()
+            .map(|p| (p.clone(), p.to_path(&root_dir)))
+            .map(|(rp, pb)| (rp, pb.canonicalize()))
+            .filter(|(rp, pr)| (&pr).is_ok() && (&pr).as_ref().unwrap().is_file())
+            .map(|(r, p)| (r, p.unwrap()))
+            .map(|(r, p)| {
+                let mut hasher = blake3::Hasher::new();
+                match hasher.update_mmap_rayon(&p) {
+                    Ok(h) => (r, p, Some(hasher.finalize())),
+                    Err(e) => (r, p, None),
                 }
-            }
-        }
-
-        Ok(Self {
-            root_dir: canon,
-            items: Some(ManifestList::Zip(path_accum)),
-            records: None,
-        })
-    }
-
-    fn resolve_file_records(&mut self) -> Result<()> {
-        let accum = vec![];
-        match self.items {
-            Some(ManifestList::Zip(ziplist)) => {
-                let file = fs::File::open(&self.root_dir)?;
-                let reader = BufReader::new(file);
-                let mut archive = zip::ZipArchive::new(reader)?;
-                for (i, in_zip_path) in ziplist {
-                    let thefile = archive.by_index(i);
-                    let filename = in_zip_path.file_name().unwrap().to_str().unwrap().to_string();
-
-                    accum.push(FileRecord {
-                        file_uuid: "".into(),
-                        file_name: filename.clone(),
-                        file_deleted: false,
-                        file_read_only: true,
-                        file_extension_tag: match filename.split_once(".") {
-                            Some((first, second)) => second.into(),
-                            None => "".into()
-                        },
-                    });
-                }
-            }
-            Some(ManifestList::Dir(dirlist)) => {},
-            None => {}
-        }
-        Ok(())
-    }
-
-    /*
-    fn resolve_file_records(mut self) -> Result<Self> {
-        let accum = vec![];
-        let mut zipfile = if let RootPath::ZipPath(zp) = &self.root_dir {
-            let file = fs::File::open(&zp)?;
-            let reader = BufReader::new(file);
-            let mut archive = zip::ZipArchive::new(reader)?;
-            Some(archive)
-        } else {
-            None
-        };
-        let rootpath = match &self.root_dir {
-        }
-        for manifest_item in self.items {
-            if let ManifestItem::ZipPath(i, p) = manifest_item {
-                let zp = zipfile.expect("If we are dealing with zippaths, we should have a zipfile");
-                let in_zip_file = zp.by_index(i)?;
-                accum.push(FileRecord {
+            })
+            .map(|(r, p, h)| {
+                let hashstr = match h {
+                    Some(hash) => hash.to_string(),
+                    None => "".to_string(),
+                };
+                let full_filename = p.file_name().unwrap().to_str().unwrap();
+                let (_, fileext) = match full_filename.split_once(".") {
+                    Some(t) => t,
+                    None => (full_filename, ""),
+                };
+                let filesize = if let Ok(openfile) = File::open(&p) {
+                    if let Ok(md) = openfile.metadata() {
+                        md.len()
+                    } else {
+                        0
+                    }
+                } else {
+                    0
+                };
+                let vfspathroot = RelativePath::new(import_session_id).join(r);
+                FileRecord {
                     file_uuid: "".into(),
-                    file_name: p.file_name().unwrap().to_str().unwrap().to_string(),
-                    file_size_bytes: in_zip_file.size(),
+                    file_vfs_path: vfspathroot.parent().unwrap().to_string(),
+                    file_size_bytes: filesize,
+                    file_read_only: false,
+                    file_name: full_filename.into(),
+                    file_extension_tag: fileext.into(),
+                    file_encoding: "".into(),
+                    file_dir_path: p.parent().unwrap().to_str().unwrap().to_string(),
+                    file_hash: hashstr,
                     file_deleted: false,
-                    file_read_only: true,
-                    file_dir_path:
-                })
+                    media_type_override_id: None,
+                }
+            }).collect();
+            Ok(InboundFileRecordContainer {
+                root_dir,
+                records
+            })
+    }
+}
 
-            }
+pub fn make_import_id_with_time() -> Result<String>{
+    let now = SystemTime::now();
+    let since_epoch = now.duration_since(SystemTime::UNIX_EPOCH)?;
+    let ms = since_epoch.as_secs_f64();
+    let sixtyfour = BASE64_URL_SAFE_NO_PAD.encode(ms.to_be_bytes());
+    Ok(sixtyfour)
+}
 
-        };
-        Ok(self)
-    } */
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct InboundFileRecordContainer {
+    root_dir: PathBuf,
+    records: Vec<FileRecord>,
 }
 
 #[cfg(test)]
@@ -213,7 +192,7 @@ mod file_import_tests {
             PathBuf::from("c:/media/videogame/snes/echo.sns"),
             PathBuf::from("c:/media/videogame/mastersystem/thing1.png"),
         ];
-        let manifest = ShippingManifest::create_manifest_from_path_vec(pathvec)?;
+        let manifest = DirImportManifest::create_manifest_from_path_vec(pathvec)?;
         println!("manifest is {:?}", manifest);
         println!(
             "root dir is {:?} while the thing from is {:?}",
@@ -228,31 +207,22 @@ mod file_import_tests {
     #[test]
     fn tests_creates_from_dir_on_disk() -> Result<()> {
         let manifest =
-            ShippingManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
         println!("manifest is {:?}", manifest);
-        assert!(
-            if let Some(ManifestList::Dir(d)) = manifest.items {
-                d.len()
-            } else {
-                9999
-            } == 6
-        );
+        assert!(manifest.items.len() == 6);
         Ok(())
     }
 
     #[test]
-    fn test_creates_from_zip_file_as_dir() -> Result<()> {
-        let manifest = ShippingManifest::create_from_zip_file_as_dir(
-            "./src/testing_data/import_test/archive_with_files.zip".into(),
-        )?;
-        println!("manifest is {:?}", manifest);
-        assert!(
-            if let Some(ManifestList::Zip(d)) = manifest.items {
-                d.len()
-            } else {
-                9999
-            } == 5
-        );
+    fn tests_makes_file_records_for_things() -> Result<()> {
+        let manifest =
+            DirImportManifest::create_from_dir_on_disk("./src/testing_data/import_test".into())?;
+        let old_root = manifest.root_dir.clone();
+        let old_len = manifest.items.len();
+        let inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
+        println!("the container is {:?}", inbound_container);
+        assert!(inbound_container.records.len() == old_len);
+        assert!(inbound_container.root_dir == old_root);
         Ok(())
     }
 }

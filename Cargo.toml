@@ -36,4 +36,8 @@ rust_search = "=2.1.0"
 relative-path = { version = "2.0.1", features = ["serde"] }
 relative-path-utils = "0.3.1"
 zip = "4.0.0"
+rayon = "1.10.0"
+cityhasher = "0.1.0"
+blake3 = { version = "1.8.2", features = ["mmap", "rayon", "serde"] }
+base64 = "0.22.1"
 
