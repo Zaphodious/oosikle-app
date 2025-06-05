@@ -37,6 +37,11 @@ return function()
                     file_extension_desc_string_key = "file_ext_fdtxt",
                 },
                 {
+                    file_extension_tag = "foo.txt",
+                    file_extension_desc_string_key = "file_ext_footxt"
+
+                },
+                {
                     file_extension_tag = "foo",
                     file_extension_desc_string_key = "file_ext_foo",
                 },
