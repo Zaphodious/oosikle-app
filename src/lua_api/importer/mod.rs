@@ -207,6 +207,7 @@ impl InboundFileRecordContainer {
 #[cfg(test)]
 mod file_import_tests {
     use super::*;
+    use crate::miko::ShrineDestroyer;
 
     #[test]
     fn tests_making_manifest_from_path_vec() -> Result<()> {
@@ -267,6 +268,16 @@ mod file_import_tests {
         Ok(())
     }
 
+    static TESTING_VALUES: &'static str = include_str!("../../testing_data/sql/testing_values.sql");
+    static INIT_DB_STR: &'static str = include_str!("../../db/init_db.sql");
+
+    fn init_miko(dbname: &str) -> Result<(Miko<(Connection, Connection)>, ShrineDestroyer)> {
+        Miko::construct_connection_shrine(
+            format!("file:{}?mode=memory&cache=shared", dbname).into(),
+            &(INIT_DB_STR.to_string() + TESTING_VALUES),
+        )
+    }
+
     #[test]
     fn tests_commits_to_db_correctly() -> Result<()> {
 
@@ -276,8 +287,8 @@ mod file_import_tests {
         let mut inbound_container = manifest.construct_container(make_import_id_with_time()?.as_str())?;
         inbound_container.give_ids_to_records();
         let pre_insert_records = inbound_container.records.clone();
-        //TODO: Make the Miko instance and use it to commit the files to the db
-        //inbound_container.commit_to_db()?;
+        let (miko, _sd) = init_miko("import_commit_test")?;
+        inbound_container.commit_to_db(miko)?;
         Ok(())
     }
 

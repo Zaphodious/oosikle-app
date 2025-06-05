@@ -35,6 +35,10 @@ values ('TXT', 'PLAINTEXT');
 insert into MediaTypesForFileExtensions
 values ('TXT', 'EBOOK');
 insert into FileExtensions
+values ('FOO.TXT', 'file_ext_foo_txt');
+insert into MediaTypesForFileExtensions
+values ('FOO.TXT', 'PLAINTEXT');
+insert into FileExtensions
 values ('MD', 'file_ext_md');
 insert into MediaTypesForFileExtensions
 values ('MD', 'PLAINTEXT');
