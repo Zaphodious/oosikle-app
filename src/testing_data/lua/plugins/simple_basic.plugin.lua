@@ -23,7 +23,6 @@ return function()
                     media_type_string_key = "media_type_foodoc",
                     media_category_id = "BAZFILES",
                 },
-
                 {
                     media_type_id = "FOOMETA",
                     media_type_string_key = "media_type_foometa",
@@ -35,6 +34,10 @@ return function()
                 {
                     file_extension_tag = "fd.txt",
                     file_extension_desc_string_key = "file_ext_fdtxt",
+                },
+                {
+                    file_extension_tag = "foo.txt",
+                    file_extension_desc_string_key = "file_ext_footxt"
                 },
                 {
                     file_extension_tag = "foo",
@@ -57,6 +60,10 @@ return function()
                 },
                 {
                     file_extension_tag = "foo",
+                    media_type_id = "FOODOC"
+                },
+                {
+                    file_extension_tag = "foo.txt",
                     media_type_id = "FOODOC"
                 },
                 {

@@ -14,6 +14,8 @@ use std::vec::Vec;
 use std::path::Path;
 use time::OffsetDateTime;
 
+mod importer;
+
 
 static DB_INIT_SQL: &'static str = include_str!("./init_db.sql");
 
