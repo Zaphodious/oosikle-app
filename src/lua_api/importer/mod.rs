@@ -289,6 +289,7 @@ mod file_import_tests {
         let pre_insert_records = inbound_container.records.clone();
         let (miko, _sd) = init_miko("import_commit_test")?;
         inbound_container.commit_to_db(miko)?;
+
         Ok(())
     }
 

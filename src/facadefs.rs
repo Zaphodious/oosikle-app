@@ -2,15 +2,26 @@ use std::cmp::Ordering;
 use std::collections::{hash_map, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
-use crate::{db::FileRecord, miko::{Miko, ShrineDestroyer}};
+use crate::{
+    db::FileRecord,
+    miko::{Miko, ShrineDestroyer},
+};
+use anyhow::{anyhow, Result};
 use exemplar::Model;
-use rusqlite::{fallible_iterator::IteratorExt, Connection, params};
-use anyhow::{Result, anyhow};
+use relative_path::{RelativePath, RelativePathBuf};
+use rusqlite::{fallible_iterator::IteratorExt, params, Connection};
+use serde::{Deserialize, Serialize};
 use uuid::serde::simple;
 
 type SQMiko = Miko<(Connection, Connection)>;
 
 #[derive(Debug, Clone)]
+pub enum CursorIntoItem<'a> {
+    Dir(&'a DirTreeNode),
+    File(&'a FileRecord),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DirTreeNode {
     pub dirpath: String,
     pub files: HashMap<String, FileRecord>,
@@ -19,7 +30,40 @@ pub struct DirTreeNode {
 
 impl DirTreeNode {
     pub fn new(dirpath: &str) -> Self {
-        DirTreeNode { dirpath:dirpath.to_string(), files: HashMap::new(), subdirs: HashMap::new() }
+        DirTreeNode {
+            dirpath: dirpath.to_string(),
+            files: HashMap::new(),
+            subdirs: HashMap::new(),
+        }
+    }
+    pub fn cursor_into(&self, dirpath: &str) -> Option<CursorIntoItem> {
+        //println!("Starting cursor_into with {:?}", dirpath);
+        let asrelative = RelativePath::new(dirpath);
+        let definitely_paths = asrelative.parent()?;
+        let path_end = asrelative
+            .file_name()
+            .expect("FacadeFS paths should not end in '...'");
+        //println!("def paths is {:?}", definitely_paths);
+        let mut target_dir = Some(self);
+        //println!("target dir is {:?}", target_dir);
+        for comp in definitely_paths.components() {
+            //println!("Getting for commp {:?}", comp);
+            if let Some(target) = target_dir {
+                target_dir = target.subdirs.get(comp.as_str());
+                //println!("new target is {:?}", target_dir);
+            }
+        }
+        if let Some(final_dir) = target_dir {
+            if let Some(the_file) = final_dir.files.get(path_end) {
+                Some(CursorIntoItem::File(the_file))
+            } else if let Some(the_dir) = final_dir.subdirs.get(path_end) {
+                Some(CursorIntoItem::Dir(the_dir))
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 }
 
@@ -34,7 +78,8 @@ const GET_DIRS_IN_DIR_SQL: &str = "
             from Files F where F.file_vfs_path like ?1 and F.file_vfs_path != trim(?1, '%');";
 
 const GET_FILES_IN_DIR_SQL: &str = "select * from Files F where F.file_vfs_path = ?1;";
-const GET_FILES_IN_SUBDIRS_SQL: &str = "select * from Files F where F.file_vfs_path like ?1 order by length(F.file_vfs_path);";
+const GET_FILES_IN_SUBDIRS_SQL: &str =
+    "select * from Files F where F.file_vfs_path like ?1 order by length(F.file_vfs_path);";
 
 impl FacadeFS {
     pub fn new(miko: SQMiko) -> Self {
@@ -44,11 +89,13 @@ impl FacadeFS {
     pub fn get_directories_at(&self, dirpath: &str) -> Result<Vec<String>> {
         let dirpath_string = dirpath.to_string();
         let ret: Vec<String> = self.miko.send_mutating_messenger(move |(_, conn)| {
-            let mut stmt = conn.prepare_cached(GET_DIRS_IN_DIR_SQL)?;  
+            let mut stmt = conn.prepare_cached(GET_DIRS_IN_DIR_SQL)?;
 
-            let ret = stmt.query_map([dirpath_string+"%"], |r| {
-                Ok(r.get("foldername")?)
-            })?.filter(|t| t.is_ok()).map(|t| t.expect("filter didn't work")).collect();
+            let ret = stmt
+                .query_map([dirpath_string + "%"], |r| Ok(r.get("foldername")?))?
+                .filter(|t| t.is_ok())
+                .map(|t| t.expect("filter didn't work"))
+                .collect();
 
             Ok(ret)
         })?;
@@ -58,11 +105,13 @@ impl FacadeFS {
     pub fn get_files_at(&self, dirpath: &str) -> Result<Vec<FileRecord>> {
         let dirpath_string = dirpath.to_string();
         let ret: Vec<FileRecord> = self.miko.send_mutating_messenger(move |(_, conn)| {
-            let mut stmt = conn.prepare_cached(GET_FILES_IN_DIR_SQL)?;  
+            let mut stmt = conn.prepare_cached(GET_FILES_IN_DIR_SQL)?;
 
-            let ret = stmt.query_map([dirpath_string], |r| {
-                FileRecord::from_row(r)
-            })?.filter(|t| t.is_ok()).map(|t| t.expect("filter didn't work")).collect();
+            let ret = stmt
+                .query_map([dirpath_string], |r| FileRecord::from_row(r))?
+                .filter(|t| t.is_ok())
+                .map(|t| t.expect("filter didn't work"))
+                .collect();
 
             Ok(ret)
         })?;
@@ -73,16 +122,20 @@ impl FacadeFS {
         let mut node = DirTreeNode::new(dirpath);
         for file in self.get_files_at(dirpath)? {
             node.files.insert(file.file_name.clone(), file);
-        };
+        }
         let folderpaths = self.get_directories_at(dirpath)?;
         for folderpath in folderpaths {
             let childnode = self.get_dir_tree_at(folderpath.as_str())?;
-            let filepart = Path::new(folderpath.as_str()).file_name().unwrap().to_str().unwrap().to_string();
+            let filepart = Path::new(folderpath.as_str())
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string();
             node.subdirs.insert(filepart, childnode);
         }
         Ok(node)
     }
-
 }
 
 #[cfg(test)]
@@ -129,12 +182,17 @@ mod facadefs_tests {
     fn tests_gets_files_from_dir() -> Result<()> {
         let (ffs, _d) = init("gets_file")?;
         let filelist = ffs.get_files_at("alpha/only_one_file/")?;
-        assert!(filelist.get(0).expect("Query should return 1 item").file_name == "something.png");
+        assert!(
+            filelist
+                .get(0)
+                .expect("Query should return 1 item")
+                .file_name
+                == "something.png"
+        );
         let filelist_2 = ffs.get_files_at("pico8/")?;
         assert!(filelist_2.len() == 5);
         Ok(())
     }
-
 
     #[test]
     fn tests_get_tree() -> Result<()> {
@@ -148,4 +206,23 @@ mod facadefs_tests {
         Ok(())
     }
 
+    #[test]
+    fn tests_cursor_into_works() -> Result<()> {
+        let (ffs, _d) = init("cursor_into_works")?;
+        let tree = ffs.get_dir_tree_at("")?;
+        //println!("tree is {:?}", tree);
+        let cursor_result_1 = tree.cursor_into("beta/gamma/abook1.m4b").unwrap();
+        if let CursorIntoItem::File(a) = cursor_result_1 {
+            assert!(a.file_name == "abook1.m4b");
+        } else {
+            panic!("The thing returned was not a File");
+        };
+        let cursor_result_2 = tree.cursor_into("pico8/celeste").unwrap();
+        if let CursorIntoItem::Dir(a) = cursor_result_2 {
+            assert!(a.dirpath == "pico8/celeste/");
+        } else {
+            panic!("The thing returned was not a Dir");
+        };
+        Ok(())
+    }
 }

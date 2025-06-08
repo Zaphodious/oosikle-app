@@ -54,6 +54,7 @@
               webkitgtk_4_1
               openssl
               sqlitebrowser
+              graphviz
 
               eza
               fd
