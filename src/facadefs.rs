@@ -8,6 +8,7 @@ use crate::{
 };
 use anyhow::{anyhow, Result};
 use exemplar::Model;
+use regex::Regex;
 use relative_path::{RelativePath, RelativePathBuf};
 use rusqlite::{fallible_iterator::IteratorExt, params, Connection};
 use serde::{Deserialize, Serialize};
@@ -28,6 +29,8 @@ pub struct DirTreeNode {
     pub subdirs: HashMap<String, DirTreeNode>,
 }
 
+type FlattenedDir = Vec<(RelativePathBuf, FileRecord)>;
+
 impl DirTreeNode {
     pub fn new(dirpath: &str) -> Self {
         DirTreeNode {
@@ -36,7 +39,7 @@ impl DirTreeNode {
             subdirs: HashMap::new(),
         }
     }
-    pub fn cursor_into(&self, dirpath: &str) -> Option<CursorIntoItem> {
+    pub fn get_at_path(&self, dirpath: &str) -> Option<CursorIntoItem> {
         //println!("Starting cursor_into with {:?}", dirpath);
         let asrelative = RelativePath::new(dirpath);
         let definitely_paths = asrelative.parent()?;
@@ -64,6 +67,80 @@ impl DirTreeNode {
         } else {
             None
         }
+    }
+
+    pub fn search_files_with_names_matching_pattern(
+        &self,
+        pattern: &str,
+    ) -> Result<Vec<FileRecord>> {
+        let reg = Regex::new(pattern)?;
+        let mut accum = vec![];
+        self.get_files_with_names_matching_regex(&reg, &mut accum)?;
+        Ok(accum)
+    }
+
+    pub fn search_files_with_names_matching_pattern_recursive(
+        &self,
+        pattern: &str,
+    ) -> Result<Vec<FileRecord>> {
+        let reg = Regex::new(pattern)?;
+        let mut accum = vec![];
+        self.get_files_with_names_matching_regex_recursive(&reg, &mut accum)?;
+        Ok(accum)
+    }
+
+    fn get_files_with_names_matching_regex(
+        &self,
+        reg: &Regex,
+        accum: &mut Vec<FileRecord>,
+    ) -> Result<()> {
+        for (filename, filerecord) in &self.files {
+            if reg.is_match(&*filename) {
+                accum.push(filerecord.clone());
+            }
+        }
+        Ok(())
+    }
+
+    fn get_files_with_names_matching_regex_recursive(
+        &self,
+        reg: &Regex,
+        accum: &mut Vec<FileRecord>,
+    ) -> Result<()> {
+        self.get_files_with_names_matching_regex(reg, accum)?;
+        for (_dirname, dir) in &self.subdirs {
+            dir.get_files_with_names_matching_regex_recursive(reg, accum)?;
+        }
+        Ok(())
+    }
+
+    pub fn flatten(&self) -> Result<FlattenedDir> {
+        let mut accum = vec![];
+        let prefixpath = RelativePath::new("");
+        self.do_flatten(prefixpath, &mut accum)?;
+        Ok(accum)
+    }
+
+    pub fn flatten_pattern_filter(&self, pattern: &str) -> Result<FlattenedDir> {
+        let reg = Regex::new(pattern)?;
+        let flatten_res = self
+            .flatten()?
+            .into_iter()
+            .filter(|(filepath, _file)| reg.is_match(filepath.as_str()))
+            .collect();
+        Ok(flatten_res)
+    }
+
+    fn do_flatten(&self, prefixpath: &RelativePath, accum: &mut FlattenedDir) -> Result<()> {
+        let thispath = prefixpath.join(RelativePath::new(self.dirpath.as_str()));
+        for (filename, filerecord) in &self.files {
+            let filepath = thispath.join(filename);
+            accum.push((filepath, filerecord.clone()));
+        }
+        for (_dirpath, dir) in &self.subdirs {
+            dir.do_flatten(thispath.as_relative_path(), accum)?;
+        }
+        Ok(())
     }
 }
 
@@ -211,18 +288,58 @@ mod facadefs_tests {
         let (ffs, _d) = init("cursor_into_works")?;
         let tree = ffs.get_dir_tree_at("")?;
         //println!("tree is {:?}", tree);
-        let cursor_result_1 = tree.cursor_into("beta/gamma/abook1.m4b").unwrap();
+        let cursor_result_1 = tree.get_at_path("beta/gamma/abook1.m4b").unwrap();
         if let CursorIntoItem::File(a) = cursor_result_1 {
             assert!(a.file_name == "abook1.m4b");
         } else {
             panic!("The thing returned was not a File");
         };
-        let cursor_result_2 = tree.cursor_into("pico8/celeste").unwrap();
+        let cursor_result_2 = tree.get_at_path("pico8/celeste").unwrap();
         if let CursorIntoItem::Dir(a) = cursor_result_2 {
             assert!(a.dirpath == "pico8/celeste/");
         } else {
             panic!("The thing returned was not a Dir");
         };
+        Ok(())
+    }
+
+    #[test]
+    fn tests_recursive_search_works() -> Result<()> {
+        let (ffs, _d) = init("tests_recursive_search")?;
+        let tree = ffs.get_dir_tree_at("")?;
+        let res1 = tree.search_files_with_names_matching_pattern_recursive(r"^.*\.p8.png$")?;
+        println!("res is {:?}", res1);
+        assert_eq!(res1.len(), 6);
+        Ok(())
+    }
+
+    #[test]
+    fn tests_single_dir_search_works() -> Result<()> {
+        let (ffs, _d) = init("tests_single_dir_search")?;
+        let tree = ffs.get_dir_tree_at("pico8/")?;
+        let res1 = tree.search_files_with_names_matching_pattern(r"^.*\.p8.png$")?;
+        println!("res is {:?}", res1);
+        assert_eq!(res1.len(), 4);
+        Ok(())
+    }
+
+    #[test]
+    fn tests_flattening_works() -> Result<()> {
+        let (ffs, _d) = init("tests_flattening")?;
+        let tree = ffs.get_dir_tree_at("beta/")?;
+        let res1 = tree.flatten()?;
+        println!("res is {:?}", res1);
+        assert_eq!(res1.len(), 5);
+        Ok(())
+    }
+
+    #[test]
+    fn tests_filtered_flattening_works() -> Result<()> {
+        let (ffs, _d) = init("tests_flattening_filtered")?;
+        let tree = ffs.get_dir_tree_at("beta/")?;
+        let res1 = tree.flatten_pattern_filter(r"^.*\.md$")?;
+        println!("res is {:?}", res1);
+        assert_eq!(res1.len(), 1);
         Ok(())
     }
 }
