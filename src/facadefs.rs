@@ -8,11 +8,11 @@ use crate::{
 };
 use anyhow::{anyhow, Result};
 use exemplar::Model;
-use regex::Regex;
 use relative_path::{RelativePath, RelativePathBuf};
 use rusqlite::{fallible_iterator::IteratorExt, params, Connection};
 use serde::{Deserialize, Serialize};
 use uuid::serde::simple;
+use fast_glob::glob_match;
 
 type SQMiko = Miko<(Connection, Connection)>;
 
@@ -73,9 +73,8 @@ impl DirTreeNode {
         &self,
         pattern: &str,
     ) -> Result<Vec<FileRecord>> {
-        let reg = Regex::new(pattern)?;
         let mut accum = vec![];
-        self.get_files_with_names_matching_regex(&reg, &mut accum)?;
+        self.do_get_files_with_names_matching_pattern(pattern, &mut accum)?;
         Ok(accum)
     }
 
@@ -83,33 +82,32 @@ impl DirTreeNode {
         &self,
         pattern: &str,
     ) -> Result<Vec<FileRecord>> {
-        let reg = Regex::new(pattern)?;
         let mut accum = vec![];
-        self.get_files_with_names_matching_regex_recursive(&reg, &mut accum)?;
+        self.do_get_files_with_names_matching_pattern_recursive(pattern, &mut accum)?;
         Ok(accum)
     }
 
-    fn get_files_with_names_matching_regex(
+    fn do_get_files_with_names_matching_pattern(
         &self,
-        reg: &Regex,
+        pattern: &str,
         accum: &mut Vec<FileRecord>,
     ) -> Result<()> {
         for (filename, filerecord) in &self.files {
-            if reg.is_match(&*filename) {
+            if glob_match(pattern, &*filename) {
                 accum.push(filerecord.clone());
             }
         }
         Ok(())
     }
 
-    fn get_files_with_names_matching_regex_recursive(
+    fn do_get_files_with_names_matching_pattern_recursive(
         &self,
-        reg: &Regex,
+        pattern: &str,
         accum: &mut Vec<FileRecord>,
     ) -> Result<()> {
-        self.get_files_with_names_matching_regex(reg, accum)?;
+        self.do_get_files_with_names_matching_pattern(pattern, accum)?;
         for (_dirname, dir) in &self.subdirs {
-            dir.get_files_with_names_matching_regex_recursive(reg, accum)?;
+            dir.do_get_files_with_names_matching_pattern_recursive(pattern, accum)?;
         }
         Ok(())
     }
@@ -121,12 +119,11 @@ impl DirTreeNode {
         Ok(accum)
     }
 
-    pub fn flatten_pattern_filter(&self, pattern: &str) -> Result<FlattenedDir> {
-        let reg = Regex::new(pattern)?;
+    pub fn glob(&self, pattern: &str) -> Result<FlattenedDir> {
         let flatten_res = self
             .flatten()?
             .into_iter()
-            .filter(|(filepath, _file)| reg.is_match(filepath.as_str()))
+            .filter(|(filepath, _file)| glob_match(pattern, filepath.as_str()))
             .collect();
         Ok(flatten_res)
     }
@@ -157,6 +154,7 @@ const GET_DIRS_IN_DIR_SQL: &str = "
 const GET_FILES_IN_DIR_SQL: &str = "select * from Files F where F.file_vfs_path = ?1;";
 const GET_FILES_IN_SUBDIRS_SQL: &str =
     "select * from Files F where F.file_vfs_path like ?1 order by length(F.file_vfs_path);";
+const GET_FILES_MATCHING_GLOB: &str = "select * from Files F where F.file_vfs_path GLOB ?1;";
 
 impl FacadeFS {
     pub fn new(miko: SQMiko) -> Self {
@@ -213,6 +211,11 @@ impl FacadeFS {
         }
         Ok(node)
     }
+
+    /*
+    pub fn glob(&self, startdir: &str, pattern: &str) -> Result<FlattenedDir> {
+
+    } */
 }
 
 #[cfg(test)]
@@ -307,7 +310,7 @@ mod facadefs_tests {
     fn tests_recursive_search_works() -> Result<()> {
         let (ffs, _d) = init("tests_recursive_search")?;
         let tree = ffs.get_dir_tree_at("")?;
-        let res1 = tree.search_files_with_names_matching_pattern_recursive(r"^.*\.p8.png$")?;
+        let res1 = tree.search_files_with_names_matching_pattern_recursive(r"*.p8.png")?;
         println!("res is {:?}", res1);
         assert_eq!(res1.len(), 6);
         Ok(())
@@ -317,7 +320,7 @@ mod facadefs_tests {
     fn tests_single_dir_search_works() -> Result<()> {
         let (ffs, _d) = init("tests_single_dir_search")?;
         let tree = ffs.get_dir_tree_at("pico8/")?;
-        let res1 = tree.search_files_with_names_matching_pattern(r"^.*\.p8.png$")?;
+        let res1 = tree.search_files_with_names_matching_pattern(r"*.p8.png")?;
         println!("res is {:?}", res1);
         assert_eq!(res1.len(), 4);
         Ok(())
@@ -337,7 +340,7 @@ mod facadefs_tests {
     fn tests_filtered_flattening_works() -> Result<()> {
         let (ffs, _d) = init("tests_flattening_filtered")?;
         let tree = ffs.get_dir_tree_at("beta/")?;
-        let res1 = tree.flatten_pattern_filter(r"^.*\.md$")?;
+        let res1 = tree.glob(r"**/*.md")?;
         println!("res is {:?}", res1);
         assert_eq!(res1.len(), 1);
         Ok(())

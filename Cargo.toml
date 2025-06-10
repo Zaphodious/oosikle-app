@@ -41,5 +41,5 @@ cityhasher = "0.1.0"
 blake3 = { version = "1.8.2", features = ["mmap", "rayon", "serde"] }
 base64 = "0.22.1"
 pattern = "1.0.0"
-regex = "1.11.1"
+fast-glob = "0.4.5"
 

@@ -1178,6 +1178,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
 
 [[package]]
+name = "fast-glob"
+version = "0.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39ea3f6bbcf4dbe2076b372186fc7aeecd5f6f84754582e56ee7db262b15a6f0"
+dependencies = [
+ "arrayvec",
+]
+
+[[package]]
 name = "fastrand"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2924,13 +2933,13 @@ dependencies = [
  "blake3",
  "cityhasher",
  "exemplar",
+ "fast-glob",
  "hypertext",
  "micromap",
  "mlua",
  "pattern",
  "proptest",
  "rayon",
- "regex",
  "relative-path",
  "relative-path-utils",
  "rusqlite",
