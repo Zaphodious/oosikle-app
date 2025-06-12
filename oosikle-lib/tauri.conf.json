@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "oosikle-app",
+  "version": "0.1.0",
+  "identifier": "fish.hot.oosikle.app",
+  "build": {
+    "frontendDist": "./js-src",
+    "beforeDevCommand": "live-server ./js-src -p 4242 -H localhost",
+    "devUrl": "http://[::1]:4242/"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "oosikle-app",
+        "width": 400,
+        "height": 800,
+        "url": "/mainbar.html"
+      },
+      {
+        "label": "list1",
+        "title": "list",
+        "width": 800,
+        "height": 600,
+        "url": "/list.html"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

@@ -1,8 +1,4 @@
-pub mod db;
-pub mod lua_api;
-pub mod miko;
-pub mod facadefs;
-use crate::db::init_db;
+use oosikle_lib::db::init_db;
 use hypertext::{html_elements, maud, rsx, GlobalAttributes, Renderable};
 use std::fmt;
 use tauri::webview::WebviewWindowBuilder;

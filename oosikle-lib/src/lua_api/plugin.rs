@@ -277,8 +277,6 @@ fn discover_plugins(plugin_root: &str) -> Result<Vec<UnparsedLuaPlugin>> {
 
 #[cfg(test)]
 mod plugin_resoltuion_tests {
-    use tauri::Asset;
-
     use crate::miko::{Miko, ShrineDestroyer};
 
     use super::*;

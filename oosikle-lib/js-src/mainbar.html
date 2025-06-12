@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="default_theme/styles.css">
+    <title>Oosikle App</title>
+    <script src="./htmx/htmx.js"></script>
+    <script src="./htmx/tauri-ext.js"></script>
+</head>
+
+<body id="mainbar" hx-ext="tauri">
+    <header>
+        <div class="menu-section">
+            <ul id="function-menu" class="menu-button-bar">
+                <li id="sync-all-function">
+                    <button class="sync icon-only" tauri-invoke="window_open_test" hx-target="#view-menu">Sync</button>
+                </li>
+                <li id="import-function">
+                    <button class="import icon-only">Import</button>
+                </li>
+                <li id="export-function">
+                    <button class="export icon-only">Export</button>
+                </li>
+                <li id="backup-function">
+                    <button class="save icon-only">Backup</button>
+                </li>
+                <li id="general-settings-function">
+                    <button class="option icon-only">Settings</button>
+                </li>
+
+            </ul>
+        </div>
+    </header>
+    <nav>
+        <details open>
+            <summary>
+                <h2>Collections</h2>
+            </summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Books <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-authors"><label for="books-authors">Authors</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-titles"><label for="books-titles">Titles</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-series"><label for="books-series">Series</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-to-read"><label for="books-to-read">To Read</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="books-favorites"><label for="books-favorites">Favorites</label></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details open>
+                        <summary>Music <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected" id="music-songs"
+                                    checked> <label for="music-songs">Songs</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="music-albums"> <label for="music-albums">Albums</label></li>
+                            <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                    id="music-artists"> <label for="music-artists">Artists</label></li>
+                        </ul>
+
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Portmaster <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li class="plist" draggable="true">
+                                <input type="radio" name="list-selected" id="portmaster-games"><label
+                                    for="portmaster-games">Games</label>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+
+            </ul>
+        </details>
+        <details open>
+            <summary>
+                <h2>Devices</h2>
+            </summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Kindle <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>Books <button class="option icon-only">Options</button></summary>
+                                    <ul>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="kindle1-books-authors"><label
+                                                for="kindle1-books-authors">Authors</label></li>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="kindle1-books-titles"><label
+                                                for="kindle1--books-titles">Titles</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+
+                </li>
+                <li>
+                    <details open>
+                        <summary>iPod 5th Gen <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details open>
+                                    <summary>Music <button class="option icon-only">Options</button></summary>
+                                    <ul>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-songs">
+                                            <label for="ipod1-music-songs">Songs</label>
+                                        </li>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-albums"> <label for="ipod1-music-albums">Albums</label>
+                                        </li>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-music-artists">
+                                            <label for="ipod1-music-artists">Artists</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details>
+                                    <summary>Books <button class="option icon-only">Options</button></summary>
+                                    <ul>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-books-authors"><label
+                                                for="ipod1-books-authors">Authors</label></li>
+                                        <li class="plist" draggable="true"><input type="radio" name="list-selected"
+                                                id="ipod1-books-titles"><label for="ipod1-books-titles">Titles</label>
+                                        </li>
+
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>TrimUI Brick <button class="option icon-only">Options</button></summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>Portmaster <button class="option icon-only">Options</button></summary>
+                                    <ul>
+                                        <li class="plist" draggable="true">
+                                            <input type="radio" name="list-selected" id="brck1-portmaster-games"><label
+                                                for="brick1-portmaster-games">Games</label>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </details>
+    </nav>
+    <footer>
+        <section>More stuff</section>
+    </footer>
+</body>
+
+</html>
