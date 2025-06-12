@@ -61,8 +61,22 @@
               pre-commit
               live-server
               dia
+
+              #egui
+              trunk
+              pkg-config
+              libxkbcommon
+              libGL
+              fontconfig
+              wayland
+              xorg.libXcursor
+              xorg.libXrandr
+              xorg.libXi
+              xorg.libX11
             ];
             RUST_SRC_PATH = rust;
+
+            LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
 
             shellHook = ''
               export XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS;
