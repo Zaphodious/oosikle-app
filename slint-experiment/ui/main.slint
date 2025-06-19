@@ -1,12 +1,37 @@
-import { AboutSlint, VerticalBox } from "std-widgets.slint";
+import { AboutSlint, Button, VerticalBox, ListView } from "std-widgets.slint";
 
-export component MainWindow inherits Window {
-    VerticalBox {
-        Text {
-            text: "Hello World!";
+export component Demo {
+    
+    in property <[string]> playlists: [
+        "foo", "bar", "zip", "zap"
+    ];
+    
+    HorizontalLayout {
+        VerticalBox { 
+            Rectangle { 
+                min-width: 16px;
+                min-height: 16px; 
+                /* @lsp:ignore-node */ 
+            } 
         }
-        AboutSlint {
-            preferred-height: 150px;
+        VerticalBox { 
+            Rectangle {
+                
+            }
+            Rectangle {
+                ListView {
+                    for x in playlists: Text {
+                        text: x;
+                    }
+                }
+            }
+        }
+        VerticalBox { 
+            Rectangle { 
+                min-width: 16px;
+                min-height: 16px; 
+                /* @lsp:ignore-node */ 
+            } 
         }
     }
 }
