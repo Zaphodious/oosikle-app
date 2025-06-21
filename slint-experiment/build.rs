@@ -1,4 +1,5 @@
 
 fn main() {
-    slint_build::compile("ui/main.slint").unwrap();
+    // This only seems to recognize one compiled file at a time
+    slint_build::compile("ui/compiled.slint").unwrap();
 }

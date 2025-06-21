@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-slint = "1.12.0"
+i-slint-backend-winit = "=1.12.0"
+slint = {version="=1.12", features=["unstable-winit-030"]}
 
 [build-dependencies]
-slint-build = "1.12"
+slint-build = "=1.12"

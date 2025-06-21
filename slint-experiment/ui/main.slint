@@ -1,6 +1,6 @@
 import { AboutSlint, Button, VerticalBox, ListView } from "std-widgets.slint";
 
-export component Demo {
+export component MainLayoutDemo inherits Window {
     
     in property <[string]> playlists: [
         "foo", "bar", "zip", "zap"
@@ -9,7 +9,7 @@ export component Demo {
     HorizontalLayout {
         VerticalBox { 
             Rectangle { 
-                min-width: 16px;
+                min-width: 17px;
                 min-height: 16px; 
                 /* @lsp:ignore-node */ 
             } 

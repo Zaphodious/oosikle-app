@@ -26,6 +26,14 @@
           cargo = rust;
           rustc = rust;
         };
+        libPath =
+          with pkgs;
+          lib.makeLibraryPath [
+            fontconfig
+            libxkbcommon
+            wayland
+            libGL
+          ];
       in
       {
         defaultPackage = naersk-lib.buildPackage ./.;
@@ -39,6 +47,9 @@
               cargo-tauri
               bun
               rust
+              rust-analyzer
+              rustup
+              
             ];
             buildInputs = with pkgs; [
               at-spi2-atk
@@ -61,6 +72,7 @@
               pre-commit
               live-server
               dia
+              
 
               #egui
               trunk
@@ -75,9 +87,14 @@
               xorg.libX11
             ];
 
-            RUST_SRC_PATH = rust;
+            #RUST_SRC_PATH = rust;
 
             #LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
+            LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${libPath}";
+            RUST_SRC_PATH = "${rustPlatform.rustLibSrc}";
+            WINIT_UNIX_BACKEND = "x11";
+            DISPLAY=":0";
+            WAYLAND_DISPLAY="";
 
             shellHook = ''
               export XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS;

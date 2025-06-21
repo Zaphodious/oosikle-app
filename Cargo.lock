@@ -6280,6 +6280,7 @@ dependencies = [
  "const-field-offset",
  "i-slint-backend-qt",
  "i-slint-backend-selector",
+ "i-slint-backend-winit",
  "i-slint-core",
  "i-slint-core-macros",
  "i-slint-renderer-femtovg",
@@ -6307,6 +6308,7 @@ dependencies = [
 name = "slint-experiment"
 version = "0.1.0"
 dependencies = [
+ "i-slint-backend-winit",
  "slint",
  "slint-build",
 ]
