@@ -1,6 +1,8 @@
 import { AboutSlint, Button, VerticalBox, ListView } from "std-widgets.slint";
 
 export component HasherDemo inherits Window {
+    in property<string> file_path: "None";
+    in property<string> file_hash: "0";
     VerticalBox {
         Text {
             text: "Drag in a file to be hashed.";
@@ -8,7 +10,14 @@ export component HasherDemo inherits Window {
         Rectangle {
             height: 30px;
             Text {
-                text: "File: None";
+                text: "File: \{file_path}";
+            }
+        }
+        Rectangle {
+            height: 40px;
+            Text {
+                text: "Hash: \{file_hash}";
+                font-size: 15pt;
             }
         }
     }

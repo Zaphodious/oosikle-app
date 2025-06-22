@@ -1,10 +1,13 @@
 use slint;
+use slint::Model;
 use i_slint_backend_winit::{winit::{event::WindowEvent, window::Window}, WinitWindowAccessor, WinitWindowEventResult}; // import the trait
 
 slint::include_modules!();
 
 use std::env;
 
+use crate::hasher::start_hasher;
+mod hasher;
 
 fn main() {
 
@@ -16,25 +19,7 @@ fn main() {
         let first_str = first_arg.as_str();
         match first_str {
             "demo" => println!("We demoin'"),
-            "hasher" =>  {
-                let d = HasherDemo::new().unwrap();
-                let w = d.window();
-                w.on_winit_window_event(|win, ev| {
-                    println!("We're getting an event! {:?}", ev);
-                    match ev {
-                        WindowEvent::DroppedFile(pb) => {
-                            println!("We've got file: {:?}", pb);
-                        },
-                        WindowEvent::HoveredFile(pb) => {
-                            println!("We've being tempted with file: {:?}", pb);
-                        }
-                        _ => {},
-                    }
-                    WinitWindowEventResult::Propagate
-                });
-                d.run().unwrap();
-
-            },
+            "hasher" => start_hasher(),
             _ => panic!("never shoulda come here")
         }
     } else {
