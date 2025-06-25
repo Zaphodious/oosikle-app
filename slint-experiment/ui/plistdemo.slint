@@ -14,7 +14,7 @@ export struct PListFolder {
     plists: [PListHandle]
 }
 
-export component PlistSelectorDemo {
+export component PlistSelectorDemo inherits Window {
     in-out property <[PListFolder]> folders: 
     [
         {

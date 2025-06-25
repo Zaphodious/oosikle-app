@@ -21,6 +21,7 @@ fn main() -> Result<()>{
         match first_str {
             "demo" => println!("We demoin'"),
             "hasher" => start_hasher()?,
+            "plistdemo" => PlistSelectorDemo::new().unwrap().run().unwrap(),
             _ => panic!("never shoulda come here")
         }
     } else {
