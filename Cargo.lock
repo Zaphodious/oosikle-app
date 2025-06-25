@@ -6308,7 +6308,8 @@ dependencies = [
 name = "slint-experiment"
 version = "0.1.0"
 dependencies = [
- "cityhasher",
+ "anyhow",
+ "blake3",
  "i-slint-backend-winit",
  "slint",
  "slint-build",

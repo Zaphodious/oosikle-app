@@ -1,33 +1,72 @@
-import { AboutSlint, Button, VerticalBox, ListView } from "std-widgets.slint";
+import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
 
 export component MainLayoutDemo inherits Window {
     
+    no-frame: false;
     in property <[string]> playlists: [
         "foo", "bar", "zip", "zap"
     ];
+
+    always-on-top: false;
+    in-out property <bool> commander_pane_minimized: false;
+    full-screen: false;
     
     HorizontalLayout {
-        VerticalBox { 
+        alignment: stretch;
             Rectangle { 
-                min-width: 17px;
-                min-height: 16px; 
+                width: 75px;
+                background: red;
                 /* @lsp:ignore-node */ 
             } 
-        }
-        VerticalBox { 
+        VerticalLayout { 
+            width: 200px;
             Rectangle {
-                
+                height: 150px;
+                background: green;   
             }
             Rectangle {
-                ListView {
-                    for x in playlists: Text {
-                        text: x;
+                background: blue;
+                ScrollView {
+                    ListView {
+                        for x in playlists: Text {
+                            text: x;
+                        }
                     }
                 }
             }
         }
-        VerticalBox { 
+        VerticalLayout { 
+            alignment: stretch;
+            Rectangle {
+                height: 50px;
+                background: yellow;
+                HorizontalLayout {
+                    alignment: LayoutAlignment.space-between;
+                    horizontal-stretch: 0.5;
+                    Rectangle {
+                        background: grey;
+                        width: 10px;
+                    }
+                    Rectangle {
+                        background: black;
+                        width: 10px;
+                    }
+                    Rectangle {
+                        width: 10px;
+                        background: white;
+                    }
+                }
+            }
+            
+            Rectangle {
+                background: teal;
+            }
+            Rectangle {
+                background: goldenrod;
+                height: 10px;
+            }
             Rectangle { 
+                background: purple;
                 min-width: 16px;
                 min-height: 16px; 
                 /* @lsp:ignore-node */ 

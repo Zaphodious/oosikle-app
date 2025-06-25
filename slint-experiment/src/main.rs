@@ -1,3 +1,4 @@
+use anyhow::Result;
 use slint;
 use slint::Model;
 use i_slint_backend_winit::{winit::{event::WindowEvent, window::Window}, WinitWindowAccessor, WinitWindowEventResult}; // import the trait
@@ -9,7 +10,7 @@ use std::env;
 use crate::hasher::start_hasher;
 mod hasher;
 
-fn main() {
+fn main() -> Result<()>{
 
     slint::platform::set_platform(Box::new(i_slint_backend_winit::Backend::new().unwrap())).unwrap();
     let args: Vec<String> = env::args().collect();
@@ -19,11 +20,12 @@ fn main() {
         let first_str = first_arg.as_str();
         match first_str {
             "demo" => println!("We demoin'"),
-            "hasher" => start_hasher(),
+            "hasher" => start_hasher()?,
             _ => panic!("never shoulda come here")
         }
     } else {
         MainLayoutDemo::new().unwrap().run().unwrap();
     }
     println!("Hello, world!");
+    Ok(())
 }
