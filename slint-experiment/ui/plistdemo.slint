@@ -57,51 +57,65 @@ export component PlistSelectorDemo inherits Window {
     ];
 
     ScrollView {
+        horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
         VerticalLayout {
             alignment: start;
             for folder in folders: VerticalLayout {
                 TouchArea {
+                    accessible-role: AccessibleRole.button;
                     HorizontalLayout {
                         alignment: start;
                         Rectangle {
                             Text {
                                 text: folder.expanded ? "-" : "+";
                             }
+
                             width: 20px;
                             height: 18pt;
                         }
+
                         Text {
                             text: folder.name;
                             font-size: 18px;
                         }
                     }
+
                     clicked => {
                         folder.expanded = !folder.expanded;
                     }
                 }
 
-                if folder.expanded: VerticalLayout {
+                VerticalLayout {
                     alignment: start;
-                    height: folder.expanded? folder.plists.length * 20pt : 0pt;
+                    height: folder.expanded ? folder.plists.length * 20pt : 0pt;
                     padding: 4pt;
-
                     animate height {
-                        duration: 500ms;
+                        direction: alternate;
+                        duration: 250ms;
+                        easing: ease-in-out-quint;
+                        delay: 20ms;
                     }
-                
-                    for plist in folder.plists: HorizontalLayout {
+                    for plist[p_i] in folder.plists: HorizontalLayout {
 
                         horizontal-stretch: 100%;
                         opacity: folder.expanded ? 100% : 0%;
                         padding: 2pt;
-                        padding-left: 40px;
-                        
+                        padding-left: folder.expanded ? 40px : 80px;
                         animate padding-left, opacity {
-                            duration: 500ms;
+                            direction: alternate;
+                            duration: 250ms;
+                            easing: ease-in-out-back;
                         }
-                        Text {
-                            text: plist.name;
-                            font-size: folder.expanded ? 12pt : 0px;
+                        Rectangle {
+                            Text {
+                                horizontal-alignment: left;
+                                
+                                width: 100%;
+                                wrap: TextWrap.word-wrap;
+                                overflow: TextOverflow.clip;
+                                text: plist.name;
+                                font-size: 12pt;
+                            }
                         }
                     }
                 }
