@@ -16,103 +16,73 @@ export struct PListFolder {
 
 export component PlistSelectorDemo {
     in-out property <[PListFolder]> folders: 
-    [{
-        id: "cat1",
-        name: "Category 1",
-        expanded: true,
-        plists: [
-            {
-                id: "list1",
-                name: "First List",
-                kind: PListKind.PList
-            },
-            {
-                id: "list2",
-                name: "List The next",
-                kind: PListKind.PList
-            },
-            {
-                id: "filter1",
-                name: "Oooo a *filter*!",
-                kind: PListKind.Filter
-            },
-
-        ]
-    },
-    {
-        id: "cat2",
-        name: "Segundo",
-        expanded: false,
-        plists: [
-            {
-                id: "list4",
-                name: "Another List",
-                kind: PListKind.PList
-            },
-            {
-                id: "filter3",
-                name: "Well aren't we special",
-                kind: PListKind.Filter
-            },
-            {
-                id: "filter4",
-                name: "And yet another...",
-                kind: PListKind.Filter
-            },
-            {
-                id: "list5",
-                name: "Quinta",
-                kind: PListKind.PList
-            },
-
-        ]
-    },
-    {
-        id: "cat2",
-        name: "Oh yeah, it's party time",
-        expanded: true,
-        plists: [
-            {
-                id: "list_hah",
-                name: "Bwahahaha",
-                kind: PListKind.PList
-            },
-            {
-                id: "we ballin",
-                name: "Generating demo data by hand is hard",
-                kind: PListKind.Filter
-            },
-            {
-                id: "pffffff",
-                name: "qwertyASDFg",
-                kind: PListKind.Filter
-            },
-            {
-                id: "idec",
-                name: "bleep blorp",
-                kind: PListKind.PList
-            },
-            {
-                id: "sosume",
-                name: "BWAAAAAAAA",
-                kind: PListKind.PList
-            },
-
-        ]
-    },
+    [
+        {
+            id: "cat1",
+            name: "Category 1",
+            expanded: true,
+            plists: [
+                { id: "list1", name: "First List", kind: PListKind.PList },
+                { id: "list2", name: "List The next", kind: PListKind.PList },
+                { id: "filter1", name: "Oooo a *filter*!", kind: PListKind.Filter },
+            ]
+        },
+        {
+            id: "cat2",
+            name: "Segundo",
+            expanded: false,
+            plists: [
+                { id: "list4", name: "Another List", kind: PListKind.PList },
+                { id: "filter3", name: "Well aren't we special", kind: PListKind.Filter },
+                { id: "filter4", name: "And yet another...", kind: PListKind.Filter },
+                { id: "list5", name: "Quinta", kind: PListKind.PList },
+            ]
+        },
+        {
+            id: "cat2",
+            name: "Oh yeah, it's party time",
+            expanded: true,
+            plists: [
+                { id: "list_hah", name: "Bwahahaha", kind: PListKind.PList },
+                {
+                    id: "we ballin",
+                    name: "Generating demo data by hand is hard",
+                    kind: PListKind.Filter
+                },
+                { id: "pffffff", name: "qwertyASDFg", kind: PListKind.Filter },
+                { id: "idec", name: "bleep blorp", kind: PListKind.PList },
+                { id: "sosume", name: "BWAAAAAAAA", kind: PListKind.PList },
+            ]
+        },
     ];
 
     ScrollView {
         VerticalLayout {
             alignment: start;
             for folder in folders: VerticalLayout {
-                Text {text: folder.name;}
+                Text {
+                    text: folder.name;
+                }
 
-                for plist in folder.plists: VerticalLayout {
-                    padding-left: 20px;
-                    Text {text: plist.name;}
+                if folder.expanded: VerticalLayout {
+                    for plist in folder.plists: HorizontalLayout {
+
+                        height: folder.expanded ? 20px : 0px;
+                        horizontal-stretch: 100%;
+                        opacity: folder.expanded ? 100% : 0%;
+                        padding-left: folder.expanded ? 20px : 70px;
+                        animate padding-left, opacity, height {
+                            easing: ease-in-elastic;
+                            duration: 0.25s;
+                        }
+                        Text {
+                            text: plist.name;
+                            font-size: folder.expanded ? 12pt : 0px;
+                        }
+                    }
                 }
             }
         }
     }
 }
+:we
