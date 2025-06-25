@@ -15,6 +15,8 @@ export struct PListFolder {
 }
 
 export component PlistSelectorDemo inherits Window {
+    preferred-height: 500px;
+    preferred-width: 300px;
     in-out property <[PListFolder]> folders: 
     [
         {
@@ -83,11 +85,13 @@ export component PlistSelectorDemo inherits Window {
                     clicked => {
                         folder.expanded = !folder.expanded;
                     }
+
+                    mouse-cursor: pointer;
                 }
 
                 VerticalLayout {
                     alignment: start;
-                    height: folder.expanded ? folder.plists.length * 20pt : 0pt;
+                    height: folder.expanded ? folder.plists.length * 28pt : 0pt;
                     padding: 4pt;
                     animate height {
                         direction: alternate;
@@ -100,22 +104,41 @@ export component PlistSelectorDemo inherits Window {
                         horizontal-stretch: 100%;
                         opacity: folder.expanded ? 100% : 0%;
                         padding: 2pt;
-                        padding-left: folder.expanded ? 40px : 80px;
+                        padding-left: folder.expanded ? 30px : 80px;
+                        spacing: 5px;
+                        
                         animate padding-left, opacity {
                             direction: alternate;
                             duration: 250ms;
                             easing: ease-in-out-back;
                         }
                         Rectangle {
-                            Text {
-                                horizontal-alignment: left;
-                                
-                                width: 100%;
-                                wrap: TextWrap.word-wrap;
-                                overflow: TextOverflow.clip;
-                                text: plist.name;
-                                font-size: 12pt;
+                            padding: 20px;
+                            border-width: 3px;
+                            border-color: black;
+                            border-radius: 15px;
+                            HorizontalLayout {
+                                padding: 5px;
+                                padding-left: 15px;
+                                if plist.kind == PListKind.PList:
+                                Text {
+                                    text: "p ";
+                                }
+                                if plist.kind == PListKind.Filter:
+                                Text {
+                                    text: "f ";
+                                }
+                                Text {
+                                    horizontal-alignment: left;
+                                    
+                                    width: 90%;
+                                    wrap: TextWrap.no-wrap;
+                                    overflow: TextOverflow.elide;
+                                    text: plist.name;
+                                    font-size: 12pt;
+                                }
                             }
+                            
                         }
                     }
                 }
