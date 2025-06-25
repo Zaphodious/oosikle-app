@@ -1,8 +1,7 @@
 use std::path::PathBuf;
 
-use i_slint_backend_winit::{winit::{event::WindowEvent, window::Window}, WinitWindowAccessor, WinitWindowEventResult}; // import the trait
+use i_slint_backend_winit::{winit::{event::WindowEvent}, WinitWindowAccessor, WinitWindowEventResult};
 use slint;
-use slint::Model;
 use slint::ComponentHandle;
 use anyhow::Result;
 
@@ -12,7 +11,7 @@ pub fn start_hasher() -> Result<()> {
     let d = HasherDemo::new().unwrap();
     let w = d.window();
     let d_c = d.clone_strong();
-    w.on_winit_window_event(move |win, ev| {
+    w.on_winit_window_event(move |_win, ev| {
         match ev {
             WindowEvent::DroppedFile(pb) => {
                 println!("We're getting an event! {:?}", ev);

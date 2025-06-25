@@ -1,7 +1,5 @@
 use anyhow::Result;
 use slint;
-use slint::Model;
-use i_slint_backend_winit::{winit::{event::WindowEvent, window::Window}, WinitWindowAccessor, WinitWindowEventResult}; // import the trait
 
 slint::include_modules!();
 
