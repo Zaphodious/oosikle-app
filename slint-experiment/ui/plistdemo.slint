@@ -60,20 +60,44 @@ export component PlistSelectorDemo {
         VerticalLayout {
             alignment: start;
             for folder in folders: VerticalLayout {
-                Text {
-                    text: folder.name;
+                TouchArea {
+                    HorizontalLayout {
+                        alignment: start;
+                        Rectangle {
+                            Text {
+                                text: folder.expanded ? "-" : "+";
+                            }
+                            width: 20px;
+                            height: 18pt;
+                        }
+                        Text {
+                            text: folder.name;
+                            font-size: 18px;
+                        }
+                    }
+                    clicked => {
+                        folder.expanded = !folder.expanded;
+                    }
                 }
 
                 if folder.expanded: VerticalLayout {
+                    alignment: start;
+                    height: folder.expanded? folder.plists.length * 20pt : 0pt;
+                    padding: 4pt;
+
+                    animate height {
+                        duration: 500ms;
+                    }
+                
                     for plist in folder.plists: HorizontalLayout {
 
-                        height: folder.expanded ? 20px : 0px;
                         horizontal-stretch: 100%;
                         opacity: folder.expanded ? 100% : 0%;
-                        padding-left: folder.expanded ? 20px : 70px;
-                        animate padding-left, opacity, height {
-                            easing: ease-in-elastic;
-                            duration: 0.25s;
+                        padding: 2pt;
+                        padding-left: 40px;
+                        
+                        animate padding-left, opacity {
+                            duration: 500ms;
                         }
                         Text {
                             text: plist.name;
@@ -85,4 +109,3 @@ export component PlistSelectorDemo {
         }
     }
 }
-:we
