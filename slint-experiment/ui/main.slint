@@ -152,14 +152,17 @@ export component MainLayoutDemo inherits Window {
                     background: x.enabled ? purple : darkgray;
                     border-width: 3px;
                     border-color: black;
-                    height: 50px;
-                    TouchArea {
+                    height: 60px;
+                    indiv_area := TouchArea {
                         mouse-cursor: pointer;
                         Image {
-                            x: 7.5px;
+                            x: 5px;
+                            y: 4px;
                             source: x.icon;
-                            width: 45px;
-                            colorize: x.enabled ? white : grey;
+                            height: 50px;
+                            image-rendering: smooth;
+                            //width: 45px;
+                            //colorize: x.enabled ? white : grey;
                         }
 
                         Text {
