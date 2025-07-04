@@ -25,15 +25,15 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="px"
      showgrid="false"
-     inkscape:zoom="1.166"
-     inkscape:cx="670.66895"
-     inkscape:cy="1208.4048"
+     inkscape:zoom="0.41224325"
+     inkscape:cx="223.16921"
+     inkscape:cy="1176.4898"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="0"
      inkscape:window-y="650"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer5"
      inkscape:showpageshadow="0"
      inkscape:deskcolor="#d1d1d1"
      showguides="true">
@@ -266,7 +266,7 @@
        fx="1000"
        fy="367.17953"
        r="635.45117"
-       gradientTransform="matrix(3.4719935,0,0,0.05594191,-2471.9935,137.50812)"
+       gradientTransform="matrix(4.0697,0,0,0.06557235,-3069.7,-10.970597)"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
@@ -342,8 +342,8 @@
        style="color-interpolation-filters:sRGB;"
        inkscape:label="Drop Shadow"
        id="filter32004"
-       x="-0.028656314"
-       y="-0.02902806"
+       x="-0.028656308"
+       y="-0.029028054"
        width="1.0879782"
        height="1.0580561">
       <feFlood
@@ -482,6 +482,35 @@
          result="composite2"
          id="feComposite32429" />
     </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10228"
+       id="linearGradient47721"
+       gradientUnits="userSpaceOnUse"
+       x1="1185.3359"
+       y1="1300"
+       x2="1185.3359"
+       y2="1462" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient16848"
+       id="linearGradient47723"
+       gradientUnits="userSpaceOnUse"
+       x1="1185.3359"
+       y1="1462"
+       x2="1185.3359"
+       y2="1300" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient27212"
+       id="radialGradient47845"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.39185279,0,0,2.7523839,802.56904,1116.2669)"
+       cx="1318.1901"
+       cy="-636.96094"
+       fx="1318.1901"
+       fy="-636.96094"
+       r="78.474174" />
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -489,22 +518,22 @@
      id="layer1">
     <path
        id="rect5753"
-       style="fill:#f0b850;fill-opacity:1;stroke:url(#radialGradient24095);stroke-width:7;stroke-linejoin:round;stroke-dasharray:none"
-       d="M 373.69141 158.04883 C 370.56545 158.04883 368.04883 160.56545 368.04883 163.69141 L 368.04883 1836.3086 C 368.04883 1839.4346 370.56545 1841.9512 373.69141 1841.9512 L 1510.7129 1841.9512 A 149.18376 149.18376 0 0 0 1631.9512 1720.7129 L 1631.9512 163.69141 C 1631.9512 160.56545 1629.4346 158.04883 1626.3086 158.04883 L 373.69141 158.04883 z " />
+       style="fill:#f0b850;fill-opacity:1;stroke:url(#radialGradient24095);stroke-width:8.20506;stroke-linejoin:round;stroke-dasharray:none"
+       d="m 265.87186,13.106223 c -3.6641,0 -6.61396,2.949858 -6.61396,6.613955 V 1980.2798 c 0,3.6642 2.94986,6.614 6.61396,6.614 H 1598.6326 a 174.86587,174.86587 0 0 0 142.1095,-142.1096 V 19.720178 c 0,-3.664097 -2.9498,-6.613955 -6.6139,-6.613955 z" />
     <rect
-       style="fill:#1b1b1b;fill-opacity:1;stroke-width:6.8312;stroke-linejoin:round"
+       style="fill:#1b1b1b;fill-opacity:1;stroke-width:7.7936;stroke-linejoin:round"
        id="rect7423"
-       width="1242.7267"
-       height="930.94714"
-       x="378.63663"
-       y="170.25105"
-       ry="10.855667" />
+       width="1417.8053"
+       height="1062.1014"
+       x="291.09729"
+       y="41.963581"
+       ry="12.385042" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="FaceButtons"
-     transform="matrix(0.93692062,0,0,0.93692062,86.854798,118.34888)">
+     transform="matrix(1.2330653,0,0,1.2330653,-243.91199,-239.78784)">
     <g
        inkscape:groupmode="layer"
        id="layer2"
@@ -524,7 +553,7 @@
          y="1308.4806"
          ry="83.55555" />
       <circle
-         style="display:inline;fill:url(#linearGradient10230);fill-opacity:1;stroke:url(#linearGradient16850);stroke-width:6.4311;stroke-linejoin:round;stroke-dasharray:none;filter:url(#filter32079)"
+         style="display:inline;fill:url(#linearGradient47721);fill-opacity:1;stroke:url(#linearGradient47723);stroke-width:6.4311;stroke-linejoin:round;stroke-dasharray:none;filter:url(#filter32079)"
          id="circle32006"
          cx="1185.3359"
          cy="1381"
@@ -572,7 +601,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="DPad"
-     transform="matrix(0.90392509,0,0,0.90392509,81.782908,125.29343)">
+     transform="matrix(1.1059455,0,0,1.1059455,-108.76075,-89.26681)">
     <rect
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.02652;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect23222"
@@ -593,11 +622,11 @@
        transform="scale(-1)" />
     <path
        id="rect31616"
-       style="fill:#000000;fill-opacity:1;stroke:url(#radialGradient23244);stroke-width:7.74400454;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter32004)"
-       d="M 1182.3279 -571.83154 C 1182.3279 -565.59241 1187.3504 -560.56989 1193.5896 -560.56989 L 1319.1055 -560.56989 L 1319.1055 -438.16751 C 1319.1055 -432.00827 1324.0632 -427.05063 1330.2224 -427.05063 L 1459.7768 -427.05063 C 1465.936 -427.05063 1470.8936 -432.00827 1470.8936 -438.16751 L 1470.8936 -560.56989 L 1596.4096 -560.56989 C 1602.6487 -560.56989 1607.6734 -565.59241 1607.6734 -571.83154 L 1607.6734 -702.16806 C 1607.6734 -708.40719 1602.6487 -713.42971 1596.4096 -713.42971 L 1470.8936 -713.42971 L 1470.8936 -835.83208 C 1470.8936 -841.99133 1465.936 -846.94897 1459.7768 -846.94897 L 1330.2224 -846.94897 C 1324.0632 -846.94897 1319.1055 -841.99133 1319.1055 -835.83208 L 1319.1055 -713.42971 L 1193.5896 -713.42971 C 1187.3504 -713.42971 1182.3279 -708.40719 1182.3279 -702.16806 L 1182.3279 -571.83154 z "
+       style="fill:#000000;fill-opacity:1;stroke:url(#radialGradient47845);stroke-width:7.744;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter32004)"
+       d="m 1182.3279,-571.83154 c 0,6.23913 5.0225,11.26165 11.2617,11.26165 h 125.5159 v 122.40238 c 0,6.15924 4.9577,11.11688 11.1169,11.11688 h 129.5544 c 6.1592,0 11.1168,-4.95764 11.1168,-11.11688 v -122.40238 h 125.516 c 6.2391,0 11.2638,-5.02252 11.2638,-11.26165 v -130.33652 c 0,-6.23913 -5.0247,-11.26165 -11.2638,-11.26165 h -125.516 v -122.40237 c 0,-6.15925 -4.9576,-11.11689 -11.1168,-11.11689 h -129.5544 c -6.1592,0 -11.1169,4.95764 -11.1169,11.11689 v 122.40237 h -125.5159 c -6.2392,0 -11.2617,5.02252 -11.2617,11.26165 z"
        transform="rotate(90)" />
     <rect
-       style="fill:#11110d;fill-opacity:1;stroke:url(#radialGradient23244);stroke-width:7.74400454;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#11110d;fill-opacity:1;stroke:url(#radialGradient23244);stroke-width:7.744;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect21668"
        width="151.78902"
        height="419.89948"
@@ -606,7 +635,7 @@
        ry="11.117778"
        transform="rotate(90)" />
     <rect
-       style="fill:#11110d;fill-opacity:1;stroke:url(#radialGradient23226);stroke-width:7.74400454;stroke-linejoin:round;stroke-dasharray:none"
+       style="fill:#11110d;fill-opacity:1;stroke:url(#radialGradient23226);stroke-width:7.744;stroke-linejoin:round;stroke-dasharray:none"
        id="rect17820"
        width="152.86008"
        height="425.34537"
@@ -623,7 +652,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer6"
-     inkscape:label="StartSelect ">
+     inkscape:label="StartSelect "
+     transform="matrix(1.4142456,0,0,1.4142456,-411.92073,-568.80784)">
     <g
        inkscape:groupmode="layer"
        id="layer5"
@@ -676,7 +706,7 @@
      inkscape:groupmode="layer"
      id="g25271"
      inkscape:label="MenuButton"
-     transform="matrix(0.39447753,0,0,0.39447753,532.41162,681.28077)">
+     transform="matrix(0.5308383,0,0,0.5308383,370.7783,509.94682)">
     <circle
        style="fill:url(#linearGradient25279);fill-opacity:1;stroke-width:3.38296;stroke-linejoin:round;stroke-dasharray:none"
        id="circle25261"
@@ -713,7 +743,7 @@
      inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="SpeakerGrill"
-     transform="rotate(-45,1452.6371,1725.8629)">
+     transform="matrix(0.79438808,-0.79438808,0.79438808,0.79438808,-999.40185,1651.9102)">
     <rect
        style="fill:#060600;fill-opacity:1;stroke:url(#radialGradient27708);stroke-width:7;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect27694"

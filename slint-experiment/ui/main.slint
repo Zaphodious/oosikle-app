@@ -13,26 +13,39 @@ export struct DeviceDisplay {
     id: string,
     name: string,
     enabled: bool,
-    icon: image,
+    icon_fore: image,
+    icon_back: image,
+    hero: image,
     playlists: [PlaylistCategory]
 }
 
 export component MainLayoutDemo inherits Window {
     no-frame: false;
     in-out property <DeviceDisplay> active_device: 
-    {
-        id: "pc",
+        {
+        id: "thispc",
         name: "This PC",
         enabled: true,
-        icon: @image-url("testing_icons/game_whole.svg")
+        icon_fore: @image-url("testing_icons/game_simple_fore.png"),
+        icon_back: @image-url("testing_icons/game_simple_back.png"),
+        playlists: [
+            {
+                name: "Games",
+                lists: [{
+                    id: "list1",
+                    name: "Celeste",
+                }, { id: "list2", name: "Pocket Creatures" }]
+            },
+            { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+        ]
     };
-
     in property <[DeviceDisplay]> devices: [
         {
             id: "thispc",
             name: "This PC",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg"),
+        icon_fore: @image-url("testing_icons/game_simple_fore.png"),
+        icon_back: @image-url("testing_icons/game_simple_back.png"),
             playlists: [
                 {
                     name: "Games",
@@ -41,20 +54,15 @@ export component MainLayoutDemo inherits Window {
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                {
-                    name: "Music",
-                    lists: [{
-                        id: "sad1",
-                        name: "Sad Songs"
-                    }]
-                }
+                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "a301",
             name: "Miyoo A30",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg"),
+        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
+        icon_back: @image-url("testing_icons/game_simple_back.svg"),
             playlists: [
                 {
                     name: "Games",
@@ -63,35 +71,23 @@ export component MainLayoutDemo inherits Window {
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                {
-                    name: "Music",
-                    lists: [{
-                        id: "sad1",
-                        name: "Sad Songs"
-                    }]
-                }
+                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "ipod1",
             name: "Apple iPod 5G",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg"),
-            playlists: [
-                {
-                    name: "Music",
-                    lists: [{
-                        id: "sad1",
-                        name: "Sad Songs"
-                    }]
-                }
-            ]
+        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
+        icon_back: @image-url("testing_icons/game_simple_back.svg"),
+            playlists: [{ name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }]
         },
         {
             id: "sd1",
             name: "Generic SD Card",
             enabled: false,
-            icon: @image-url("testing_icons/game_whole.svg"),
+        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
+        icon_back: @image-url("testing_icons/game_simple_back.svg"),
             playlists: [
                 {
                     name: "Games",
@@ -100,20 +96,15 @@ export component MainLayoutDemo inherits Window {
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                {
-                    name: "Music",
-                    lists: [{
-                        id: "sad1",
-                        name: "Sad Songs"
-                    }]
-                }
+                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "kindle1",
             name: "Amazon Kindle",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg"),
+        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
+        icon_back: @image-url("testing_icons/game_simple_back.svg"),
             playlists: [
                 {
                     name: "Books",
@@ -122,13 +113,7 @@ export component MainLayoutDemo inherits Window {
                         name: "Dresden",
                     }, { id: "books2", name: "Unfortunate Events" }]
                 },
-                {
-                    name: "Music",
-                    lists: [{
-                        id: "sad1",
-                        name: "Sad Songs"
-                    }]
-                }
+                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
     ];
@@ -155,11 +140,17 @@ export component MainLayoutDemo inherits Window {
                     padding: 15px;
                     Rectangle {
                         background: aquamarine;
-                        height: 130px;
-                        width: 130px;
+                        height: 150px;
+                        width: 150px;
                         Image {
-                            source: active_device.icon;
+                            source: active_device.icon_back;
                             height: 100%;
+                            image-rendering: ImageRendering.smooth;
+                        }
+                        Image {
+                            source: active_device.icon_fore;
+                            height: 100%;
+                            image-rendering: ImageRendering.smooth;
                         }
                     }
                 }
@@ -259,19 +250,36 @@ export component MainLayoutDemo inherits Window {
                     border-width: 3px;
                     border-color: black;
                     height: 60px;
+                    animate background {
+                        easing: ease-out-quint;
+                        duration: 0.5s;
+                    }
                     indiv_area := TouchArea {
                         mouse-cursor: pointer;
                         clicked => {
                             active_device = x;
                         }
+                        Rectangle {
                         Image {
                             x: 5px;
                             y: 4px;
-                            source: x.icon;
+                            source: x.icon_back;
                             height: 50px;
                             image-rendering: smooth;
                             //width: 45px;
                             //colorize: x.enabled ? white : grey;
+                        }
+                        Image {
+                            x: 5px;
+                            y: 4px;
+                            source: x.icon_fore;
+                            height: 50px;
+                            image-rendering: smooth;
+                            
+                            //width: 45px;
+                            //colorize: x.enabled ? white : grey;
+                        }
+
                         }
 
                         Text {
