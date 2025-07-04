@@ -1,62 +1,142 @@
 import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
 
+export struct PlaylistDisplay {
+    id: string,
+    name: string}
+
+export struct PlaylistCategory {
+    name: string,
+    lists: [PlaylistDisplay]
+}
+
 export struct DeviceDisplay {
     id: string,
     name: string,
     enabled: bool,
     icon: image,
-}
-
-component DeviceButton {
-    in property <DeviceDisplay> device;
-    Rectangle {
-        background: aqua;
-        border-width: 2px;
-        border-color: black;
-        Text {
-            text: device.name;
-        }
-    }
+    playlists: [PlaylistCategory]
 }
 
 export component MainLayoutDemo inherits Window {
     no-frame: false;
+    in-out property <DeviceDisplay> active_device: 
+    {
+        id: "pc",
+        name: "This PC",
+        enabled: true,
+        icon: @image-url("testing_icons/game_whole.svg")
+    };
+
     in property <[DeviceDisplay]> devices: [
         {
-            id: "pc",
+            id: "thispc",
             name: "This PC",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg")
+            icon: @image-url("testing_icons/game_whole.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    lists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                {
+                    name: "Music",
+                    lists: [{
+                        id: "sad1",
+                        name: "Sad Songs"
+                    }]
+                }
+            ]
         },
         {
             id: "a301",
             name: "Miyoo A30",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg")
+            icon: @image-url("testing_icons/game_whole.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    lists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                {
+                    name: "Music",
+                    lists: [{
+                        id: "sad1",
+                        name: "Sad Songs"
+                    }]
+                }
+            ]
         },
         {
             id: "ipod1",
             name: "Apple iPod 5G",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg")
+            icon: @image-url("testing_icons/game_whole.svg"),
+            playlists: [
+                {
+                    name: "Music",
+                    lists: [{
+                        id: "sad1",
+                        name: "Sad Songs"
+                    }]
+                }
+            ]
         },
         {
             id: "sd1",
             name: "Generic SD Card",
             enabled: false,
-            icon: @image-url("testing_icons/game_whole.svg")
+            icon: @image-url("testing_icons/game_whole.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    lists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                {
+                    name: "Music",
+                    lists: [{
+                        id: "sad1",
+                        name: "Sad Songs"
+                    }]
+                }
+            ]
         },
         {
             id: "kindle1",
             name: "Amazon Kindle",
             enabled: true,
-            icon: @image-url("testing_icons/game_whole.svg")
+            icon: @image-url("testing_icons/game_whole.svg"),
+            playlists: [
+                {
+                    name: "Books",
+                    lists: [{
+                        id: "books1",
+                        name: "Dresden",
+                    }, { id: "books2", name: "Unfortunate Events" }]
+                },
+                {
+                    name: "Music",
+                    lists: [{
+                        id: "sad1",
+                        name: "Sad Songs"
+                    }]
+                }
+            ]
         },
     ];
     in property <[string]> playlists: ["foo", "bar", "zip", "zap"];
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
     full-screen: false;
+    background: darkolivegreen;
     HorizontalLayout {
         alignment: stretch;
         Rectangle {
@@ -66,9 +146,35 @@ export component MainLayoutDemo inherits Window {
 
         VerticalLayout {
             width: 200px;
-            Rectangle {
-                height: 150px;
-                background: green;
+            VerticalLayout {
+                alignment: LayoutAlignment.start;
+                height: 250px;
+                horizontal-stretch: 0;
+                HorizontalLayout {
+                    alignment: center;
+                    padding: 15px;
+                    Rectangle {
+                        background: aquamarine;
+                        height: 130px;
+                        width: 130px;
+                        Image {
+                            source: active_device.icon;
+                            height: 100%;
+                        }
+                    }
+                }
+
+                Rectangle {
+                    height: 30px;
+                    Text {
+                        text: active_device.name;
+                        color: white;
+                        font-size: 15pt;
+                        width: 100%;
+                        wrap: word-wrap;
+                        horizontal-alignment: center;
+                    }
+                }
             }
 
             Rectangle {
@@ -149,12 +255,15 @@ export component MainLayoutDemo inherits Window {
                 width: 100%;
                 height: 100%;
                 for x in devices: Rectangle {
-                    background: x.enabled ? purple : darkgray;
+                    background: x.enabled ? (x.id == active_device.id ? pink : purple) : (x.id == active_device.id ? lightgray : darkgray);
                     border-width: 3px;
                     border-color: black;
                     height: 60px;
                     indiv_area := TouchArea {
                         mouse-cursor: pointer;
+                        clicked => {
+                            active_device = x;
+                        }
                         Image {
                             x: 5px;
                             y: 4px;
@@ -171,6 +280,7 @@ export component MainLayoutDemo inherits Window {
                             horizontal-alignment: left;
                             text: x.name;
                             wrap: word-wrap;
+                            color: (x.id == active_device.id) ? black : white;
                             animate opacity {
                                 easing: ease-out-sine;
                                 duration: 0.15s;
