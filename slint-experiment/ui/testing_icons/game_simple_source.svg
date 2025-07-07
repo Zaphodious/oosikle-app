@@ -11,8 +11,8 @@
    shape-rendering="crispEdges"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    inkscape:export-filename="game_simple_fore.png"
-   inkscape:export-xdpi="384"
-   inkscape:export-ydpi="384"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -28,8 +28,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="1.4142136"
-     inkscape:cx="125.86501"
-     inkscape:cy="87.681241"
+     inkscape:cx="228.04193"
+     inkscape:cy="140.71425"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="-8"
@@ -70,11 +70,22 @@
     <rect
        style="fill:#000000;stroke-width:125.49;stroke-linejoin:round"
        id="rect50581"
-       width="271.89545"
+       width="217.39545"
        height="400"
-       x="64.052292"
-       y="2.6645353e-15"
-       ry="26.40523" />
+       x="-277.71371"
+       y="0"
+       ry="58.525726"
+       transform="rotate(-90)" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:10;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 0,212.83913 v 115.60281 c 0,25.73153 30.053277,29.69437 39.439136,19.08757 C 48.824994,336.92271 84.060061,277.7137 113.13225,277.7137 142.20444,277.7137 0,212.83913 0,212.83913 Z"
+       id="path6306"
+       sodipodi:nodetypes="czzzc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:10;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 400,212.83913 v 115.60281 c 0,25.73153 -30.05328,29.69437 -39.43914,19.08757 C 351.175,336.92271 315.93993,277.7137 286.86774,277.7137 257.79555,277.7137 400,212.83913 400,212.83913 Z"
+       id="path6326"
+       sodipodi:nodetypes="czzzc" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -82,41 +93,28 @@
      inkscape:label="Fore"
      style="display:inline">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke-width:125.49;stroke-linejoin:round"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:10;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect50584"
-       width="224.83659"
-       height="180.91504"
-       x="87.581703"
-       y="23.79085"
+       width="192.79134"
+       height="156.44626"
+       x="103.60433"
+       y="88.542854"
        ry="26.40523" />
     <circle
-       style="fill:#ffffff;fill-opacity:1;stroke-width:125.49;stroke-linejoin:round"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:102.332;stroke-linejoin:round"
        id="path51001"
-       cx="243.92157"
-       cy="309.80392"
-       r="19.86928" />
+       cx="336.6503"
+       cy="182.96858"
+       r="16.202614" />
     <circle
-       style="fill:#ffffff;fill-opacity:1;stroke-width:125.49;stroke-linejoin:round"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:102.332;stroke-linejoin:round"
        id="circle51003"
-       cx="283.66013"
-       cy="270.06537"
-       r="19.86928" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke-width:125.49;stroke-linejoin:round"
+       cx="369.05554"
+       cy="138.1873"
+       r="16.202614" />
+    <path
        id="rect51005"
-       width="35.032681"
-       height="94.117653"
-       x="127.32027"
-       y="245.22876"
-       ry="11.503267" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke-width:125.49;stroke-linejoin:round"
-       id="rect51007"
-       width="35.032681"
-       height="94.117653"
-       x="274.77124"
-       y="-191.89545"
-       ry="11.503267"
-       transform="rotate(90)" />
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:10;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 45.91057,131.08171 c -4.383542,0 -7.912984,3.52943 -7.912984,7.91298 v 12.40819 H 25.589387 c -4.383542,0 -7.912985,3.52945 -7.912985,7.91299 v 8.27168 c 0,4.38354 3.529443,7.91299 7.912985,7.91299 h 12.408199 v 12.4082 c 0,4.38354 3.529442,7.91163 7.912984,7.91163 h 8.271686 c 4.383542,0 7.912984,-3.52809 7.912984,-7.91163 v -12.4082 h 12.408197 c 4.383542,0 7.911634,-3.52945 7.911634,-7.91299 v -8.27168 c 0,-4.38354 -3.528092,-7.91299 -7.911634,-7.91299 H 62.09524 v -12.40819 c 0,-4.38355 -3.529442,-7.91298 -7.912984,-7.91298 z" />
   </g>
 </svg>

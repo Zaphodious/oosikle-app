@@ -14,7 +14,7 @@ export struct PListFolder {
     plists: [PListHandle]
 }
 
-export component PlistSelectorDemo inherits Window {
+export component PlistSelectorDemo inherits Rectangle {
     preferred-height: 500px;
     preferred-width: 300px;
     in-out property <[PListFolder]> folders: 
@@ -104,18 +104,30 @@ export component PlistSelectorDemo inherits Window {
                         horizontal-stretch: 100%;
                         opacity: folder.expanded ? 100% : 0%;
                         padding: 2pt;
-                        padding-left: folder.expanded ? 30px : 80px;
-                        spacing: 5px;
-                        animate padding-left, opacity {
+                        //padding-left: folder.expanded ? 30px : 80px;
+                        padding-left: 30px;
+                        spacing: -20px;
+                        animate opacity {
                             direction: alternate;
                             duration: 250ms;
                             easing: ease-in-out-back;
                         }
+                        /*
+                        animate padding-left {
+                            duration: 100ms;
+                            easing: ease-out-quint;
+                            direction: alternate;
+                        }
+                            */
                         Rectangle {
                             padding: 20px;
                             border-width: 3px;
                             border-color: black;
                             border-radius: 15px;
+                            background: green;
+                            TouchArea {
+                                enabled: folder.expanded;
+                                mouse-cursor: crosshair;
                             HorizontalLayout {
                                 padding: 5px;
                                 padding-left: 15px;
@@ -135,6 +147,7 @@ export component PlistSelectorDemo inherits Window {
                                     text: plist.name;
                                     font-size: 12pt;
                                 }
+                            }
                             }
                         }
                     }

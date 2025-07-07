@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="SVGRoot"
+   shape-rendering="crispEdges"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs904">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter21657"
+       x="-0.018516146"
+       y="-0.018516146"
+       width="1.1203656"
+       height="1.1203656">
+      <feFlood
+         flood-opacity="1"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood21647" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite21649" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="0"
+         result="blur"
+         id="feGaussianBlur21651" />
+      <feOffset
+         dx="32"
+         dy="32"
+         result="offset"
+         id="feOffset21653"
+         preserveAlpha="false" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite21655" />
+    </filter>
+  </defs>
+  <g
+     id="layer1"
+     style="display:inline">
+    <rect
+       style="display:inline;fill:#ffa300;fill-opacity:0.99654;stroke:#000000;stroke-width:14.2204;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill;filter:url(#filter21657);image-rendering:crisp-edges"
+       id="rect21681"
+       width="384"
+       height="384"
+       x="-416"
+       y="-416"
+       ry="0"
+       transform="matrix(0.14064336,0,0,0.14064336,61.256463,61.256463)" />
+  </g>
+</svg>

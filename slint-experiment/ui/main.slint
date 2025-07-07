@@ -1,22 +1,23 @@
 import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
+import { PlistSelectorDemo, PListFolder, PListHandle } from "plistdemo.slint";
+import {TButton} from "texturebutton.slint";
 
-export struct PlaylistDisplay {
-    id: string,
-    name: string}
-
-export struct PlaylistCategory {
-    name: string,
-    lists: [PlaylistDisplay]
-}
+// https://lospec.com/palette-list/pico-8
 
 export struct DeviceDisplay {
     id: string,
     name: string,
     enabled: bool,
-    icon_fore: image,
-    icon_back: image,
+    icon: image,
     hero: image,
-    playlists: [PlaylistCategory]
+    playlists: [PListFolder]
+}
+
+export struct ActionItem {
+    id: string,
+    alt: string,
+    icons: image,
+
 }
 
 export component MainLayoutDemo inherits Window {
@@ -26,17 +27,18 @@ export component MainLayoutDemo inherits Window {
         id: "thispc",
         name: "This PC",
         enabled: true,
-        icon_fore: @image-url("testing_icons/game_simple_fore.png"),
-        icon_back: @image-url("testing_icons/game_simple_back.png"),
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
         playlists: [
             {
                 name: "Games",
-                lists: [{
+                id: "games",
+                expanded: false,
+                plists: [{
                     id: "list1",
                     name: "Celeste",
                 }, { id: "list2", name: "Pocket Creatures" }]
             },
-            { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+            { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
         ]
     };
     in property <[DeviceDisplay]> devices: [
@@ -44,76 +46,76 @@ export component MainLayoutDemo inherits Window {
             id: "thispc",
             name: "This PC",
             enabled: true,
-        icon_fore: @image-url("testing_icons/game_simple_fore.png"),
-        icon_back: @image-url("testing_icons/game_simple_back.png"),
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
             playlists: [
                 {
                     name: "Games",
-                    lists: [{
+                    id: "games",
+                    expanded: false,
+                    plists: [{
                         id: "list1",
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "a301",
             name: "Miyoo A30",
             enabled: true,
-        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
-        icon_back: @image-url("testing_icons/game_simple_back.svg"),
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg"),
             playlists: [
                 {
                     name: "Games",
-                    lists: [{
+                    id: "games", expanded: false,
+                    plists: [{
                         id: "list1",
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "ipod1",
             name: "Apple iPod 5G",
             enabled: true,
-        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
-        icon_back: @image-url("testing_icons/game_simple_back.svg"),
-            playlists: [{ name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }]
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Headphones Round Sound.svg"),
+            playlists: [{ name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }]
         },
         {
             id: "sd1",
             name: "Generic SD Card",
             enabled: false,
-        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
-        icon_back: @image-url("testing_icons/game_simple_back.svg"),
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/SD Card.svg"),
             playlists: [
                 {
                     name: "Games",
-                    lists: [{
+                    id: "games", expanded: false,
+                    plists: [{
                         id: "list1",
                         name: "Celeste",
                     }, { id: "list2", name: "Pocket Creatures" }]
                 },
-                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
         {
             id: "kindle1",
             name: "Amazon Kindle",
             enabled: true,
-        icon_fore: @image-url("testing_icons/game_simple_fore.svg"),
-        icon_back: @image-url("testing_icons/game_simple_back.svg"),
+        icon: @image-url("testing_icons/Solar-Outline/School/Book 2.svg"),
             playlists: [
                 {
                     name: "Books",
-                    lists: [{
+                    id: "books", expanded: false,
+                    plists: [{
                         id: "books1",
                         name: "Dresden",
                     }, { id: "books2", name: "Unfortunate Events" }]
                 },
-                { name: "Music", lists: [{ id: "sad1", name: "Sad Songs" }] }
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
         },
     ];
@@ -139,16 +141,10 @@ export component MainLayoutDemo inherits Window {
                     alignment: center;
                     padding: 15px;
                     Rectangle {
-                        background: aquamarine;
-                        height: 150px;
-                        width: 150px;
+                        height: 140px;
+                        width: 70px;
                         Image {
-                            source: active_device.icon_back;
-                            height: 100%;
-                            image-rendering: ImageRendering.smooth;
-                        }
-                        Image {
-                            source: active_device.icon_fore;
+                            source: active_device.icon;
                             height: 100%;
                             image-rendering: ImageRendering.smooth;
                         }
@@ -156,11 +152,12 @@ export component MainLayoutDemo inherits Window {
                 }
 
                 Rectangle {
-                    height: 30px;
+                    height: 5px;
+                    background: green;
                     Text {
                         text: active_device.name;
                         color: white;
-                        font-size: 15pt;
+                        font-size: 18pt;
                         width: 100%;
                         wrap: word-wrap;
                         horizontal-alignment: center;
@@ -168,14 +165,13 @@ export component MainLayoutDemo inherits Window {
                 }
             }
 
+
             Rectangle {
                 background: blue;
                 ScrollView {
-                    ListView {
-                        for x in playlists: Text {
-                            text: x;
+                        PlistSelectorDemo {
+                            folders : active_device.playlists;
                         }
-                    }
                 }
             }
         }
@@ -183,7 +179,7 @@ export component MainLayoutDemo inherits Window {
         VerticalLayout {
             alignment: stretch;
             Rectangle {
-                height: 50px;
+                height: 40px;
                 background: yellow;
                 HorizontalLayout {
                     alignment: LayoutAlignment.space-between;
@@ -194,13 +190,47 @@ export component MainLayoutDemo inherits Window {
                     }
 
                     Rectangle {
-                        background: black;
-                        width: 10px;
+                        background: white;
+                        HorizontalLayout {
+                            spacing: 7px;
+                            Rectangle {
+                                background: lightblue;
+                                border-radius: 25px;
+                                width: 40px;
+                                padding: 10px;
+                                TouchArea {
+                                    Image {
+                                        source: @image-url("testing_icons/Solar-Outline/Video, Audio, Sound/Skip Previous.svg");
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                TouchArea {
+                                    Image {
+                                        source: @image-url("testing_icons/Solar-Outline/Video, Audio, Sound/Play.svg");
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                TouchArea {
+                                    Image {
+                                        source: @image-url("testing_icons/Solar-Outline/Video, Audio, Sound/Skip Next.svg");
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                TouchArea {
+                                    Image {
+                                        source: @image-url("testing_icons/Solar-Outline/Video, Audio, Sound/Stop.svg");
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     Rectangle {
                         width: 10px;
-                        background: white;
+                        background: black;
                     }
                 }
             }
@@ -246,39 +276,33 @@ export component MainLayoutDemo inherits Window {
                 width: 100%;
                 height: 100%;
                 for x in devices: Rectangle {
-                    background: x.enabled ? (x.id == active_device.id ? pink : purple) : (x.id == active_device.id ? lightgray : darkgray);
-                    border-width: 3px;
-                    border-color: black;
+                    //background: x.enabled ? (x.id == active_device.id ? pink : purple) : (x.id == active_device.id ? lightgray : darkgray);
+                    padding: 5px;
                     height: 60px;
+                    width: 100%;
                     animate background {
                         easing: ease-out-quint;
                         duration: 0.5s;
                     }
-                    indiv_area := TouchArea {
-                        mouse-cursor: pointer;
+                    indiv_area := TButton {
+                        width: 100%;
+                        height: 60px;
+                        highlighted: active_device.id == x.id;
+                        disabled: !x.enabled;
                         clicked => {
                             active_device = x;
                         }
                         Rectangle {
-                        Image {
-                            x: 5px;
-                            y: 4px;
-                            source: x.icon_back;
-                            height: 50px;
-                            image-rendering: smooth;
-                            //width: 45px;
-                            //colorize: x.enabled ? white : grey;
-                        }
-                        Image {
-                            x: 5px;
-                            y: 4px;
-                            source: x.icon_fore;
-                            height: 50px;
-                            image-rendering: smooth;
-                            
-                            //width: 45px;
-                            //colorize: x.enabled ? white : grey;
-                        }
+                            Image {
+                                x: 6px;
+                                y: 6.px;
+                                source: x.icon;
+                                height: 45px;
+                                image-rendering: smooth;
+                                
+                                //width: 45px;
+                                //colorize: x.enabled ? white : grey;
+                            }
 
                         }
 
@@ -288,7 +312,8 @@ export component MainLayoutDemo inherits Window {
                             horizontal-alignment: left;
                             text: x.name;
                             wrap: word-wrap;
-                            color: (x.id == active_device.id) ? black : white;
+                            //color: (x.id == active_device.id) ? black : white;
+                            color: black;
                             animate opacity {
                                 easing: ease-out-sine;
                                 duration: 0.15s;

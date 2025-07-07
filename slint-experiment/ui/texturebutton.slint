@@ -1,0 +1,57 @@
+
+
+export struct TButtonStyle {
+    active-img: image,
+    hover-img: image,
+    disabled-img: image,
+    pressed-img: image,
+    alert-img: image,
+    highlighted-img: image,
+}
+
+export component TButton {
+    in property <TButtonStyle> textures: {
+        active-img: @image-url("testing_icons/neubrutal_buttons/neubrutal_button_orange_up.svg", nine-slice(6 8 8 6)),
+        hover-img: @image-url("testing_icons/neubrutal_buttons/neubrutal_button_yellow_noshadow.svg", nine-slice(6 8 8 6)),
+        disabled-img: @image-url("testing_icons/neubrutal_buttons/neubrutal_button_grey_lighter_fulldown.svg", nine-slice(13 20 20 13)),
+        pressed-img: @image-url("testing_icons/neubrutal_buttons/neubrutal_button_white_down.svg", nine-slice(6 8 8 6)),
+        highlighted-img: @image-url("testing_icons/neubrutal_buttons/neubrutal_button_white_up.svg", nine-slice(6 8 8 6)),
+    };
+    in property <bool> disabled: false;
+    in property <bool> highlighted: false;
+    out property <bool> has-hover: !disabled && toucharea.has-hover;
+    out property <bool> pressed: !disabled && toucharea.pressed;
+
+    callback clicked <=> toucharea.clicked;
+
+    toucharea := TouchArea {
+        mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
+        Rectangle {
+            background_img := Image {
+                image-fit: contain;
+                width: 100%;
+                height: 100%;
+                source: toucharea.pressed ? textures.pressed-img : (toucharea.has-hover ? textures.hover-img : textures.active-img);
+            }
+            @children
+        }
+    }
+
+    states [
+        disabled when self.disabled: {
+            background_img.source: textures.disabled-img;
+        }
+        up-highlighted when highlighted && !toucharea.pressed && !toucharea.has-hover: {
+            background_img.source: textures.highlighted-img;
+        }
+        up when !toucharea.pressed && !toucharea.has-hover: {
+            background_img.source: textures.active-img;
+        }
+        hover when !toucharea.pressed && toucharea.has-hover: {
+            background_img.source: textures.hover-img;
+        }
+        pressed when toucharea.pressed: {
+            background_img.source: textures.pressed-img;
+        }
+    ]
+}
