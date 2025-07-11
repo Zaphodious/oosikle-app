@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="768"
+   viewBox="0 0 1024 768"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="neumock.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   inkscape:export-filename="neumock5.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     showgrid="true"
+     showguides="true"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="819.89031"
+     inkscape:cy="195.51503"
+     inkscape:window-width="1745"
+     inkscape:window-height="1108"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.05490196"
+       color="#0099e5"
+       opacity="0.11372549"
+       empspacing="8"
+       enabled="true"
+       visible="true"
+       dotted="true"
+       snapvisiblegridlinesonly="true" />
+    <sodipodi:guide
+       position="50,566"
+       orientation="1,0"
+       id="guide34"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="66.999996,701"
+       orientation="1,0"
+       id="guide38"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="75.5,721"
+       orientation="1,0"
+       id="guide48"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="155.11185,371.04816"
+       orientation="1,0"
+       id="guide60"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="456,664"
+       orientation="0,-1"
+       id="guide66"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="376,368"
+       orientation="1,0"
+       id="guide77"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="360,336"
+       orientation="1,0"
+       id="guide78"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="246,559"
+       orientation="0,1"
+       id="guide79"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="269,687.25"
+       orientation="1,0"
+       id="guide80"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="408,536"
+       orientation="1,0"
+       id="guide81"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter13"
+       x="-0.041666667"
+       y="-0.041666667"
+       width="1.1666667"
+       height="1.1666667">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood12" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur12" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="2"
+         dy="2"
+         id="feOffset12" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite12" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite13" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter24"
+       x="-0.041666667"
+       y="-0.041666667"
+       width="1.125"
+       height="1.125">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood23" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur23" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="1"
+         dy="1"
+         id="feOffset23" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite23" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite24" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter34"
+       x="-0.020833333"
+       y="-0.020833333"
+       width="1.1041667"
+       height="1.1041667">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood33" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur33" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="3"
+         dy="3"
+         id="feOffset33" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite33" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite34" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter39"
+       x="-0.020833333"
+       y="-0.020833333"
+       width="1.0833333"
+       height="1.0833333">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood38" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur38" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="2.000000"
+         dy="2.000000"
+         id="feOffset38" />
+      <feComposite
+         result="comp1"
+         operator="out"
+         in="flood"
+         in2="offset"
+         id="feComposite38" />
+      <feComposite
+         result="comp2"
+         operator="atop"
+         in="comp1"
+         in2="SourceGraphic"
+         id="feComposite39" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect43"
+       width="1024"
+       height="768"
+       x="0"
+       y="0"
+       ry="4" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect4"
+       width="394"
+       height="704"
+       x="6"
+       y="48"
+       ry="16" />
+    <rect
+       style="display:none;opacity:1;fill:#ffe9c5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect42"
+       width="608"
+       height="704"
+       x="408"
+       y="48"
+       ry="16" />
+    <rect
+       style="display:inline;opacity:1;fill:#e2d7b5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect40"
+       width="608"
+       height="32"
+       x="408"
+       y="720"
+       ry="15" />
+    <rect
+       style="opacity:1;fill:#e2d7b5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect49"
+       width="608"
+       height="64"
+       x="408"
+       y="48"
+       ry="16" />
+    <rect
+       style="opacity:1;fill:#e2d7b5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect1"
+       width="74"
+       height="704"
+       x="6"
+       y="48"
+       ry="16" />
+    <rect
+       style="display:none;opacity:1;fill:#f5b784;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect39"
+       width="312"
+       height="543"
+       x="88"
+       y="209"
+       ry="0" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect2"
+       width="48"
+       height="48"
+       x="16.060665"
+       y="121"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#c59782;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect34"
+       width="312"
+       height="704"
+       x="88"
+       y="48"
+       ry="16" />
+    <rect
+       style="opacity:1;fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect35"
+       width="48"
+       height="48"
+       x="18.060665"
+       y="179"
+       ry="6" />
+    <rect
+       style="opacity:1;fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter34)"
+       id="rect36"
+       width="48"
+       height="48"
+       x="15.060665"
+       y="233"
+       ry="9" />
+    <rect
+       style="opacity:1;fill:#c2c3c7;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect37"
+       width="48"
+       height="48"
+       x="17.060665"
+       y="289"
+       ry="0" />
+    <rect
+       style="opacity:1;fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter39)"
+       id="rect38"
+       width="48"
+       height="48"
+       x="18.060665"
+       y="345"
+       ry="8" />
+    <rect
+       style="display:none;opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect41"
+       width="64"
+       height="44"
+       x="417.33337"
+       y="696"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#5ba8ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect58"
+       width="216"
+       height="32"
+       x="140"
+       y="384"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#f5b784;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect47"
+       width="1024"
+       height="40"
+       x="0"
+       y="0"
+       ry="0"
+       inkscape:export-filename="titlebar_shine.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect48"
+       width="48"
+       height="48"
+       x="16"
+       y="64"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect50"
+       width="64"
+       height="44"
+       x="417.33334"
+       y="57"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect51"
+       width="592"
+       height="32"
+       x="416"
+       y="128"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="462.75131"
+       y="148.95184"
+       id="text51"><tspan
+         sodipodi:role="line"
+         id="tspan51"
+         x="462.75131"
+         y="148.95184"
+         style="font-size:18.6667px;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some song or whatever</tspan></text>
+    <rect
+       style="opacity:1;fill:#0a89ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect52"
+       width="24"
+       height="24"
+       x="424"
+       y="132"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect57"
+       width="264"
+       height="32"
+       x="110.24999"
+       y="345"
+       ry="8" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="117.3203"
+       y="365.35941"
+       id="text58"><tspan
+         sodipodi:role="line"
+         id="tspan58"
+         x="117.3203"
+         y="365.35941">+ Category</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="155.11185"
+       y="404.95184"
+       id="text59"><tspan
+         sodipodi:role="line"
+         id="tspan59"
+         x="155.11185"
+         y="404.95184">Playlist 1</tspan></text>
+    <rect
+       style="opacity:1;fill:#5ba8ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect59"
+       width="216"
+       height="32"
+       x="140"
+       y="424"
+       ry="8" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="155.11185"
+       y="448"
+       id="text60"><tspan
+         sodipodi:role="line"
+         id="tspan60"
+         x="155.11185"
+         y="448">Playlist 2</tspan></text>
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect60"
+       width="264"
+       height="32"
+       x="108.76257"
+       y="480"
+       ry="8" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="114.3203"
+       y="500.35938"
+       id="text61"><tspan
+         sodipodi:role="line"
+         id="tspan61"
+         x="114.3203"
+         y="500.35938">+ Category</tspan></text>
+    <rect
+       style="opacity:1;fill:#ff82ce;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect61"
+       width="24"
+       height="24"
+       x="988"
+       y="8"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect62"
+       width="24"
+       height="24"
+       x="956"
+       y="8"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#8cd612;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect63"
+       width="24"
+       height="24"
+       x="924"
+       y="8"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="467.1456"
+       y="25.717447"
+       id="text63"><tspan
+         sodipodi:role="line"
+         id="tspan63"
+         x="467.1456"
+         y="25.717447">Oosikle Window</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.6154px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;inline-size:272;display:inline;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="240"
+       y="240"
+       id="text64"
+       transform="matrix(1.0410398,0,0,1.0410398,-5.8495493,58.150448)"><tspan
+         x="240"
+         y="240"
+         id="tspan2">Active Device Name</tspan></text>
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect64"
+       width="40"
+       height="32"
+       x="336"
+       y="64"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#e2c9ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect66"
+       width="160"
+       height="44.762562"
+       x="768"
+       y="58.237438"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect67"
+       width="64"
+       height="44"
+       x="936"
+       y="57"
+       ry="8" />
+    <circle
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:1.5833;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path67"
+       cx="959.72089"
+       cy="75.626472"
+       r="8.5102158" />
+    <path
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:1.5833;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 965.46036,82.949219 c 1.58329,0.791648 15.83296,7.124831 15.04131,7.916479 -0.79165,0.791648 3.95824,-3.958239 2.37494,-3.958239 -1.58329,0 -15.04131,-7.124832 -15.04131,-7.124832 z"
+       id="path68" />
+    <path
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="M 776,96 H 920"
+       id="path69" />
+    <rect
+       style="opacity:1;fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect69"
+       width="209.82858"
+       height="196"
+       x="112"
+       y="68"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="208"
+       y="176"
+       id="text69"><tspan
+         sodipodi:role="line"
+         id="tspan69"
+         x="208"
+         y="176">Icon Here</tspan></text>
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect70"
+       width="592"
+       height="32"
+       x="416"
+       y="168"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="462.75131"
+       y="188.95184"
+       id="text70"><tspan
+         sodipodi:role="line"
+         id="tspan70"
+         x="462.75131"
+         y="188.95184"
+         style="font-size:18.6667px;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some song or whatever</tspan></text>
+    <rect
+       style="opacity:1;fill:#0a89ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect71"
+       width="24"
+       height="24"
+       x="424"
+       y="172"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect72"
+       width="592"
+       height="31"
+       x="416"
+       y="209"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="462.75131"
+       y="228.95184"
+       id="text72"><tspan
+         sodipodi:role="line"
+         id="tspan72"
+         x="462.75131"
+         y="228.95184"
+         style="font-size:18.6667px;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some song or whatever</tspan></text>
+    <rect
+       style="opacity:1;fill:#0a89ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect73"
+       width="24"
+       height="24"
+       x="424"
+       y="212"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#bdffca;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect74"
+       width="592"
+       height="32"
+       x="416"
+       y="248"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="462.75131"
+       y="268.95184"
+       id="text74"><tspan
+         sodipodi:role="line"
+         id="tspan74"
+         x="462.75131"
+         y="268.95184"
+         style="font-size:18.6667px;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some highlighted song or whatever</tspan></text>
+    <rect
+       style="opacity:1;fill:#0a89ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect75"
+       width="24"
+       height="24"
+       x="424"
+       y="252"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#98dcff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect76"
+       width="592"
+       height="32"
+       x="416"
+       y="288"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="462.75131"
+       y="308.95184"
+       id="text76"><tspan
+         sodipodi:role="line"
+         id="tspan76"
+         x="462.75131"
+         y="308.95184"
+         style="font-size:18.6667px;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some song or whatever</tspan></text>
+    <rect
+       style="opacity:1;fill:#0a89ff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter24)"
+       id="rect77"
+       width="24"
+       height="24"
+       x="424"
+       y="292"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect78"
+       width="40"
+       height="30"
+       x="336"
+       y="176"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect80"
+       width="40"
+       height="31.25"
+       x="336"
+       y="120"
+       ry="8" />
+    <rect
+       style="opacity:1;fill:#beeb71;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect81"
+       width="160"
+       height="16"
+       x="802"
+       y="728"
+       ry="4" />
+    <rect
+       style="opacity:1;fill:#6ab417;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect82"
+       width="104"
+       height="16"
+       x="802"
+       y="728"
+       ry="4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="796"
+       y="742"
+       id="text82"><tspan
+         sodipodi:role="line"
+         id="tspan82"
+         x="796"
+         y="742"
+         style="font-size:18.6667px;fill:#000000;fill-opacity:1;stroke:none;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Some progress message</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="969.19794"
+       y="742.41406"
+       id="text83"><tspan
+         sodipodi:role="line"
+         id="tspan83"
+         x="969.19794"
+         y="742.41406"
+         style="font-size:18.6667px;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;-inkscape-font-specification:'TeX Gyre Adventor';font-family:'TeX Gyre Adventor';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">68%</tspan></text>
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect3"
+       width="40"
+       height="30"
+       x="336"
+       y="232"
+       ry="8" />
+    <path
+       style="fill:#c59782;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="M 88,328.5 H 400"
+       id="path4" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#fec9ed;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 1001,11 h -5 c -4,0 -5,1 -5,5 v 6"
+       id="path5"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 969,11 h -5 c -4,0 -5,1 -5,5 v 6"
+       id="path6"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#eeffa9;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m 937,11 h -5 c -4,0 -5,1 -5,5 v 6"
+       id="path7"
+       sodipodi:nodetypes="cccc" />
+    <rect
+       style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect579"
+       width="24"
+       height="24"
+       x="504"
+       y="424"
+       ry="8" />
+  </g>
+</svg>

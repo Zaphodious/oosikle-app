@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="ink_sprite_sheet.svg"
+   shape-rendering="crispEdges"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview909"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="16"
+     inkscape:cx="63.4375"
+     inkscape:cy="26.1875"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="0"
+     inkscape:window-y="650"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="0,512"
+       orientation="0,512"
+       id="guide17023"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="512,512"
+       orientation="512,0"
+       id="guide17025"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="512,0"
+       orientation="0,-512"
+       id="guide17027"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="0,0"
+       orientation="-512,0"
+       id="guide17029"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="256,256"
+       orientation="-1,0"
+       id="guide17031"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="256,256"
+       orientation="0,-1"
+       id="guide17033"
+       inkscape:locked="false" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid643"
+       empspacing="32"
+       dotted="false"
+       color="#32bbff"
+       opacity="0.14901961" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid693"
+       empspacing="1"
+       color="#d2e500"
+       opacity="0.14901961"
+       spacingx="16"
+       spacingy="16"
+       empcolor="#00e500"
+       empopacity="0.40784314" />
+  </sodipodi:namedview>
+  <defs
+     id="defs904">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter13"
+       x="-0.041666667"
+       y="-0.041666667"
+       width="1.1666667"
+       height="1.1666667">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood12" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur12" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="2"
+         dy="2"
+         id="feOffset12" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite12" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite13" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter34"
+       x="-0.041666667"
+       y="-0.041666667"
+       width="1.2083333"
+       height="1.2083333">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood33" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur33" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="3"
+         dy="3"
+         id="feOffset33" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite33" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite34" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter39"
+       x="-0.041666667"
+       y="-0.041666667"
+       width="1.1666667"
+       height="1.1666667">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood38" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur38" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="2.000000"
+         dy="2.000000"
+         id="feOffset38" />
+      <feComposite
+         result="comp1"
+         operator="out"
+         in="flood"
+         in2="offset"
+         id="feComposite38" />
+      <feComposite
+         result="comp2"
+         operator="atop"
+         in="comp1"
+         in2="SourceGraphic"
+         id="feComposite39" />
+    </filter>
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="export_spaces_neubuttons">
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4077"
+       width="32"
+       height="32"
+       x="0"
+       y="96"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="flush_white" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4079"
+       width="32"
+       height="32"
+       x="32"
+       y="96"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="midup_white" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4081"
+       width="32"
+       height="32"
+       x="64"
+       y="96"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="fullup_white" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4083"
+       width="32"
+       height="32"
+       x="96"
+       y="96"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="square_white" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4085"
+       width="32"
+       height="32"
+       x="128"
+       y="96"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="indent_white" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4050"
+       width="32"
+       height="32"
+       x="0"
+       y="64"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="flush_yellow" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4052"
+       width="32"
+       height="32"
+       x="32"
+       y="64"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="midup_yellow" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4054"
+       width="32"
+       height="32"
+       x="64"
+       y="64"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="fullup_yellow" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4056"
+       width="32"
+       height="32"
+       x="96"
+       y="64"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="square_yellow" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect4058"
+       width="32"
+       height="32"
+       x="128"
+       y="64"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="indent_yellow" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1504"
+       width="32"
+       height="32"
+       x="0"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="flush_paleyellow"
+       transform="translate(0,32)" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1506"
+       width="32"
+       height="32"
+       x="32"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="midup_paleyellow"
+       transform="translate(0,32)" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1508"
+       width="32"
+       height="32"
+       x="64"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="fullup_paleyellow"
+       transform="translate(0,32)" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1510"
+       width="32"
+       height="32"
+       x="96"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="square_paleyellow"
+       transform="translate(0,32)" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1512"
+       width="32"
+       height="32"
+       x="128"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="indent_paleyellow"
+       transform="translate(0,32)" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect846"
+       width="32"
+       height="32"
+       x="0"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="flush_orange" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1442"
+       width="32"
+       height="32"
+       x="32"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="midup_orange" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1444"
+       width="32"
+       height="32"
+       x="64"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="fullup_orange" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1446"
+       width="32"
+       height="32"
+       x="96"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="square_orange" />
+    <rect
+       style="fill:none;fill-opacity:0.99654;stroke:none;stroke-width:2;stroke-linecap:round;paint-order:stroke markers fill"
+       id="rect1448"
+       width="32"
+       height="32"
+       x="128"
+       y="0"
+       rx="16.263456"
+       ry="0"
+       inkscape:label="indent_orange" />
+  </g>
+  <g
+     inkscape:label="orange"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect579"
+       width="24"
+       height="24"
+       x="34"
+       y="2"
+       ry="8" />
+    <rect
+       style="fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter34)"
+       id="rect36"
+       width="24"
+       height="24"
+       x="65"
+       y="1"
+       ry="7.9999971" />
+    <rect
+       style="fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect741"
+       width="24"
+       height="24"
+       x="4"
+       y="4"
+       ry="8" />
+    <rect
+       style="fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect743"
+       width="24"
+       height="24"
+       x="100"
+       y="4"
+       ry="0" />
+    <rect
+       style="fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter39)"
+       id="rect791"
+       width="24"
+       height="24"
+       x="132"
+       y="4"
+       ry="8" />
+  </g>
+  <g
+     inkscape:label="paleyellow"
+     inkscape:groupmode="layer"
+     id="g1502"
+     transform="translate(0,32)">
+    <rect
+       style="fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect1492"
+       width="24"
+       height="24"
+       x="34"
+       y="2"
+       ry="8" />
+    <rect
+       style="fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter34)"
+       id="rect1494"
+       width="24"
+       height="24"
+       x="65"
+       y="1"
+       ry="7.9999971" />
+    <rect
+       style="fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect1496"
+       width="24"
+       height="24"
+       x="4"
+       y="4"
+       ry="8" />
+    <rect
+       style="fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect1498"
+       width="24"
+       height="24"
+       x="100"
+       y="4"
+       ry="0" />
+    <rect
+       style="fill:#ffbb31;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter39)"
+       id="rect1500"
+       width="24"
+       height="24"
+       x="132"
+       y="4"
+       ry="8"
+       inkscape:label="rect1500" />
+  </g>
+  <g
+     inkscape:label="yellow"
+     inkscape:groupmode="layer"
+     id="g3989"
+     transform="translate(0,64)"
+     style="fill:#ffe737">
+    <rect
+       style="fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect3979"
+       width="24"
+       height="24"
+       x="34"
+       y="2"
+       ry="8" />
+    <rect
+       style="fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter34)"
+       id="rect3981"
+       width="24"
+       height="24"
+       x="65"
+       y="1"
+       ry="7.9999971" />
+    <rect
+       style="fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect3983"
+       width="24"
+       height="24"
+       x="4"
+       y="4"
+       ry="8" />
+    <rect
+       style="fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect3985"
+       width="24"
+       height="24"
+       x="100"
+       y="4"
+       ry="0" />
+    <rect
+       style="fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter39)"
+       id="rect3987"
+       width="24"
+       height="24"
+       x="132"
+       y="4"
+       ry="8"
+       inkscape:label="rect1500" />
+  </g>
+  <g
+     inkscape:label="white"
+     inkscape:groupmode="layer"
+     id="g4075"
+     transform="translate(0,96)"
+     style="fill:#ffe737">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter13)"
+       id="rect4065"
+       width="24"
+       height="24"
+       x="34"
+       y="2"
+       ry="8" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter34)"
+       id="rect4067"
+       width="24"
+       height="24"
+       x="65"
+       y="1"
+       ry="7.9999971" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect4069"
+       width="24"
+       height="24"
+       x="4"
+       y="4"
+       ry="8" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect4071"
+       width="24"
+       height="24"
+       x="100"
+       y="4"
+       ry="0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter39)"
+       id="rect4073"
+       width="24"
+       height="24"
+       x="132"
+       y="4"
+       ry="8"
+       inkscape:label="rect1500" />
+  </g>
+</svg>
