@@ -29,8 +29,8 @@
      showgrid="true"
      showguides="true"
      inkscape:zoom="1.0707617"
-     inkscape:cx="198.45686"
-     inkscape:cy="52.299219"
+     inkscape:cx="434.73725"
+     inkscape:cy="282.04221"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="-8"
@@ -546,12 +546,12 @@
        transform="matrix(1.0410398,0,0,1.0410398,-9.8495501,38.150448)"><tspan
          x="240"
          y="240"
-         id="tspan10126">Active Device<tspan
+         id="tspan47198">Active Device<tspan
    y="240"
-   id="tspan10128"> </tspan></tspan><tspan
+   id="tspan47200"> </tspan></tspan><tspan
          x="240"
          y="272.01924"
-         id="tspan10130">Name</tspan></text>
+         id="tspan47202">Name</tspan></text>
     <rect
        style="opacity:1;fill:#f68f37;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1;paint-order:normal;filter:url(#filter13)"
        id="rect64"
@@ -600,7 +600,7 @@
        ry="4" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#ffe737;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6667px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
        x="208"
        y="176"
        id="text69"><tspan
