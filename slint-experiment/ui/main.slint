@@ -1,6 +1,7 @@
 import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
 import { PlistSelectorDemo, PListFolder, PListHandle } from "plistdemo.slint";
 import {TButton} from "texturebutton.slint";
+import {OStyle} from "styleglobal.slint";
 
 // https://lospec.com/palette-list/pico-8
 
@@ -128,7 +129,7 @@ export component MainLayoutDemo inherits Window {
         alignment: stretch;
         Rectangle {
             // Placeholder
-            width: 60px;
+            width: OStyle.panes.devices.width;
         }
 
         VerticalLayout {
@@ -258,7 +259,7 @@ export component MainLayoutDemo inherits Window {
         x: 0;
         y: 0;
         height: 100%;
-        width: self.has-hover ? 170px : 40px;
+        width: self.has-hover ? 170px : OStyle.panes.devices.width;
         animate width {
             easing: ease-out-expo;
             duration: 0.35s;
@@ -266,7 +267,10 @@ export component MainLayoutDemo inherits Window {
         }
         ScrollView {
             Rectangle {
-                background: pink;
+                background: OStyle.panes.devices.background-brush;
+                border-width: OStyle.panes.devices.border-width;
+                border-color: OStyle.panes.devices.border-brush;
+                border-radius: OStyle.panes.devices.border-radius;
             }
 
             VerticalLayout {

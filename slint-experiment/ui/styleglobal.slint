@@ -21,7 +21,31 @@ export global OButtonType {
     out property <int> Menu:2;
 }
 
+export struct OPaneStyle {
+    width: length,
+    length: length,
+    background-brush: brush,
+    border-width: length,
+    border-radius: length,
+    border-brush: brush,
+    image: image,
+}
+
+export struct AppPaneStyles {
+    devices: OPaneStyle,
+    devices-expanded: OPaneStyle
+}
+
 export global OStyle {
+    in-out property <AppPaneStyles> panes: {
+        devices: {
+            width: 40px,
+            background-brush: #990000,
+            border-width: 5px,
+            border-radius: 10px, 
+            border-brush: #555555,
+        }
+    };
     in-out property <[OButtonStyle]> buttons: [
         {
             active: {
