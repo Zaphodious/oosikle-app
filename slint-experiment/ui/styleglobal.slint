@@ -1,0 +1,61 @@
+export struct OButtonStateStyle {
+    border-width: length,
+    border-radius: length,
+    border-brush: brush,
+    background-brush: brush,
+    image: image,
+}
+
+export struct OButtonStyle {
+    active: OButtonStateStyle,
+    hover: OButtonStateStyle,
+    disabled: OButtonStateStyle,
+    pressed: OButtonStateStyle,
+    alert: OButtonStateStyle,
+    highlighted: OButtonStateStyle,
+}
+
+export global OButtonType {
+    out property <int> Normal:0;
+    out property <int> Device:1;
+    out property <int> Menu:2;
+}
+
+export global OStyle {
+    in-out property <[OButtonStyle]> buttons: [
+        {
+            active: {
+                border-width: 5px,
+                border-radius: 10px,
+                border-brush: #FFFFFF,
+                background-brush: #000000,
+            },
+            hover: {
+                border-width: 5px,
+                border-radius: 10px,
+                border-brush: #555555,
+                background-brush: #FFFFFF,
+            },
+            disabled: {
+                border-width: 5px,
+                border-radius: 10px,
+                background-brush: #FFFFFF,
+            },
+            pressed: {
+                border-width: 5px,
+                border-radius: 10px,
+                background-brush: #FFFFFF,
+            },
+            alert: {
+                border-width: 5px,
+                border-radius: 10px,
+                background-brush: #FFFFFF,
+            },
+            highlighted: {
+                border-width: 5px,
+                border-radius: 10px,
+                background-brush: #FFFFFF,
+            }
+        }
+    ];
+}
