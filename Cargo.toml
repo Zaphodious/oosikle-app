@@ -1,5 +1,5 @@
 [workspace]
 edition = "2021"
 resolver = "2"
-members = ["oosikle-lib", "slint-experiment"]
+members = ["oosikle-lib", "reallybadidea", "slint-experiment"]
 
