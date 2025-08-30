@@ -3,5 +3,12 @@ name = "reallybadidea"
 version = "0.1.0"
 edition = "2024"
 
+
 [dependencies]
-winit = "0.30.12"
+femtovg = {version="0.16.0", features = ["wgpu", "image", "image-loading"]}
+anyhow = "1.0"
+winit = { version = "0.30", features = ["android-native-activity", "x11"] }
+env_logger = "0.10"
+log = "0.4"
+wgpu = "26.0.1"
+pollster = "0.3"
