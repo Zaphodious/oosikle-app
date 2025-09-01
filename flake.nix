@@ -49,6 +49,7 @@
               rust
               rust-analyzer
               rustup
+              libGLU
               
             ];
             buildInputs = with pkgs; [
