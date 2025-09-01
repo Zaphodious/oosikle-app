@@ -1,0 +1,131 @@
+export enum PListKind { PList, Filter }
+
+export struct PListHandle {
+    id: string,
+    name: string,
+    kind: PListKind,
+}
+export struct PListFolder {
+    id: string,
+    name: string,
+    expanded: bool,
+    plists: [PListHandle]
+}
+
+export struct DeviceDisplay {
+    id: string,
+    name: string,
+    enabled: bool,
+    icon: image,
+    hero: image,
+    playlists: [PListFolder]
+}
+
+export struct ActionItem {
+    id: string,
+    alt: string,
+    icons: image,
+
+}
+
+export global DemoData {
+
+    in-out property <DeviceDisplay> active_device: 
+        {
+        id: "thispc",
+        name: "This PC",
+        enabled: true,
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
+        playlists: [
+            {
+                name: "Games",
+                id: "games",
+                expanded: false,
+                plists: [{
+                    id: "list1",
+                    name: "Celeste",
+                }, { id: "list2", name: "Pocket Creatures" }]
+            },
+            { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+        ]
+    };
+    in property <[DeviceDisplay]> devices: [
+        {
+            id: "thispc",
+            name: "This PC",
+            enabled: true,
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    id: "games",
+                    expanded: false,
+                    plists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+            ]
+        },
+        {
+            id: "a301",
+            name: "Miyoo A30",
+            enabled: true,
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    id: "games", expanded: false,
+                    plists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+            ]
+        },
+        {
+            id: "ipod1",
+            name: "Apple iPod 5G",
+            enabled: true,
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Headphones Round Sound.svg"),
+            playlists: [{ name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }]
+        },
+        {
+            id: "sd1",
+            name: "Generic SD Card",
+            enabled: false,
+        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/SD Card.svg"),
+            playlists: [
+                {
+                    name: "Games",
+                    id: "games", expanded: false,
+                    plists: [{
+                        id: "list1",
+                        name: "Celeste",
+                    }, { id: "list2", name: "Pocket Creatures" }]
+                },
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+            ]
+        },
+        {
+            id: "kindle1",
+            name: "Amazon Kindle",
+            enabled: true,
+        icon: @image-url("testing_icons/Solar-Outline/School/Book 2.svg"),
+            playlists: [
+                {
+                    name: "Books",
+                    id: "books", expanded: false,
+                    plists: [{
+                        id: "books1",
+                        name: "Dresden",
+                    }, { id: "books2", name: "Unfortunate Events" }]
+                },
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+            ]
+        },
+    ];
+    in property <[string]> playlists: ["foo", "bar", "zip", "zap"];
+    }

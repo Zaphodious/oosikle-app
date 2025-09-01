@@ -1,18 +1,6 @@
 import { AboutSlint, Button, VerticalBox, ScrollView } from "std-widgets.slint";
 
-export enum PListKind { PList, Filter }
-
-export struct PListHandle {
-    id: string,
-    name: string,
-    kind: PListKind,
-}
-export struct PListFolder {
-    id: string,
-    name: string,
-    expanded: bool,
-    plists: [PListHandle]
-}
+import {PListFolder, PListKind, PListHandle} from "datamodel.slint";
 
 export component PlistSelectorDemo inherits Rectangle {
     preferred-height: 500px;

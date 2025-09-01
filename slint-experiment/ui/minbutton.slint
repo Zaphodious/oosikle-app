@@ -1,0 +1,75 @@
+export component MinButton {
+    height: 40px;
+
+    accessible-role: AccessibleRole.button;
+
+    in property <bool> disabled: false;
+    in property <bool> highlighted: false;
+    out property <bool> has-hover: !disabled && toucharea.has-hover;
+    out property <bool> pressed: !disabled && toucharea.pressed;
+    in property <image> icon: @image-url("https://github.com/google/material-design-icons/raw/refs/heads/master/src/hardware/device_unknown/materialiconssharp/24px.svg");
+
+    rect := Rectangle {
+        background: black;
+        border-color: white;
+        border-width: 3px;
+        border-radius: 20px;
+        toucharea := TouchArea {
+            mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
+            HorizontalLayout {
+                alignment: LayoutAlignment.center;
+                Rectangle {
+                    width: 15px;
+                }
+
+                iconback := Rectangle {
+
+                
+                theicon := Image {
+                    source: icon;
+                    width: rect.height;
+                    height: rect.height;
+                    padding: 2.5px;
+                    colorize: white;
+                }
+            }
+
+                thetext := Text {
+                    font-size: 12pt;
+                    overflow: TextOverflow.elide;
+                    text: "hello world :3";
+                    height: rect.height;
+                    vertical-alignment: center;
+                }
+
+                Rectangle {
+                    width: 15px;
+                    
+                }
+            }
+        }
+    }
+
+    states [
+        disabled when self.disabled: {
+            rect.background: #222;
+            thetext.color: #666;
+            theicon.colorize: #666;
+            rect.border-color: #333;
+        }
+        up-highlighted when highlighted && !toucharea.pressed && !toucharea.has-hover: {
+
+        }
+        up when !toucharea.pressed && !toucharea.has-hover: {
+            rect.background: #444;
+
+        }
+        hover when !toucharea.pressed && toucharea.has-hover: {
+            rect.background: white;
+            thetext.color: black;
+            theicon.colorize: black;
+        }
+        pressed when toucharea.pressed: {}
+    ]
+}
+

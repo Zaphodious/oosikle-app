@@ -9,7 +9,7 @@ use winit::{
     window::Window,
 };
 
-use femtovg::{renderer::WGPURenderer, Canvas, Renderer};
+use femtovg::{renderer::WGPURenderer, Canvas, Color, Renderer};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -152,6 +152,10 @@ impl State {
                 timestamp_writes: None,
             });
         }
+        let size = self.window.inner_size();
+        self.canvas.set_size(size.width, size.height, self.window.scale_factor() as f32);
+        self.canvas.clear_rect(30, 30, 30, 30, Color::rgbf(1., 0., 0.));
+        self.canvas.flush_to_surface(&output.texture);
 
         self.queue.submit(iter::once(encoder.finish()));
         output.present();
@@ -315,5 +319,14 @@ pub fn run_web() -> Result<(), wasm_bindgen::JsValue> {
     console_error_panic_hook::set_once();
     run().unwrap_throw();
 
+    Ok(())
+}
+
+
+fn render(state: &mut State) -> anyhow::Result<()> {
+    let size = state.window.inner_size();
+    state.canvas.set_size(size.width, size.height, state.window.scale_factor() as f32);
+    state.canvas.clear_rect(30, 30, 30, 30, Color::rgbf(1., 0., 0.));
+    state.canvas.flush_to_surface(&state.surface.get_current_texture()?.texture);
     Ok(())
 }
