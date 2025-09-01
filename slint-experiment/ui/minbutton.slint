@@ -1,50 +1,50 @@
 export component MinButton {
-    height: 40px;
-
+    height: 30px;
     accessible-role: AccessibleRole.button;
-
     in property <bool> disabled: false;
-    in property <bool> highlighted: false;
+    in property <bool> highlighted: true;
     out property <bool> has-hover: !disabled && toucharea.has-hover;
     out property <bool> pressed: !disabled && toucharea.pressed;
-    in property <image> icon: @image-url("https://github.com/google/material-design-icons/raw/refs/heads/master/src/hardware/device_unknown/materialiconssharp/24px.svg");
-
+    in property <image> icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg");
     rect := Rectangle {
         background: black;
         border-color: white;
-        border-width: 3px;
+        border-width: 0px;
         border-radius: 20px;
         toucharea := TouchArea {
             mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
             HorizontalLayout {
-                alignment: LayoutAlignment.center;
-                Rectangle {
-                    width: 15px;
-                }
+                alignment: LayoutAlignment.start;
 
                 iconback := Rectangle {
+                    border-radius: 20px;
+                    width: rect.height + 10px;
+                    border-width: 2px;
 
-                
-                theicon := Image {
-                    source: icon;
-                    width: rect.height;
-                    height: rect.height;
-                    padding: 2.5px;
-                    colorize: white;
+                    theicon := Image {
+                        source: icon;
+                        width: rect.height - 7px;
+                        height: rect.height - 7px;
+                        padding: 2.5px;
+                        colorize: white;
+                    }
                 }
-            }
+
+                Rectangle {
+                    width: 5px;
+                }
 
                 thetext := Text {
                     font-size: 12pt;
                     overflow: TextOverflow.elide;
                     text: "hello world :3";
-                    height: rect.height;
+                    height: rect.height - 3px;
                     vertical-alignment: center;
+                    horizontal-alignment: center;
                 }
 
                 Rectangle {
                     width: 15px;
-                    
                 }
             }
         }
@@ -58,18 +58,54 @@ export component MinButton {
             rect.border-color: #333;
         }
         up-highlighted when highlighted && !toucharea.pressed && !toucharea.has-hover: {
-
-        }
-        up when !toucharea.pressed && !toucharea.has-hover: {
-            rect.background: #444;
-
-        }
-        hover when !toucharea.pressed && toucharea.has-hover: {
-            rect.background: white;
-            thetext.color: black;
+            rect.border-width: 2px;
+            rect.background: #555;
+            thetext.stroke: #444;
+            iconback.background: white;
+            iconback.border-color: white;
             theicon.colorize: black;
         }
-        pressed when toucharea.pressed: {}
+        hover-highlighted when highlighted && !toucharea.pressed && toucharea.has-hover: {
+            rect.background: #353535;
+            rect.border-width: 2px;
+            rect.border-color: #666;
+            iconback.border-color: #666;
+            thetext.stroke: #333;
+            iconback.background: #666;
+            theicon.colorize: black;
+        }
+        pressed-highlighted when highlighted && toucharea.pressed: {
+            rect.border-width: 0px;
+            rect.border-width: 2px;
+            rect.border-color: #333;
+            rect.background: #666;
+            iconback.border-color: #333;
+            thetext.color: white;
+            thetext.stroke: #333;
+            iconback.background: #333;
+            theicon.colorize: white;
+        }
+        up when !toucharea.pressed && !toucharea.has-hover: {
+            rect.background: #353535;
+            iconback.border-color: #353535;
+            thetext.stroke: #333;
+            iconback.background: #666;
+        }
+        hover when !toucharea.pressed && toucharea.has-hover: {
+            rect.background: #777;
+            iconback.border-color: #777;
+            thetext.color: white;
+            thetext.stroke: #444;
+            theicon.colorize: black;
+            iconback.background: white;
+        }
+        pressed when toucharea.pressed: {
+            rect.background: white;
+            iconback.border-color: white;
+            iconback.background: #777;
+            thetext.color: black;
+            thetext.stroke: white;
+
+        }
     ]
 }
-
