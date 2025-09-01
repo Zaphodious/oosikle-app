@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
-use i_slint_backend_winit::{winit::{event::WindowEvent}, WinitWindowAccessor, WinitWindowEventResult};
+use i_slint_backend_winit::{winit::{event::WindowEvent}, WinitWindowAccessor};
+use crate::slint::winit_030::WinitWindowEventResult;
 use slint;
 use slint::ComponentHandle;
 use anyhow::Result;

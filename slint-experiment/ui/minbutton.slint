@@ -6,6 +6,10 @@ export component MinButton {
     out property <bool> has-hover: !disabled && toucharea.has-hover;
     out property <bool> pressed: !disabled && toucharea.pressed;
     in property <image> icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg");
+
+    callback clicked <=> toucharea.clicked;
+    callback double-clicked <=> toucharea.double-clicked;
+
     rect := Rectangle {
         background: black;
         border-color: white;
@@ -59,13 +63,14 @@ export component MinButton {
             rect.border-color: #333;
         }
         up-highlighted when highlighted && !toucharea.pressed && !toucharea.has-hover: {
-            rect.background: #777;
+            rect.background: #999;
             rect.border-color: white;
             rect.border-width: 4px;
             iconback.border-color: white;
-            iconback.background: #777;
+            iconback.background: #ccc;
             thetext.color: white;
             thetext.stroke: #999;
+            theicon.colorize: #555;
             thetext.horizontal-alignment: center;
         }
         hover-highlighted when highlighted && !toucharea.pressed && toucharea.has-hover: {
@@ -76,7 +81,7 @@ export component MinButton {
             thetext.color: #999;
             thetext.stroke: #aaa;
             theicon.colorize: #999;
-            iconback.background: white;
+            iconback.background: #ccc;
             thetext.horizontal-alignment: center;
         }
         pressed-highlighted when highlighted && toucharea.pressed: {
@@ -96,7 +101,7 @@ export component MinButton {
             //thetext.stroke: #333;
             iconback.background: #ddd;
             thetext.color: #ddd;
-            theicon.colorize: #353535;
+            theicon.colorize: #777;
         }
         hover when !toucharea.pressed && toucharea.has-hover: {
             rect.background: #999;

@@ -4,9 +4,11 @@ use slint;
 slint::include_modules!();
 
 use std::env;
-
-use crate::hasher::start_hasher;
 mod hasher;
+use hasher::start_hasher;
+
+//use crate::hasher::start_hasher;
+//mod hasher;
 
 fn main() -> Result<()>{
 
