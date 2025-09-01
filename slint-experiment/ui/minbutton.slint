@@ -1,8 +1,8 @@
 export component MinButton {
-    height: 30px;
+    height: 40px;
     accessible-role: AccessibleRole.button;
     in property <bool> disabled: false;
-    in property <bool> highlighted: true;
+    in property <bool> highlighted: false;
     out property <bool> has-hover: !disabled && toucharea.has-hover;
     out property <bool> pressed: !disabled && toucharea.pressed;
     in property <image> icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg");
@@ -14,17 +14,18 @@ export component MinButton {
         toucharea := TouchArea {
             mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
             HorizontalLayout {
-                alignment: LayoutAlignment.start;
+                alignment: LayoutAlignment.stretch;
 
                 iconback := Rectangle {
                     border-radius: 20px;
-                    width: rect.height + 10px;
-                    border-width: 2px;
+                    width: rect.height + 5px;
+                    border-width: 4px;
+
 
                     theicon := Image {
                         source: icon;
-                        width: rect.height - 7px;
-                        height: rect.height - 7px;
+                        width: rect.height - 14px;
+                        height: rect.height - 14px;
                         padding: 2.5px;
                         colorize: white;
                     }
@@ -38,9 +39,9 @@ export component MinButton {
                     font-size: 12pt;
                     overflow: TextOverflow.elide;
                     text: "hello world :3";
-                    height: rect.height - 3px;
+                    height: rect.height;
                     vertical-alignment: center;
-                    horizontal-alignment: center;
+                    horizontal-alignment: left;
                 }
 
                 Rectangle {
@@ -58,53 +59,59 @@ export component MinButton {
             rect.border-color: #333;
         }
         up-highlighted when highlighted && !toucharea.pressed && !toucharea.has-hover: {
-            rect.border-width: 2px;
-            rect.background: #555;
-            thetext.stroke: #444;
-            iconback.background: white;
+            rect.background: #777;
+            rect.border-color: white;
+            rect.border-width: 4px;
             iconback.border-color: white;
-            theicon.colorize: black;
+            iconback.background: #777;
+            thetext.color: white;
+            thetext.stroke: #999;
+            thetext.horizontal-alignment: center;
         }
         hover-highlighted when highlighted && !toucharea.pressed && toucharea.has-hover: {
-            rect.background: #353535;
-            rect.border-width: 2px;
-            rect.border-color: #666;
-            iconback.border-color: #666;
-            thetext.stroke: #333;
-            iconback.background: #666;
-            theicon.colorize: black;
+            rect.background: white;
+            rect.border-color: #999;
+            rect.border-width: 4px;
+            iconback.border-color: #999;
+            thetext.color: #999;
+            thetext.stroke: #aaa;
+            theicon.colorize: #999;
+            iconback.background: white;
+            thetext.horizontal-alignment: center;
         }
         pressed-highlighted when highlighted && toucharea.pressed: {
-            rect.border-width: 0px;
-            rect.border-width: 2px;
-            rect.border-color: #333;
-            rect.background: #666;
-            iconback.border-color: #333;
-            thetext.color: white;
-            thetext.stroke: #333;
-            iconback.background: #333;
-            theicon.colorize: white;
+            rect.background: #353535;
+            rect.border-color: #ddd;
+            rect.border-width: 4px;
+            iconback.border-color: #ddd;
+            //thetext.stroke: #333;
+            iconback.background: #353535;
+            thetext.color: #ddd;
+            theicon.colorize: #ddd;
+            thetext.horizontal-alignment: center;
         }
         up when !toucharea.pressed && !toucharea.has-hover: {
             rect.background: #353535;
             iconback.border-color: #353535;
-            thetext.stroke: #333;
-            iconback.background: #666;
+            //thetext.stroke: #333;
+            iconback.background: #ddd;
+            thetext.color: #ddd;
+            theicon.colorize: #353535;
         }
         hover when !toucharea.pressed && toucharea.has-hover: {
-            rect.background: #777;
-            iconback.border-color: #777;
+            rect.background: #999;
+            iconback.border-color: #999;
             thetext.color: white;
-            thetext.stroke: #444;
-            theicon.colorize: black;
+            thetext.stroke: #888;
+            theicon.colorize: #999;
             iconback.background: white;
         }
         pressed when toucharea.pressed: {
             rect.background: white;
             iconback.border-color: white;
             iconback.background: #777;
-            thetext.color: black;
-            thetext.stroke: white;
+            thetext.color: #777;
+            thetext.stroke: #999;
 
         }
     ]
