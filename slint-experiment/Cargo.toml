@@ -6,8 +6,8 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 blake3 = { version = "1.8.2", features = ["mmap", "rayon", "serde"] }
-slint = {git="https://github.com/slint-ui/slint.git", features=["unstable-winit-030"], rev="749abeabe0dbdbcd0125de6f9dea2d54e9e5a293"}
-i-slint-backend-winit = {git="https://github.com/slint-ui/slint.git", rev="749abeabe0dbdbcd0125de6f9dea2d54e9e5a293"}
+slint = {git="https://github.com/slint-ui/slint.git", features=["unstable-winit-030"], rev="2c439dcfee35a845d7da537496b3a542eb9bb8da"}
+i-slint-backend-winit = {git="https://github.com/slint-ui/slint.git", rev="2c439dcfee35a845d7da537496b3a542eb9bb8da"}
 
 [build-dependencies]
-slint-build = {git="https://github.com/slint-ui/slint.git", rev="749abeabe0dbdbcd0125de6f9dea2d54e9e5a293"}
+slint-build = {git="https://github.com/slint-ui/slint.git", rev="2c439dcfee35a845d7da537496b3a542eb9bb8da"}
