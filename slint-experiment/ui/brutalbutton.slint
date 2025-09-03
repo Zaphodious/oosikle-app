@@ -1,0 +1,173 @@
+/*
+enum BrutalButtonLayout {
+    AllLeft,
+    TextCenter,
+    AllCenter,
+    NoIcon,
+    RightText,
+    }
+*/
+
+struct BrutalButtonBrushes {
+    up: brush,
+    hover: brush,
+    down: brush,
+    }
+
+export component BrutalButton {
+    height: 40px;
+    accessible-role: AccessibleRole.button;
+    in property <BrutalButtonBrushes> brushes: {
+        up:    #f68f37ff,
+        hover: #ffbb31ff,
+        down:  #ffe737ff,
+    };
+    in property <bool> disabled: false;
+    in property <bool> active: true;
+    in-out property <bool> selected: false;
+    in property <bool> selectable: false;
+    out property <bool> has-hover: toucharea.has-hover;
+    out property <bool> pressed: toucharea.pressed;
+    in property <image> icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg");
+    in property <string> text: "Lorum ipsum dolor set amet";
+    in property <length> font-size: 11pt;
+    //in property <BrutalButtonLayout> layout: BrutalButtonLayout.TextCenter;
+    in property <TextHorizontalAlignment> text_alignment: TextHorizontalAlignment.center;
+    in property <bool> hide-text: false;
+    in property <bool> hide-icon: false;
+
+    callback clicked <=> toucharea.clicked;
+    callback double-clicked <=> toucharea.double-clicked;
+    callback was-selected;
+    callback was-unselected;
+
+    main_rect := Rectangle {
+        clip: true;
+        shadow_rect := Rectangle {
+            background: black;
+            border-radius: 8px;
+            height: parent.height - 8px;
+            width: parent.width - 8px;
+            x: 8px;
+            y: 8px;
+        }
+
+        button_rect := Rectangle {
+            border-radius: 8px;
+            height: parent.height - 8px;
+            width: parent.width - 8px;
+            border-width: 2px;
+            border-color: black;
+            x: 3px;
+            y: 3px;
+            toucharea := TouchArea {
+                enabled: active || !disabled;
+                mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
+                clicked => {
+                    if (selectable) {
+                        selected = !selected;
+                        was-selected();
+                    } else {
+                        was-unselected()
+                    }
+                }
+                width: 100%;
+                height: 100%;
+                layout-container := HorizontalLayout {
+                    spacing: 5px;
+                    icon_container := Rectangle {
+                    //background: blue;
+                    height: hide-icon ? 0px : button_rect.height;
+                        width: hide-icon ? 0px : button_rect.height;
+                        the_icon := Image {
+                            x: 5px;
+                            y: 5px;
+                            height: parent.height - 10px;
+                            width: parent.height - 10px;
+                            source: icon;
+                        }
+                    }
+
+                    text_container := Rectangle {
+                        width: hide-text ? 0px : toucharea.width - (hide-icon ? 10px : (toucharea.height + 40px));
+                        the_text := Text {
+                            width: 100%;
+                            text: hide-text ? "" : text;
+                            font-size: font-size;
+                            vertical-alignment: center;
+                            horizontal-alignment: text_alignment;
+                            color: black;
+                        }
+                    }
+                }
+            }
+        }
+    }
+/*
+    states [
+        all-left when layout == BrutalButtonLayout.AllLeft: {
+            text_container.width: toucharea.width - (toucharea.height * 1.5);
+            the_text.width: text_container.width + 5px;
+            the_text.horizontal_alignment: left;
+        }
+        center-text when layout == BrutalButtonLayout.TextCenter: {
+            text_container.width: toucharea.width - (toucharea.height * 1.5);
+            the_text.width: 100%;
+            the_text.horizontal_alignment: center;
+            
+
+            }
+        all-center when layout == BrutalButtonLayout.AllCenter: {
+            text_container.width: 100%;
+            the_text.width: text_container.width + 2px;
+            text_container.clip: false;
+            the_text.horizontal_alignment: right;
+            layout-container.alignment: center;
+            }
+    ]
+*/
+
+    states [
+        disabled when self.disabled: {
+            button_rect.height: self.height - 4px;
+            button_rect.width: self.width - 4px;
+            button_rect.border-radius: 0px;
+            button_rect.color: grey;
+            the_icon.colorize: #444444;
+            the_text.color: #444444;
+            shadow_rect.background: #444444;
+            button_rect.border-color: #444444;
+        }
+        up-selected when selected && !toucharea.pressed && !toucharea.has-hover: {
+            button_rect.background: brushes.down;
+            button_rect.border-width: 2px;
+            button_rect.x: 7px;
+            button_rect.y: 7px;
+        }
+        hover-selected when selected && !toucharea.pressed && toucharea.has-hover: {
+            button_rect.background: brushes.hover;
+            button_rect.x: 4px;
+            button_rect.y: 4px;
+            button_rect.border-width: 1px;
+        }
+        pressed-selected when selected && toucharea.pressed: {
+            button_rect.background: brushes.up;
+            button_rect.x: 6px;
+            button_rect.y: 6px;
+            button_rect.border-width: 1px;
+        }
+        up when !toucharea.pressed && !toucharea.has-hover: {
+            button_rect.background: brushes.up;
+        }
+        hover when !toucharea.pressed && toucharea.has-hover: {
+            button_rect.background: brushes.hover;
+            button_rect.x: 1px;
+            button_rect.y: 1px;
+        }
+        pressed when toucharea.pressed: {
+            button_rect.background: brushes.down;
+            button_rect.x: selectable ? 7px : 4px;
+            button_rect.y: selectable ? 7px : 4px;
+        }
+    ]
+}
