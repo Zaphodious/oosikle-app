@@ -11,7 +11,8 @@ export component DragDropTest inherits Window {
             background: inner_touch_area.has-hover ? yellow : red;
             DragArea {
                 mime-type: "text/plain";
-                data: "Hello World";
+                data: "ya";
+                in property <string> thing: "foo";
 
                 inner_touch_area := TouchArea {
                     x: 50px;
