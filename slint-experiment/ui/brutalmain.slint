@@ -1,0 +1,83 @@
+import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
+import { PlistSelectorDemo } from "plistdemo.slint";
+import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
+import {TButton} from "stylebutton.slint";
+import {OStyle} from "styleglobal.slint";
+import { BrutalPanel } from "brutalpanel.slint";
+import { BrutalButton } from "brutalbutton.slint";
+
+export component MainLayoutDemo inherits Window {
+    no-frame: false;
+    in-out property <DeviceDisplay> active_device: DemoData.active_device;
+    in property <[DeviceDisplay]> devices: DemoData.devices;
+    in property <[string]> playlists: DemoData.playlists;
+    always-on-top: false;
+    in-out property <bool> commander_pane_minimized: false;
+    full-screen: false;
+    background: #FFFFFF88;
+
+    private property <bool> device_expanded: false;
+
+    HorizontalLayout {
+        Rectangle {
+            width: 70px;
+            }
+        /*
+        device_bar := BrutalPanel {
+            width: deivce_hover_area.has-hover ? 240px : 80px;
+
+            deivce_hover_area := TouchArea {
+                
+            
+                }
+
+            VerticalLayout {
+                alignment: LayoutAlignment.start;
+                for device in devices: BrutalButton {
+                    width: device_bar.width - 20px;
+                        icon: device.icon;
+                        text: device.name;
+
+                }
+                }
+            }
+            */
+        BrutalPanel {
+            width: 200px;
+            background: #c59782ff;
+            }
+        VerticalLayout {
+            BrutalPanel {
+                height: 80px;
+                }
+            Rectangle {
+                background: #00000000;
+                }
+            BrutalPanel {
+                height: 80px;
+                }
+            }
+        }
+        device_bar := BrutalPanel {
+            x: 0; y: 0;
+            width: deivce_hover_area.has-hover ? 240px : 70px;
+            height: 100%;
+
+            deivce_hover_area := TouchArea {
+                width: 100%;
+                
+            VerticalLayout {
+                alignment: LayoutAlignment.start;
+                for device in devices: BrutalButton {
+                    height: 50px;
+                    width: device_bar.width - 20px;
+                        icon: device.icon;
+                        text: device.name;
+
+                }
+                }
+            
+                }
+
+            }
+}

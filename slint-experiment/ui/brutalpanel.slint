@@ -1,0 +1,18 @@
+export component BrutalPanel {
+    in property <brush> background: #e2d7b5ff;
+    outerrect := Rectangle {
+        innerrect := Rectangle {
+            background: background;
+            border-radius: 16px;
+            border-width: 3px;
+            border-color: black;
+            width: outerrect.width - 8px;
+            height: outerrect.height - 8px;
+            contentrect := Rectangle {
+                width: innerrect.width - 8px;
+                height: innerrect.height - 8px;
+                @children
+            }
+        }
+    }
+}
