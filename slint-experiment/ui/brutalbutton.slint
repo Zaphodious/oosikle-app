@@ -47,7 +47,7 @@ export component BrutalButton {
             background: black;
             border-radius: 8px;
             height: parent.height - 8px;
-            width: parent.width - 8px;
+            width: parent.width - 10px;
             x: 8px;
             y: 8px;
         }
@@ -55,11 +55,11 @@ export component BrutalButton {
         button_rect := Rectangle {
             border-radius: 8px;
             height: parent.height - 8px;
-            width: parent.width - 8px;
+            width: parent.width - 10px;
             border-width: 2px;
             border-color: black;
-            x: 3px;
-            y: 3px;
+            x: 5px;
+            y: 5px;
             toucharea := TouchArea {
                 enabled: active || !disabled;
                 mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
@@ -131,23 +131,23 @@ export component BrutalButton {
         disabled when self.disabled: {
             button_rect.height: self.height - 4px;
             button_rect.width: self.width - 4px;
-            button_rect.border-radius: 0px;
             button_rect.color: grey;
             the_icon.colorize: #444444;
             the_text.color: #444444;
-            shadow_rect.background: #444444;
+            shadow_rect.background: #44444400;
             button_rect.border-color: #444444;
         }
         up-selected when selected && !toucharea.pressed && !toucharea.has-hover: {
             button_rect.background: brushes.down;
             button_rect.border-width: 2px;
+            shadow_rect.background: #00000000;
             button_rect.x: 7px;
             button_rect.y: 7px;
         }
         hover-selected when selected && !toucharea.pressed && toucharea.has-hover: {
             button_rect.background: brushes.hover;
-            button_rect.x: 4px;
-            button_rect.y: 4px;
+            button_rect.x: 5px;
+            button_rect.y: 5px;
             button_rect.border-width: 1px;
         }
         pressed-selected when selected && toucharea.pressed: {
@@ -161,8 +161,8 @@ export component BrutalButton {
         }
         hover when !toucharea.pressed && toucharea.has-hover: {
             button_rect.background: brushes.hover;
-            button_rect.x: 1px;
-            button_rect.y: 1px;
+            button_rect.x: 2px;
+            button_rect.y: 2px;
         }
         pressed when toucharea.pressed: {
             button_rect.background: brushes.down;

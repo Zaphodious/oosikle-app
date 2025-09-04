@@ -21,7 +21,7 @@ export component MainLayoutDemo inherits Window {
     HorizontalLayout {
         Rectangle {
             width: 70px;
-            }
+        }
         /*
         device_bar := BrutalPanel {
             width: deivce_hover_area.has-hover ? 240px : 80px;
@@ -45,39 +45,62 @@ export component MainLayoutDemo inherits Window {
         BrutalPanel {
             width: 200px;
             background: #c59782ff;
-            }
+        }
+
         VerticalLayout {
             BrutalPanel {
-                height: 80px;
-                }
-            Rectangle {
-                background: #00000000;
-                }
-            BrutalPanel {
-                height: 80px;
+                height: 60px;
+                HorizontalLayout {
+                    BrutalButton {
+                        height: 100%;
+                        text: "hola";
+                    }
+                    BrutalButton {
+                        height: 100%;
+                        text: "hola";
+                    }
+                    BrutalButton {
+                        disabled: true;
+                        height: 100%;
+                        text: "hola";
+                    }
+                    BrutalButton {
+                        selectable: true;
+                        selected: true;
+                        height: 100%;
+                        text: "hola";
+                    }
                 }
             }
-        }
-        device_bar := BrutalPanel {
-            x: 0; y: 0;
-            width: deivce_hover_area.has-hover ? 240px : 70px;
-            height: 100%;
 
-            deivce_hover_area := TouchArea {
-                width: 100%;
-                
+            Rectangle {
+                background: #00000000;
+            }
+
+            BrutalPanel {
+                height: 80px;
+            }
+        }
+    }
+
+    device_bar := BrutalPanel {
+        x: 0;
+        y: 0;
+        width: deivce_hover_area.has-hover ? 240px : 68px;
+        height: 100%;
+
+        deivce_hover_area := TouchArea {
+            width: 100%;
             VerticalLayout {
+                width: 100%;
                 alignment: LayoutAlignment.start;
                 for device in devices: BrutalButton {
                     height: 50px;
-                    width: device_bar.width - 20px;
-                        icon: device.icon;
-                        text: device.name;
-
+                    width: 100%;
+                    icon: device.icon;
+                    text: device.name;
                 }
-                }
-            
-                }
-
             }
+        }
+    }
 }
