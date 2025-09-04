@@ -63,6 +63,7 @@ export component BrutalButton {
             y: 5px;
 
             animate x, y {
+                easing: ease-in-quad;
                 duration: 50ms;
                  
             }
@@ -80,7 +81,7 @@ export component BrutalButton {
                 width: 100%;
                 height: 100%;
                 layout-container := HorizontalLayout {
-                    spacing: 5px;
+                    spacing: 0px;
                     icon_container := Rectangle {
                     //background: blue;
                     height: hide-icon ? 0px : button_rect.height;
@@ -95,7 +96,7 @@ export component BrutalButton {
                     }
 
                     text_container := Rectangle {
-                        width: hide-text ? 0px : toucharea.width - (hide-icon ? 10px : (toucharea.height + 40px));
+                        width: hide-text ? 0px : toucharea.width - (hide-icon ? 10px : (toucharea.height + 10px));
                         the_text := Text {
                             width: 100%;
                             text: hide-text ? "" : text;
@@ -152,16 +153,14 @@ export component BrutalButton {
             button_rect.y: 7px;
         }
         hover-selected when selected && !toucharea.pressed && toucharea.has-hover: {
-            button_rect.background: brushes.hover;
+            button_rect.background: brushes.down;
             button_rect.x: 5px;
             button_rect.y: 5px;
-            button_rect.border-width: 1px;
         }
         pressed-selected when selected && toucharea.pressed: {
             button_rect.background: brushes.up;
             button_rect.x: 6px;
             button_rect.y: 6px;
-            button_rect.border-width: 1px;
         }
         up when !toucharea.pressed && !toucharea.has-hover: {
             button_rect.background: brushes.up;

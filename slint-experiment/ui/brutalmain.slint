@@ -6,6 +6,7 @@ import {OStyle} from "styleglobal.slint";
 import { BrutalPanel } from "brutalpanel.slint";
 import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
+import { BrutalDevicePanel } from "brutaldevicepanel.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
@@ -17,7 +18,7 @@ export component MainLayoutDemo inherits Window {
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
     full-screen: false;
-    background: #FFFFFF88;
+    background: #FFFFFF;
 
     private property <bool> device_expanded: false;
 
@@ -46,8 +47,58 @@ export component MainLayoutDemo inherits Window {
             }
             */
         BrutalPanel {
-            width: 200px;
+            width: 260px;
             background: #c59782ff;
+            Rectangle {
+                width: parent.width - 30px;
+                height: parent.height - 30px;
+                VerticalLayout {
+                    HorizontalLayout {
+                        Rectangle {
+                            width: 125px;
+                            height: self.width;
+                            Rectangle {
+                                width: parent.width - 10px;
+                                background: #ffe737ff;
+                                height: self.width;
+                                padding: 10px;
+                                border-radius: 5px;
+                                border-width: 2px;
+                                border-color: black;
+                                Image {
+                                    width: 100%;
+                                    source: active_device.icon;
+                                    }
+                            }
+                        }
+
+                        VerticalLayout {
+                            BrutalButton { 
+                                text: "Sync";
+                                }
+
+                            BrutalButton { 
+                                text: "Clone";
+                                }
+
+                            BrutalButton { 
+                                text: "Eject";
+                                }
+                        }
+
+                    }
+                    Text {
+                        text: active_device.name;
+                        horizontal-alignment: center;
+                        font-size: 18pt;
+                        color: black;
+                        }
+                    BrutalPanel {
+                        background: white;
+
+                        }
+                }
+            }
         }
 
         VerticalLayout {
@@ -58,16 +109,20 @@ export component MainLayoutDemo inherits Window {
                         height: 100%;
                         text: "hola";
                     }
+
                     BrutalButton {
                         height: 100%;
                         text: "hola";
                     }
-                    BrutalLineEntry {}
+
+                    BrutalLineEntry { }
+
                     BrutalButton {
                         disabled: true;
                         height: 100%;
                         text: "hola";
                     }
+
                     BrutalButton {
                         selectable: true;
                         selected: true;
@@ -87,6 +142,12 @@ export component MainLayoutDemo inherits Window {
         }
     }
 
+    device_bar := BrutalDevicePanel {
+        devices: devices;
+        active_device <=> active_device;
+    }
+
+/*
     device_bar := BrutalPanel {
         x: 0;
         y: 0;
@@ -94,6 +155,7 @@ export component MainLayoutDemo inherits Window {
         height: 100%;
 
         animate width {
+            easing: ease-in-quad;
             duration: 50ms;
              
         }
@@ -112,4 +174,5 @@ export component MainLayoutDemo inherits Window {
             }
         }
     }
+    */
 }
