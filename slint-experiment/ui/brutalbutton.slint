@@ -41,6 +41,7 @@ export component BrutalButton {
     callback was-selected;
     callback was-unselected;
 
+
     main_rect := Rectangle {
         clip: true;
         shadow_rect := Rectangle {
@@ -60,6 +61,11 @@ export component BrutalButton {
             border-color: black;
             x: 5px;
             y: 5px;
+
+            animate x, y {
+                duration: 50ms;
+                 
+            }
             toucharea := TouchArea {
                 enabled: active || !disabled;
                 mouse-cursor: disabled ? MouseCursor.default : MouseCursor.pointer;
@@ -131,11 +137,12 @@ export component BrutalButton {
         disabled when self.disabled: {
             button_rect.height: self.height - 4px;
             button_rect.width: self.width - 4px;
+            button_rect.border-radius: 2px;
             button_rect.color: grey;
             the_icon.colorize: #444444;
             the_text.color: #444444;
             shadow_rect.background: #44444400;
-            button_rect.border-color: #444444;
+            button_rect.border-color: #222;
         }
         up-selected when selected && !toucharea.pressed && !toucharea.has-hover: {
             button_rect.background: brushes.down;

@@ -5,8 +5,11 @@ import {TButton} from "stylebutton.slint";
 import {OStyle} from "styleglobal.slint";
 import { BrutalPanel } from "brutalpanel.slint";
 import { BrutalButton } from "brutalbutton.slint";
+import { BrutalLineEntry  } from "brutallineentry.slint";
 
 export component MainLayoutDemo inherits Window {
+    min-width: 800px;
+    min-height: 480px;
     no-frame: false;
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     in property <[DeviceDisplay]> devices: DemoData.devices;
@@ -59,6 +62,7 @@ export component MainLayoutDemo inherits Window {
                         height: 100%;
                         text: "hola";
                     }
+                    BrutalLineEntry {}
                     BrutalButton {
                         disabled: true;
                         height: 100%;
@@ -88,6 +92,11 @@ export component MainLayoutDemo inherits Window {
         y: 0;
         width: deivce_hover_area.has-hover ? 240px : 68px;
         height: 100%;
+
+        animate width {
+            duration: 50ms;
+             
+        }
 
         deivce_hover_area := TouchArea {
             width: 100%;

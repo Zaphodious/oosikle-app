@@ -1,0 +1,67 @@
+
+export component BrutalLineEntry {
+    height: 40px;
+    in-out property <string> text;
+    in property <length> font-size: 12pt;
+    in property <bool> single-line: true;
+    callback edited <=> textinput.edited;
+    callback accepted <=> textinput.accepted;
+
+    outerrect := Rectangle {
+        width: 100%;
+        height: 100%;
+        innerrect := Rectangle {
+            y: 5px;
+            width: outerrect.width - 6px;
+            height: outerrect.height - 5px;
+            border-radius: 10px;
+            border-width: 2px;
+            border-color: black;
+            background: #e2c9ffff;
+
+            textwraprect := Rectangle {
+                clip: true;
+                width: innerrect.width - 25px;
+                height: innerrect.height - 9px;
+                y: 1px;
+                textinput := TextInput {
+                    color: black;
+                    font-size: font-size;
+                    vertical-alignment: bottom;
+                    height: textwraprect.height;
+                    single-line: true;
+                    text: "hola mundo, eu quero saber todo";
+
+                    private property <length> margin: 0rem;
+                    cursor-position-changed(cursor-position) => {
+                        if cursor-position.x + self.x < margin {
+                            self.x = - cursor-position.x + margin;
+                        } else if cursor-position.x + self.x > parent.width - margin - self.text-cursor-width {
+                            self.x = parent.width - cursor-position.x - margin - self.text-cursor-width;
+                        }
+                    }
+                }
+            }
+
+            Path {
+                x: 12px;
+                y: innerrect.height - 9px;
+                height: 4px;
+                width: innerrect.width - 25px;
+
+                stroke: black;
+                stroke-width: 2px;
+
+                MoveTo {
+                    x: 0;
+                    y: 100;
+                }
+
+                LineTo {
+                    x: 100;
+                    y: 100;
+                }
+            }
+        }
+    }
+}
