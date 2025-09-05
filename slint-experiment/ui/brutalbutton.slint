@@ -49,8 +49,8 @@ export component BrutalButton {
             border-radius: 8px;
             height: parent.height - 8px;
             width: parent.width - 10px;
-            x: 8px;
-            y: 8px;
+            x: 6px;
+            y: 6px;
         }
 
         button_rect := Rectangle {
@@ -59,8 +59,8 @@ export component BrutalButton {
             width: parent.width - 10px;
             border-width: 2px;
             border-color: black;
-            x: 5px;
-            y: 5px;
+            x: 3px;
+            y: 3px;
 
             animate x, y {
                 easing: ease-in-quad;
@@ -149,8 +149,8 @@ export component BrutalButton {
             button_rect.background: brushes.down;
             button_rect.border-width: 2px;
             shadow_rect.background: #00000000;
-            button_rect.x: 7px;
-            button_rect.y: 7px;
+            button_rect.x: 5px;
+            button_rect.y: 5px;
         }
         hover-selected when selected && !toucharea.pressed && toucharea.has-hover: {
             button_rect.background: brushes.down;

@@ -10,7 +10,6 @@ import { BrutalDevicePanel } from "brutaldevicepanel.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
-    min-height: 480px;
     no-frame: false;
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     in property <[DeviceDisplay]> devices: DemoData.devices;
@@ -92,10 +91,6 @@ export component MainLayoutDemo inherits Window {
                         horizontal-alignment: center;
                         font-size: 18pt;
                         color: black;
-                        }
-                    BrutalPanel {
-                        background: white;
-
                         }
                 }
             }

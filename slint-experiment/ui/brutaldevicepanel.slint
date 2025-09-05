@@ -2,6 +2,7 @@ import { BrutalPanel } from "brutalpanel.slint";
 import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
 import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
+import { ScrollView } from "std-widgets.slint";
 
 export component BrutalDevicePanel inherits BrutalPanel {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
@@ -18,20 +19,27 @@ export component BrutalDevicePanel inherits BrutalPanel {
 
     deivce_hover_area := TouchArea {
         width: 100%;
+        ScrollView {
+            width: deivce_hover_area.width;
+            horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+            height: deivce_hover_area.height - 10px;
         VerticalLayout {
             width: 100%;
+            y: -2px;
             alignment: LayoutAlignment.start;
             for device in devices: BrutalButton {
                 selectable: true;
                 selected: device.id == active_device.id;
                 height: 50px;
-                width: 100%;
+                width: deivce_hover_area.width;
                 icon: device.icon;
                 text: device.name;
                 clicked => {
                     active_device = device;
                     }
                     
+            }
+
             }
         }
     }
