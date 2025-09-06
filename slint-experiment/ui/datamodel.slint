@@ -49,7 +49,7 @@ export global DemoData {
             { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
         ]
     };
-    in property <[DeviceDisplay]> devices: [
+    in property <DeviceDisplay> pc_device: 
         {
             id: "thispc",
             name: "This PC",
@@ -67,7 +67,8 @@ export global DemoData {
                 },
                 { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
-        },
+        };
+    in property <[DeviceDisplay]> devices: [
         {
             id: "a301",
             name: "Miyoo A30",

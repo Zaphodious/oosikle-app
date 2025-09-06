@@ -25,6 +25,8 @@ export component BrutalLineEntry {
                 height: innerrect.height - 9px;
                 y: 1px;
                 textinput := TextInput {
+                    x: 0;
+                    width: self.text.character-count * self.font-size;
                     color: black;
                     font-size: font-size;
                     vertical-alignment: bottom;
@@ -32,12 +34,16 @@ export component BrutalLineEntry {
                     single-line: true;
                     text: "hola mundo, eu quero saber todo";
 
+
+
                     private property <length> margin: 0rem;
                     cursor-position-changed(cursor-position) => {
                         if cursor-position.x + self.x < margin {
                             self.x = - cursor-position.x + margin;
+                            debug("cp is less then margin: ", cursor-position)
                         } else if cursor-position.x + self.x > parent.width - margin - self.text-cursor-width {
                             self.x = parent.width - cursor-position.x - margin - self.text-cursor-width;
+                            debug("margin is less then cp: ", cursor-position);
                         }
                     }
                 }
