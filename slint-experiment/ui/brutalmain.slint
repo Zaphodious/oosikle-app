@@ -7,6 +7,7 @@ import { BrutalPanel } from "brutalpanel.slint";
 import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
 import { BrutalDevicePanel } from "brutaldevicepanel.slint";
+import { BrutalPlaylistView } from "brutalplistview.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
@@ -14,6 +15,7 @@ export component MainLayoutDemo inherits Window {
     no-frame: false;
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     in property <[DeviceDisplay]> devices: DemoData.devices;
+    in property <DeviceDisplay> pc_device: DemoData.pc_device;
     in property <[string]> playlists: DemoData.playlists;
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
@@ -93,6 +95,9 @@ export component MainLayoutDemo inherits Window {
                         font-size: 18pt;
                         color: black;
                         }
+                    BrutalPlaylistView {
+                        active_device: active_device;
+                        }
                 }
             }
         }
@@ -140,6 +145,7 @@ export component MainLayoutDemo inherits Window {
 
     device_bar := BrutalDevicePanel {
         devices: devices;
+        pc_device: pc_device;
         active_device <=> active_device;
     }
 
