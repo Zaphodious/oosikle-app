@@ -2,16 +2,36 @@ import { BrutalPanel } from "brutalpanel.slint";
 import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
 import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
-import { ScrollView } from "std-widgets.slint";
+import { ScrollView, VerticalBox, VerticalBox } from "std-widgets.slint";
 
 export component BrutalPlaylistView {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     x: 0;
     y: 0;
+    plist-scroll:=ScrollView {
+        viewport-height: 10000px;
+        horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+        Rectangle {
 
-    animate width {
-        easing: ease-in-quad;
-        duration: 50ms;
+                VerticalLayout {
+
+                    alignment: LayoutAlignment.start;
+                    for lol in active_device.playlists: VerticalLayout {
+                        lolbutton := BrutalButton {
+                            text: lol.name;
+                            selectable: true;
+                        }
+
+                        VerticalLayout {
+                            for listo in lol.plists: BrutalButton {
+                                selectable: true;
+                                text: listo.name;
+                                width: parent.width - 30px;
+                                x: 30px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-
-}

@@ -52,9 +52,10 @@ export component MainLayoutDemo inherits Window {
             width: 260px;
             background: #c59782ff;
             Rectangle {
-                width: parent.width - 30px;
                 height: parent.height - 30px;
                 VerticalLayout {
+                    height: parent.height;
+                    alignment: start;
                     HorizontalLayout {
                         Rectangle {
                             width: 125px;
@@ -70,34 +71,41 @@ export component MainLayoutDemo inherits Window {
                                 Image {
                                     width: 100%;
                                     source: active_device.icon;
-                                    }
+                                }
                             }
                         }
 
                         VerticalLayout {
-                            BrutalButton { 
+                            BrutalButton {
                                 text: "Sync";
-                                }
+                            }
 
-                            BrutalButton { 
+                            BrutalButton {
                                 text: "Clone";
-                                }
+                            }
 
-                            BrutalButton { 
+                            BrutalButton {
                                 text: "Eject";
-                                }
+                            }
                         }
-
                     }
+
                     Text {
                         text: active_device.name;
                         horizontal-alignment: center;
                         font-size: 18pt;
                         color: black;
+                    }
+
+                    BrutalPanel {
+                        height: parent.height - 150px;
+                        background: white;
+                        BrutalPlaylistView {
+                            width: 100%;
+                            height: parent.height - 14px;
+                            active_device: active_device;
                         }
-                    BrutalPlaylistView {
-                        active_device: active_device;
-                        }
+                    }
                 }
             }
         }
