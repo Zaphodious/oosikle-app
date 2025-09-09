@@ -11,8 +11,12 @@ export component BrutalPlaylistView {
     x: 0;
     y: 0;
 
+    private property <bool> scrolling: plist-scroll.visible-height < plist-scroll.viewport-height;
+
     plist-scroll := ListView {
         horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+                width: scrolling ? parent.width - 5px : parent.width;
+                x: 0;
 
         for lol in active_device.playlists: VerticalLayout {
             lolbutton := BrutalButton {
@@ -20,6 +24,8 @@ export component BrutalPlaylistView {
                 selectable: true;
                 selected: true;
                 height: 35px;
+                width: scrolling ? parent.width - 10px : parent.width;
+                
             }
 
 /*
@@ -40,7 +46,7 @@ export component BrutalPlaylistView {
                     duration: 50ms;
                     easing: ease-in-quad;
                 }
-                width: parent.width - 40px;
+                width: scrolling ? parent.width - 50px : parent.width - 40px;
                 x: 35px;
                 visible: lolbutton.selected;
                 height: lolbutton.selected ? lol.plists.length * 40px : 0px;

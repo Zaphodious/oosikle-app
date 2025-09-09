@@ -38,12 +38,13 @@ export component BrutalDevicePanel inherits BrutalPanel {
             y: 50px;
             width: deivce_hover_area.width - 2px;
             horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+            vertical-scrollbar-policy: deivce_hover_area.has-hover ? always-on : always-off;
             height: deivce_hover_area.height - 10px - 50px;
                 for device in devices: BrutalButton {
                     selectable: true;
                     selected: device.id == active_device.id;
                     height: 50px;
-                    width: deivce_hover_area.width;
+                    width: deivce_hover_area.has-hover ? deivce_hover_area.width - 10px : deivce_hover_area.width;
                     icon: device.icon;
                     text: device.name;
                     clicked => {
