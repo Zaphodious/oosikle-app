@@ -8,6 +8,7 @@ import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
 import { BrutalDevicePanel } from "brutaldevicepanel.slint";
 import { BrutalPlaylistView } from "brutalplistview.slint";
+import { BrutalBrushes } from "brutalcolors.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
@@ -20,7 +21,7 @@ export component MainLayoutDemo inherits Window {
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
     full-screen: false;
-    background: #FFFFFF;
+    background: BrutalBrushes.AppColorsBackground.primary;
 
     private property <bool> device_expanded: false;
 
@@ -50,7 +51,7 @@ export component MainLayoutDemo inherits Window {
             */
         BrutalPanel {
             width: 260px;
-            background: #c59782ff;
+            background: BrutalBrushes.AppColorsBackground.tertiary;
             Rectangle {
                 height: parent.height - 30px;
                 VerticalLayout {
@@ -94,16 +95,16 @@ export component MainLayoutDemo inherits Window {
                         text: active_device.name;
                         horizontal-alignment: center;
                         font-size: 18pt;
-                        color: black;
+                        color: BrutalBrushes.AppTextColorsMain.primary;
                     }
 
                     BrutalPanel {
                         height: parent.height - 150px;
-                        background: white;
+                        background: BrutalBrushes.AppColorsBackground.primary;
                         BrutalPlaylistView {
-                            width: 100%;
+                            width: parent.width - 15px;
                             height: parent.height - 14px;
-                            active_device: active_device;
+                            active_device <=> active_device;
                         }
                     }
                 }

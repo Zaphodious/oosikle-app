@@ -1,0 +1,63 @@
+
+export struct BrutalBrushSet {
+    primary: brush,
+    secondary: brush,
+    tertiary: brush,
+    }
+
+export struct BrutalTextColors {
+    primary: color,
+    secondary: color,
+    tertiary: color,
+    }
+
+export global BrutalBrushes {
+
+    out property <BrutalBrushSet> AppColorsBackground: {
+        primary: #efecdf,
+        secondary: #e2d7b7ff,
+        tertiary: #c59782ff,
+    };
+    out property <BrutalTextColors> AppTextColorsMain: {
+        primary:    #000000ff,
+        secondary: #000000ff,
+        tertiary:  #000000ff,
+    };
+    out property <BrutalTextColors> AppIconColorsMain: {
+        primary:    #000000ff,
+        secondary: #000000ff,
+        tertiary:  #000000ff,
+    };
+
+    out property <BrutalBrushSet> ButtonColorsMain: {
+        primary:    #f68f37ff,
+        secondary: #ffbb31ff,
+        tertiary:  #ffe737ff,
+    };
+    out property <BrutalTextColors> ButtonTextColorsMain: {
+        primary:    #000000ff,
+        secondary: #000000ff,
+        tertiary:  #000000ff,
+    };
+    out property <BrutalTextColors> ButtonIconColorsMain: {
+        primary:    #111,
+        secondary: #111,
+        tertiary:  #111,
+    };
+
+    out property <BrutalBrushSet> ButtonColorsPlist: {
+        primary:    #0a89ff,
+        secondary:    #5ba8ff,
+        tertiary:  #98dcff,
+    };
+    out property <BrutalTextColors> ButtonTextColorsPlist: {
+        tertiary:    #000000ff,
+        secondary: #ffffffff,
+        primary:  #ffffffff,
+    };
+    out property <BrutalTextColors> ButtonIconColorsPlist: {
+        tertiary:    #000000ff,
+        secondary: #efefef,
+        primary:  #efefef,
+    };
+}

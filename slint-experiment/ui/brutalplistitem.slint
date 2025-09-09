@@ -1,0 +1,29 @@
+import { BrutalBrushSet, BrutalBrushes, BrutalTextColors } from "brutalcolors.slint";
+import { PListHandle } from "datamodel.slint";
+
+export component BrutalPlistItem {
+    in-out property <string> active-list-id;
+    in property <PListHandle> plist;
+    in property <BrutalBrushSet> brushes: BrutalBrushes.ButtonColorsMain;
+    in property <BrutalTextColors> text-colors: BrutalBrushes.ButtonTextColorsMain;
+
+    Rectangle {
+        padding: 3px;
+        height: parent.height;
+        x: 0;
+        Rectangle {
+            height: 26px;
+            width: parent.width - 50px;
+            x: 35px;
+            border-radius: 5px;
+            border-width: 1.5px;
+            border-color: black;
+            background: brushes.primary;
+
+            Text {
+                text: plist.name;
+            }
+        }
+    }
+}
+

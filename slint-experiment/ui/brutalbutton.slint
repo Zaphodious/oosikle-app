@@ -1,3 +1,4 @@
+import { BrutalBrushSet, BrutalBrushes } from "brutalcolors.slint";
 /*
 enum BrutalButtonLayout {
     AllLeft,
@@ -8,20 +9,12 @@ enum BrutalButtonLayout {
     }
 */
 
-struct BrutalButtonBrushes {
-    up: brush,
-    hover: brush,
-    down: brush,
-    }
-
 export component BrutalButton {
     height: 40px;
     accessible-role: AccessibleRole.button;
-    in property <BrutalButtonBrushes> brushes: {
-        up:    #f68f37ff,
-        hover: #ffbb31ff,
-        down:  #ffe737ff,
-    };
+    in property <BrutalBrushSet> brushes: BrutalBrushes.ButtonColorsMain;
+    in property <BrutalBrushSet> text-colors: BrutalBrushes.ButtonTextColorsMain;
+    in property <BrutalBrushSet> icon-colors: BrutalBrushes.ButtonIconColorsMain;
     in property <bool> disabled: false;
     in property <bool> active: true;
     in-out property <bool> selected: false;
@@ -40,7 +33,6 @@ export component BrutalButton {
     callback double-clicked <=> toucharea.double-clicked;
     callback was-selected;
     callback was-unselected;
-
 
     main_rect := Rectangle {
         clip: true;
@@ -65,7 +57,6 @@ export component BrutalButton {
             animate x, y {
                 easing: ease-in-quad;
                 duration: 50ms;
-                 
             }
             toucharea := TouchArea {
                 enabled: active || !disabled;
@@ -73,9 +64,12 @@ export component BrutalButton {
                 clicked => {
                     if (selectable) {
                         selected = !selected;
-                        was-selected();
+                        if (selected) {
+                            was-selected();
+                        } else {
+                            was-unselected()
+                        }
                     } else {
-                        was-unselected()
                     }
                 }
                 width: 100%;
@@ -91,6 +85,7 @@ export component BrutalButton {
                             y: 5px;
                             height: parent.height - 10px;
                             width: parent.height - 10px;
+                            colorize: icon-colors.primary;
                             source: icon;
                         }
                     }
@@ -103,7 +98,7 @@ export component BrutalButton {
                             font-size: font-size;
                             vertical-alignment: center;
                             horizontal-alignment: text_alignment;
-                            color: black;
+                            color: text-colors.primary;
                         }
                     }
                 }
@@ -146,32 +141,44 @@ export component BrutalButton {
             button_rect.border-color: #222;
         }
         up-selected when selected && !toucharea.pressed && !toucharea.has-hover: {
-            button_rect.background: brushes.down;
+            button_rect.background: brushes.tertiary;
+            the_text.color: text-colors.tertiary;
+            the_icon.colorize: icon-colors.tertiary;
             button_rect.border-width: 2px;
             shadow_rect.background: #00000000;
             button_rect.x: 5px;
             button_rect.y: 5px;
         }
         hover-selected when selected && !toucharea.pressed && toucharea.has-hover: {
-            button_rect.background: brushes.down;
+            button_rect.background: brushes.tertiary;
+            the_text.color: text-colors.tertiary;
+            the_icon.colorize: icon-colors.tertiary;
             button_rect.x: 5px;
             button_rect.y: 5px;
         }
         pressed-selected when selected && toucharea.pressed: {
-            button_rect.background: brushes.up;
+            button_rect.background: brushes.primary;
+            the_text.color: text-colors.primary;
+            the_icon.colorize: icon-colors.primary;
             button_rect.x: 6px;
             button_rect.y: 6px;
         }
         up when !toucharea.pressed && !toucharea.has-hover: {
-            button_rect.background: brushes.up;
+            button_rect.background: brushes.primary;
+            the_text.color: text-colors.primary;
+            the_icon.colorize: icon-colors.primary;
         }
         hover when !toucharea.pressed && toucharea.has-hover: {
-            button_rect.background: brushes.hover;
+            button_rect.background: brushes.secondary;
+            the_text.color: text-colors.secondary;
+            the_icon.colorize: icon-colors.secondary;
             button_rect.x: 2px;
             button_rect.y: 2px;
         }
         pressed when toucharea.pressed: {
-            button_rect.background: brushes.down;
+            button_rect.background: brushes.tertiary;
+            the_text.color: text-colors.tertiary;
+            the_icon.colorize: icon-colors.tertiary;
             button_rect.x: selectable ? 7px : 4px;
             button_rect.y: selectable ? 7px : 4px;
         }

@@ -7,23 +7,38 @@ export component DragDropTest inherits Window {
     in-out property <string> result;
     out property <bool> contains-drag <=> da.contains-drag;
     VerticalLayout {
-        Rectangle {
-            background: inner_touch_area.has-hover ? yellow : red;
-            DragArea {
-                mime-type: "text/plain";
-                data: "ya";
+        dragarea := DragArea {
+            mime-type: "text/plain";
+            data: "ya";
+            Rectangle {
+                background: inner_touch_area.has-hover ? yellow : red;
                 in property <string> thing: "foo";
 
                 inner_touch_area := TouchArea {
-                    x: 50px;
-                    width: 50px;
-                    clicked => { result += "InnerClicked;"; }
+                    clicked => {
+                        result += "InnerClicked;";
+                    }
+                    pointer-event(event) => {
+                        if event.kind == PointerEventKind.move {
+                            if self.pressed {
+                                self.x = self.mouse-x - 20px;
+                                self.y = self.mouse-y - 20px;
+                                }
+                            }
+                        }
+                    indrect := Rectangle {
+                        width: parent.width - 30px;
+                        height: parent.height - 30px;
+                        background: white;
+                    }
                 }
             }
         }
+
         Rectangle {
             background: da.contains-drag ? green : blue;
             da := DropArea {
+                y: 20px;
                 can-drop(event) => {
                     debug("can-drop", event);
                     true

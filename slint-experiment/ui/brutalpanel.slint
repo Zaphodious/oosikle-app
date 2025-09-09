@@ -1,5 +1,6 @@
+import { BrutalBrushes } from "brutalcolors.slint";
 export component BrutalPanel {
-    in property <brush> background: #e2d7b5ff;
+    in property <brush> background: BrutalBrushes.AppColorsBackground.secondary;
     outerrect := Rectangle {
         innerrect := Rectangle {
             background: background;

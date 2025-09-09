@@ -18,6 +18,7 @@ export struct DeviceDisplay {
     enabled: bool,
     icon: image,
     hero: image,
+    active_list_id: string,
     playlists: [PListFolder]
 }
 
@@ -36,6 +37,7 @@ export global DemoData {
         name: "This PC",
         enabled: true,
         icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
+        active_list_id: "list1",
         playlists: [
             {
                 name: "Games",
@@ -51,10 +53,31 @@ export global DemoData {
     };
     in property <DeviceDisplay> pc_device: 
         {
-            id: "thispc",
-            name: "This PC",
-            enabled: true,
+        id: "thispc",
+        name: "This PC",
+        enabled: true,
         icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
+        active_list_id: "list1",
+        playlists: [
+            {
+                name: "Games",
+                id: "games",
+                expanded: false,
+                plists: [{
+                    id: "list1",
+                    name: "Celeste",
+                }, { id: "list2", name: "Pocket Creatures" }]
+            },
+            { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+        ]
+    };
+    in property <[DeviceDisplay]> devices: [
+        {
+            id: "a301",
+            name: "Miyoo A30",
+            enabled: true,
+            icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg"),
+            active_list_id: "list1",
             playlists: [
                 {
                     name: "Games",
@@ -67,41 +90,28 @@ export global DemoData {
                 },
                 { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
             ]
-        };
-    in property <[DeviceDisplay]> devices: [
-        {
-            id: "a301",
-            name: "Miyoo A30",
-            enabled: true,
-        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Gameboy.svg"),
-            playlists: [
-                {
-                    name: "Games",
-                    id: "games", expanded: false,
-                    plists: [{
-                        id: "list1",
-                        name: "Celeste",
-                    }, { id: "list2", name: "Pocket Creatures" }]
-                },
-                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
-            ]
         },
         {
             id: "ipod1",
             name: "Apple iPod 5G",
             enabled: true,
-        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Headphones Round Sound.svg"),
-            playlists: [{ name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }]
+            icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Headphones Round Sound.svg"),
+            active_list_id: "sad1",
+            playlists: [
+                { name: "Music", id: "music", expanded: false, plists: [{ id: "sad1", name: "Sad Songs" }] }
+            ]
         },
         {
             id: "sd1",
             name: "Generic SD Card",
             enabled: false,
-        icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/SD Card.svg"),
+            icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/SD Card.svg"),
+            active_list_id: "list1",
             playlists: [
                 {
                     name: "Games",
-                    id: "games", expanded: false,
+                    id: "games",
+                    expanded: false,
                     plists: [{
                         id: "list1",
                         name: "Celeste",
@@ -114,11 +124,13 @@ export global DemoData {
             id: "kindle1",
             name: "Amazon Kindle",
             enabled: true,
-        icon: @image-url("testing_icons/Solar-Outline/School/Book 2.svg"),
+            icon: @image-url("testing_icons/Solar-Outline/School/Book 2.svg"),
+            active_list_id: "books2",
             playlists: [
                 {
                     name: "Books",
-                    id: "books", expanded: false,
+                    id: "books",
+                    expanded: false,
                     plists: [{
                         id: "books1",
                         name: "Dresden",
@@ -129,4 +141,4 @@ export global DemoData {
         },
     ];
     in property <[string]> playlists: ["foo", "bar", "zip", "zap"];
-    }
+}
