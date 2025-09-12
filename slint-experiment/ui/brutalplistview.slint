@@ -5,6 +5,7 @@ import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
 import { ScrollView, VerticalBox, VerticalBox, ListView } from "std-widgets.slint";
 import { BrutalBrushes } from "brutalcolors.slint";
 import { BrutalPlistItem } from "brutalplistitem.slint";
+import { BrutalScrollBar } from "brutalscrollbar.slint";
 
 export component BrutalPlaylistView {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
@@ -12,21 +13,26 @@ export component BrutalPlaylistView {
     y: 0;
 
     private property <bool> scrolling: plist-scroll.visible-height < plist-scroll.viewport-height;
+    width: 100%;
 
-    plist-scroll := ListView {
-        horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
-                width: scrolling ? parent.width - 5px : parent.width;
-                x: 0;
+    HorizontalLayout {
+        x: 0;
+        width: parent.width + 15px;
 
-        for lol in active_device.playlists: VerticalLayout {
-            lolbutton := BrutalButton {
-                text: lol.name;
-                selectable: true;
-                selected: true;
-                height: 35px;
-                width: scrolling ? parent.width - 10px : parent.width;
-                
-            }
+        plist-scroll := ListView {
+            horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+            vertical-scrollbar-policy: always-off;
+            width: parent.width - bscrollbar.width;
+            //scrolling ? parent.width - 15px : parent.width + 15px;
+
+            for lol in active_device.playlists: VerticalLayout {
+                lolbutton := BrutalButton {
+                    text: lol.name;
+                    selectable: true;
+                    selected: true;
+                    height: 35px;
+                    width: parent.width;
+                }
 
 /*
             Rectangle {
@@ -37,37 +43,44 @@ export component BrutalPlaylistView {
                 */
 
                 VerticalLayout {
-                animate height {
-                    duration: 150ms;
-                    easing: ease-in-out-quad;
-                }
-                animate opacity {
-                    delay: 150ms;
-                    duration: 50ms;
-                    easing: ease-in-quad;
-                }
-                width: scrolling ? parent.width - 50px : parent.width - 40px;
-                x: 35px;
-                visible: lolbutton.selected;
-                height: lolbutton.selected ? lol.plists.length * 40px : 0px;
-                opacity: lolbutton.selected ? 1 : 0;
-                for listo in lol.plists: BrutalButton {
-                    text_alignment: left;
-                    brushes: BrutalBrushes.ButtonColorsPlist;
-                    text-colors: BrutalBrushes.ButtonTextColorsPlist;
-                    icon-colors: BrutalBrushes.ButtonIconColorsPlist;
-                    selectable: true;
-                    selected: active_device.active-list-id == listo.id;
-                    text: listo.name;
+                    animate height {
+                        duration: 150ms;
+                        easing: ease-in-out-quad;
+                    }
+                    animate opacity {
+                        delay: 150ms;
+                        duration: 50ms;
+                        easing: ease-in-quad;
+                    }
                     width: parent.width - 20px;
-                    height: lolbutton.selected ? 40px : 0px;
+                    x: 10px;
+                    visible: lolbutton.selected;
+                    height: lolbutton.selected ? lol.plists.length * 40px : 0px;
+                    opacity: lolbutton.selected ? 1 : 0;
+                    for listo in lol.plists: BrutalButton {
+                        text_alignment: left;
+                        brushes: BrutalBrushes.ButtonColorsPlist;
+                        text-colors: BrutalBrushes.ButtonTextColorsPlist;
+                        icon-colors: BrutalBrushes.ButtonIconColorsPlist;
+                        selectable: true;
+                        selected: active_device.active-list-id == listo.id;
+                        text: listo.name;
+                        width: parent.width - 15px;
+                        height: lolbutton.selected ? 40px : 0px;
                     //height: lolbutton.selected ? 30px : 0px;
                     x: 20px;
-                    clicked => {
-                        active_device.active-list-id = listo.id;
+                        clicked => {
+                            active_device.active-list-id = listo.id;
+                        }
                     }
                 }
             }
+        }
+
+        bscrollbar := BrutalScrollBar {
+            visible-length: plist-scroll.visible-height;
+            viewport-length: plist-scroll.viewport-height;
+            viewport-position <=> plist-scroll.viewport-y;
         }
     }
 }

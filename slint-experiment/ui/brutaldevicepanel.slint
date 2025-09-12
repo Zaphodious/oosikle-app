@@ -3,6 +3,7 @@ import { BrutalButton } from "brutalbutton.slint";
 import { BrutalLineEntry  } from "brutallineentry.slint";
 import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
 import { ScrollView, ListView } from "std-widgets.slint";
+import { BrutalScrollBar } from "brutalscrollbar.slint";
 
 export component BrutalDevicePanel inherits BrutalPanel {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
@@ -21,36 +22,48 @@ export component BrutalDevicePanel inherits BrutalPanel {
     deivce_hover_area := TouchArea {
         width: 100%;
 
-        BrutalButton {
-            y: 0;
-            selectable: true;
-            selected: pc_device.id == active_device.id;
-            height: 50px;
-            width: deivce_hover_area.width;
-            icon: pc_device.icon;
-            text: pc_device.name;
-            clicked => {
-                active_device = pc_device;
-            }
-        }
+        VerticalLayout {
 
-        ListView {
-            y: 50px;
-            width: deivce_hover_area.width - 2px;
-            horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
-            vertical-scrollbar-policy: deivce_hover_area.has-hover ? always-on : always-off;
-            height: deivce_hover_area.height - 10px - 50px;
-                for device in devices: BrutalButton {
-                    selectable: true;
-                    selected: device.id == active_device.id;
-                    height: 50px;
-                    width: deivce_hover_area.has-hover ? deivce_hover_area.width - 10px : deivce_hover_area.width;
-                    icon: device.icon;
-                    text: device.name;
-                    clicked => {
-                        active_device = device;
+            BrutalButton {
+
+                selectable: true;
+                selected: pc_device.id == active_device.id;
+                height: 50px;
+                width: deivce_hover_area.width;
+                icon: pc_device.icon;
+                text: pc_device.name;
+                clicked => {
+                    active_device = pc_device;
+                }
+            }
+
+            HorizontalLayout {
+                thinglist := ListView {
+                    width: deivce_hover_area.width - bscrollbar.width;
+                    horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+                    vertical-scrollbar-policy: always-off;
+                    height: deivce_hover_area.height - 10px - 50px;
+                    for device in devices: BrutalButton {
+                        selectable: true;
+                        selected: device.id == active_device.id;
+                        height: 50px;
+                        width: deivce_hover_area.has-hover ? deivce_hover_area.width - bscrollbar.width : deivce_hover_area.width;
+                        icon: device.icon;
+                        text: device.name;
+                        clicked => {
+                            active_device = device;
+                        }
                     }
+                }
+
+                bscrollbar := BrutalScrollBar {
+                    can-show-now: deivce_hover_area.has-hover;
+                    height: thinglist.height;
+                    visible-length: thinglist.visible-height;
+                    viewport-length: thinglist.viewport-height;
+                    viewport-position <=> thinglist.viewport-y;
                 }
             }
         }
+    }
 }

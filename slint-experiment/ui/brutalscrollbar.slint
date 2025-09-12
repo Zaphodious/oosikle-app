@@ -1,0 +1,97 @@
+import { BrutalBrushSet, BrutalBrushes } from "brutalcolors.slint";
+
+export enum BrutalScrollDirection {
+    vertical,
+    horizontal,
+    }
+
+export component BrutalScrollBar {
+    in property <BrutalScrollDirection> direction: vertical;
+    in property <length> visible-length: 40px;
+    in property <length> viewport-length: 30px;
+    in-out property <length> viewport-position: 0px;
+    in property <ScrollBarPolicy> visibility: ScrollBarPolicy.as-needed;
+    in property <BrutalBrushSet> brushes: BrutalBrushes.ScrollBarBrushes;
+    in property <bool> can-show-now: true;
+
+    out property <bool> scrolling: visible-length < viewport-length && can-show-now;
+    out property <float> visible-proportion:  (visible-length / viewport-length);
+    out property <length> thumb-size: min(visible-proportion * trackrect.height, self.height);
+    private property <length> viable-scroll-length: trackrect.height - 5px;
+    private property <float> scroll-position-proportion: (-viewport-position) / viewport-length;
+    private property <length> thumb-max-position: 11px + max(viable-scroll-length * scroll-position-proportion, 0px);
+    private property <float> viewport-pixel-per-scroll-pixel: viewport-length / outerrect.height;
+
+    private property <length> last-touch-pos: 0px;
+
+    callback scrolled(length);
+
+    width: scrolling ? 25px : 0px;
+
+    height: scrolling ? 100% : 0%;
+    animate height { duration: 50ms; }
+    outerrect := Rectangle {
+        height: 100%;
+
+        trackrect := Rectangle {
+            height: parent.height - 20px;
+            y: 10px;
+            width: parent.width - 15px;
+            background: brushes.primary;
+            border-radius: 5px;
+            border-color: black;
+            border-width: 2px;
+        }
+        /*
+        Path {
+            height: parent.height - 3px;
+            width: parent.width;
+            stroke: black;
+            stroke-width: 3px;
+            stroke-line-cap: LineCap.round;
+            MoveTo {
+                x: 50;
+                y: 0;
+            }
+
+            LineTo {
+                x: 50;
+                y: 100;
+            }
+        }
+        */
+        thumbrect := Rectangle {
+            visible: scrolling;
+            height: thumb-size;
+            width: 20px;
+            border-radius: 5px;
+            border-color: black;
+            border-width: 2px;
+            background: brushes.secondary;
+            y: thumb-max-position;
+            thumbtouch := TouchArea {
+                changed pressed => {
+                    debug("pressed changed");
+                    debug(self.pressed-y);
+                    if self.pressed {
+                        last-touch-pos = self.pressed-y;
+                    } else {
+                        last-touch-pos = 0px;
+                        self.y = 0px;
+                    }
+                }
+                moved => {
+                    let scroll_amount = (self.mouse-y - last-touch-pos);
+                    self.y -= scroll_amount;
+                    last-touch-pos = self.mouse-y;
+                    let vpp = (scroll_amount) * viewport-pixel-per-scroll-pixel;
+                    viewport-position -= vpp;
+                    scrolled(vpp);
+                }
+
+                mouse-cursor: MouseCursor.pointer;
+            }
+        }
+    }
+
+    }

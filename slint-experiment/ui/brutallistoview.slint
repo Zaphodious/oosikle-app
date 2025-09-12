@@ -1,0 +1,47 @@
+import { BrutalPanel } from "brutalpanel.slint";
+import { BrutalButton } from "brutalbutton.slint";
+import { BrutalLineEntry  } from "brutallineentry.slint";
+import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
+import { ScrollView, VerticalBox, VerticalBox, ListView } from "std-widgets.slint";
+import { BrutalBrushes } from "brutalcolors.slint";
+import { BrutalPlistItem } from "brutalplistitem.slint";
+import { BrutalScrollBar } from "brutalscrollbar.slint";
+
+export component BrutalListoView {
+    private property <bool> scrolling: plist-scroll.visible-height < plist-scroll.viewport-height;
+    width: 100%;
+
+    HorizontalLayout {
+        x: 0;
+        width: parent.width + 15px;
+
+        plist-scroll := ListView {
+            horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+            vertical-scrollbar-policy: always-off;
+            width: parent.width - bscrollbar.width;
+            //scrolling ? parent.width - 15px : parent.width + 15px;
+
+            @children
+
+/*
+            Rectangle {
+                background: blue;
+                border-radius: 15px;
+                width: parent.width - 40px;
+                x: 35px;
+                */
+
+        }
+    }
+
+    bscrollbar := BrutalScrollBar {
+        visible-length: plist-scroll.visible-height;
+        viewport-length: plist-scroll.viewport-height;
+        viewport-position: plist-scroll.viewport-y;
+        scrolled(len) => {
+            plist-scroll.viewport-y = plist-scroll.viewport-y - len;
+        }
+    }
+}
+
+
