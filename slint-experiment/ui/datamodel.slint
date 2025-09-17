@@ -29,6 +29,24 @@ export struct ActionItem {
 
 }
 
+export struct PlaylistItem {
+    id: string,
+    name: string,
+    filename: string,
+    media_type: string,
+    filesize_bytes: int,
+    artist: string,
+    album: string,
+    album_position: int,
+    albumart: image,
+    imprint: string,
+    }
+
+export struct Playlist {
+    id: string,
+    items: [PlaylistItem],
+    }
+
 export global DemoData {
 
     in-out property <DeviceDisplay> active_device: 
@@ -37,7 +55,7 @@ export global DemoData {
         name: "This PC",
         enabled: true,
         icon: @image-url("testing_icons/Solar-Outline/Electronic, Devices/Laptop 3.svg"),
-        active_list_id: "list1",
+        active_list_id: "sad1",
         playlists: [
             {
                 name: "Games",
@@ -141,4 +159,102 @@ export global DemoData {
         },
     ];
     in property <[string]> playlists: ["foo", "bar", "zip", "zap"];
+
+    in property <Playlist> sadsong_playlist: {
+        id: "sad1",
+        items :[
+            {
+                id: "thing4",
+                name: "I am Sad",
+                filename: "i_am_sad.mp3",
+                media_type: "audio/music",
+                filesize_bytes: 1234567,
+                artist: "Pizza Pop Nate",
+                album: "Emotionals",
+                album_position: 3,
+                imprint: "Powered by Shaman"
+            },
+            {
+                id: "whohoo0",
+                name: "Eternal Goodbye",
+                filename: "ruin_eternal.mp3",
+                media_type: "audio/music",
+                filesize_bytes: 8473619,
+                artist: "Bard Of Ruin",
+                album: "Theta",
+                album_position: 12,
+                imprint: "Warmer Media"
+            },
+            {
+                id: "o3ye2a",
+                name: "Symphony of Exgreme Misery",
+                filename: "04_misery_symphony.mp3",
+                media_type: "audio/music",
+                filesize_bytes: 8473619,
+                artist: "Bard Of Ruin",
+                album: "Theta",
+                album_position: 4,
+                imprint: "Warmer Media"
+            },
+            {
+                id: "who3441jhsdafds2",
+                name: "Zeeshipop",
+                filename: "untitled_09.mp3",
+                media_type: "audio/music",
+                filesize_bytes: 8473619,
+                artist: "Unknown",
+                album: "Unknown",
+                album_position: 9,
+                imprint: "Unknown"
+            },
+            {
+                id: "eeshi1123",
+                name: "Oceanit Nightmare",
+                filename: "oceanic_nightmare.mp3",
+                media_type: "audio/music",
+                filesize_bytes: 8473619,
+                artist: "Bard Of Ruin",
+                album: "Theta",
+                album_position: 3,
+                imprint: "Warmer Media"
+            },
+
+        ]
+        };
+
+    in property <Playlist> pkmn_playlist:  {
+        id: "list2",
+        items: [
+            {
+                id: "pkmn4444",
+                name: "Pokemon Platinum",
+                filename: "pokemon_platinum.nds",
+                media_type: "videogame/dsrom",
+                filesize_bytes: 12345,
+                artist: "Gamefreak",
+                album: "Pokemon",
+                album_position: 15,
+            },
+            {
+                id: "pkmn123",
+                name: "Pokemon Blue",
+                filename: "pokemon_blue.gb",
+                media_type: "videogame/gbrom",
+                filesize_bytes: 1234,
+                artist: "Gamefreak",
+                album: "Pokemon",
+                album_position: 2,
+            },
+            {
+                id: "pkmn9",
+                name: "Pokemon Omega Ruby",
+                filename: "pokemon_omega_ruby.3ds",
+                media_type: "videogame/3dsrom",
+                filesize_bytes: 123456,
+                artist: "Gamefreak",
+                album: "Pokemon",
+                album_position: 23,
+            }
+        ]
+    };
 }

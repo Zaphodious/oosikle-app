@@ -1,6 +1,6 @@
 import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
 import { PlistSelectorDemo } from "plistdemo.slint";
-import {DeviceDisplay, ActionItem, DemoData} from "datamodel.slint";
+import {DeviceDisplay, ActionItem, DemoData, Playlist} from "datamodel.slint";
 import {TButton} from "stylebutton.slint";
 import {OStyle} from "styleglobal.slint";
 import { BrutalPanel } from "brutalpanel.slint";
@@ -9,6 +9,7 @@ import { BrutalLineEntry  } from "brutallineentry.slint";
 import { BrutalDevicePanel } from "brutaldevicepanel.slint";
 import { BrutalPlaylistView } from "brutalplistview.slint";
 import { BrutalBrushes } from "brutalcolors.slint";
+import { BrutalSelectedPlaylistView } from "brutalselectedplaylistview.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
@@ -17,7 +18,7 @@ export component MainLayoutDemo inherits Window {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     in property <[DeviceDisplay]> devices: DemoData.devices;
     in property <DeviceDisplay> pc_device: DemoData.pc_device;
-    in property <[string]> playlists: DemoData.playlists;
+    in-out property <Playlist> selected_playlist: DemoData.sadsong_playlist;
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
     full-screen: false;
@@ -141,10 +142,17 @@ export component MainLayoutDemo inherits Window {
                     }
                 }
             }
-
             Rectangle {
-                background: #00000000;
-            }
+
+            BrutalSelectedPlaylistView {
+                x: 20px;
+                width: parent.width - 20px;
+                height: 100%;
+                selected-playlist <=> selected_playlist; 
+                }
+
+                }
+
 
             BrutalPanel {
                 height: 80px;

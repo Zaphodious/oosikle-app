@@ -57,7 +57,7 @@ export component BrutalPlaylistView {
                     visible: lolbutton.selected;
                     height: lolbutton.selected ? lol.plists.length * 40px : 0px;
                     opacity: lolbutton.selected ? 1 : 0;
-                    for listo in lol.plists: BrutalButton {
+                    for listo in lol.plists: DragArea {BrutalButton {
                         text_alignment: left;
                         brushes: BrutalBrushes.ButtonColorsPlist;
                         text-colors: BrutalBrushes.ButtonTextColorsPlist;
@@ -72,6 +72,7 @@ export component BrutalPlaylistView {
                         clicked => {
                             active_device.active-list-id = listo.id;
                         }
+                    }
                     }
                 }
             }

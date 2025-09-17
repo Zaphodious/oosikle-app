@@ -1,0 +1,86 @@
+
+import { Playlist } from "datamodel.slint";
+import { BrutalPanel } from "brutalpanel.slint";
+import { ListView } from "std-widgets.slint";
+import { BrutalBrushes } from "brutalcolors.slint";
+import { BrutalButton } from "brutalbutton.slint";
+import { BrutalScrollBar } from "brutalscrollbar.slint";
+export component BrutalSelectedPlaylistView {
+    in-out property <Playlist> selected-playlist;
+    horizontal-stretch: 1;
+    vertical-stretch: 1;
+
+    listo := ListView {
+        x: 0;
+        width: parent.width - bscrollbar.width;
+        horizontal-stretch: 1;
+        vertical-stretch: 1;
+        vertical-scrollbar-policy: ScrollBarPolicy.always-off;
+        horizontal-scrollbar-policy: ScrollBarPolicy.always-off;
+        for playlistitem in selected-playlist.items: BrutalPanel {
+            height: 100px;
+            background: BrutalBrushes.PlaylistViewItemBrushes.primary;
+            init => {
+                debug(playlistitem);
+            }
+            HorizontalLayout {
+                width: 100%;
+                height: 100%;
+                y: 2px;
+                x: 2px;
+                VerticalLayout {
+                    BrutalButton {
+                        text: "";
+                        width: 42px;
+                        height: 40px;
+                    }
+                    BrutalButton {
+                        text: "";
+                        width: 32px;
+                        height: 30px;
+                        x: 10px;
+                    }
+                }
+
+                Rectangle {
+                    background: blue;
+                    width: 80px;
+                    height: 80px;
+                    padding: 20px;
+                }
+
+                Rectangle {
+                    width: 5px;
+                }
+
+                VerticalLayout {
+                    alignment: start;
+                    Text {
+                        font-size: 15pt;
+                        text: playlistitem.name;
+                        color: BrutalBrushes.PlaylistViewTextColors.primary;
+                    }
+
+                    Text {
+                        font-size: 12px;
+                        text: playlistitem.artist;
+                        color: BrutalBrushes.PlaylistViewTextColors.primary;
+                    }
+
+                    Text {
+                        font-size: 12px;
+                        text: "File: " + playlistitem.filename + "|" + "Size: " + (playlistitem.filesize_bytes / 1000) + "kb";
+                        color: BrutalBrushes.PlaylistViewTextColors.primary;
+                    }
+                }
+            }
+        }
+    }
+
+    bscrollbar := BrutalScrollBar {
+        x: listo.width;
+        visible-length: listo.visible-height;
+        viewport-length: listo.viewport-height;
+        viewport-position <=> listo.viewport-y;
+    }
+}

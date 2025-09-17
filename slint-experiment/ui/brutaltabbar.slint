@@ -1,0 +1,12 @@
+
+export struct TabInfo {
+    name: string,
+    id: string,
+    closable: bool,
+    closed: bool,
+    }
+
+export component BrutalTabBar {
+    in-out property <TabInfo> TabInfo;
+
+    }
