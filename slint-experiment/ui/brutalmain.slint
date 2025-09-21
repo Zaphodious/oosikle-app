@@ -112,8 +112,10 @@ export component MainLayoutDemo inherits Window {
             }
         }
 
+/*
         VerticalLayout {
             BrutalPanel {
+                z: 10;
                 height: 60px;
                 HorizontalLayout {
                     BrutalButton {
@@ -142,21 +144,19 @@ export component MainLayoutDemo inherits Window {
                     }
                 }
             }
+            */
+            Rectangle {
             Rectangle {
 
             BrutalSelectedPlaylistView {
-                x: 20px;
-                width: parent.width - 20px;
-                height: 100%;
+                width: parent.width;
+                height: parent.height;
                 selected-playlist <=> selected_playlist; 
                 }
 
                 }
 
 
-            BrutalPanel {
-                height: 80px;
-            }
         }
     }
 
