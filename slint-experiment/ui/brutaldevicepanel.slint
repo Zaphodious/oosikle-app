@@ -9,10 +9,7 @@ export component BrutalDevicePanel inherits BrutalPanel {
     in-out property <DeviceDisplay> active_device: DemoData.active_device;
     in property <[DeviceDisplay]> devices: DemoData.devices;
     in property <DeviceDisplay> pc_device: DemoData.pc_device;
-    x: 0;
-    y: 0;
     width: deivce_hover_area.has-hover ? 240px : 68px;
-    height: 100%;
 
     animate width {
         easing: ease-in-quad;
@@ -47,7 +44,7 @@ export component BrutalDevicePanel inherits BrutalPanel {
                         selectable: true;
                         selected: device.id == active_device.id;
                         height: 50px;
-                        width: deivce_hover_area.has-hover ? deivce_hover_area.width - bscrollbar.width : deivce_hover_area.width;
+                        width: deivce_hover_area.has-hover ? deivce_hover_area.width - 10px - bscrollbar.width : deivce_hover_area.width;
                         icon: device.icon;
                         text: device.name;
                         clicked => {

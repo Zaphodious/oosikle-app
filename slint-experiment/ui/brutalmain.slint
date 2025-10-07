@@ -10,6 +10,7 @@ import { BrutalDevicePanel } from "brutaldevicepanel.slint";
 import { BrutalPlaylistView } from "brutalplistview.slint";
 import { BrutalBrushes } from "brutalcolors.slint";
 import { BrutalSelectedPlaylistView } from "brutalselectedplaylistview.slint";
+import { BrutalViewContent } from "brutalview_content.slint";
 
 export component MainLayoutDemo inherits Window {
     min-width: 800px;
@@ -22,176 +23,55 @@ export component MainLayoutDemo inherits Window {
     always-on-top: false;
     in-out property <bool> commander_pane_minimized: false;
     full-screen: false;
-    background: BrutalBrushes.AppColorsBackground.primary;
+    background: BrutalBrushes.AppColorsBackground.tertiary;
+    private property <int> view-ind: 0;
 
     private property <bool> device_expanded: false;
 
-    HorizontalLayout {
-        Rectangle {
-            width: 70px;
-        }
-        /*
-        device_bar := BrutalPanel {
-            width: deivce_hover_area.has-hover ? 240px : 80px;
-
-            deivce_hover_area := TouchArea {
-                
-            
-                }
-
-            VerticalLayout {
-                alignment: LayoutAlignment.start;
-                for device in devices: BrutalButton {
-                    width: device_bar.width - 20px;
-                        icon: device.icon;
-                        text: device.name;
-
-                }
-                }
-            }
-            */
-        BrutalPanel {
-            width: 260px;
-            background: BrutalBrushes.AppColorsBackground.tertiary;
-            Rectangle {
-                height: parent.height - 30px;
-                VerticalLayout {
-                    height: parent.height;
-                    alignment: start;
-                    HorizontalLayout {
-                        Rectangle {
-                            width: 125px;
-                            height: self.width;
-                            Rectangle {
-                                width: parent.width - 10px;
-                                background: #ffe737ff;
-                                height: self.width;
-                                padding: 10px;
-                                border-radius: 5px;
-                                border-width: 2px;
-                                border-color: black;
-                                Image {
-                                    width: 100%;
-                                    source: active_device.icon;
-                                }
-                            }
-                        }
-
-                        VerticalLayout {
-                            BrutalButton {
-                                text: "Sync";
-                            }
-
-                            BrutalButton {
-                                text: "Clone";
-                            }
-
-                            BrutalButton {
-                                text: "Eject";
-                            }
-                        }
-                    }
-
-                    Text {
-                        text: active_device.name;
-                        horizontal-alignment: center;
-                        font-size: 18pt;
-                        color: BrutalBrushes.AppTextColorsMain.primary;
-                    }
-
-                    BrutalPanel {
-                        height: parent.height - 150px;
-                        background: BrutalBrushes.AppColorsBackground.primary;
-                        BrutalPlaylistView {
-                            width: parent.width - 35px;
-                            height: parent.height - 14px;
-                            active_device <=> active_device;
-                        }
-                    }
-                }
-            }
-        }
-
-/*
-        VerticalLayout {
-            BrutalPanel {
-                z: 10;
-                height: 60px;
-                HorizontalLayout {
-                    BrutalButton {
-                        height: 100%;
-                        text: "hola";
-                    }
-
-                    BrutalButton {
-                        height: 100%;
-                        text: "hola";
-                    }
-
-                    BrutalLineEntry { }
-
-                    BrutalButton {
-                        disabled: true;
-                        height: 100%;
-                        text: "hola";
-                    }
-
-                    BrutalButton {
-                        selectable: true;
-                        selected: true;
-                        height: 100%;
-                        text: "hola";
-                    }
-                }
-            }
-            */
-            Rectangle {
-            Rectangle {
-
-            BrutalSelectedPlaylistView {
-                width: parent.width;
-                height: parent.height;
-                selected-playlist <=> selected_playlist; 
-                }
-
-                }
-
-
-        }
+    measure := Rectangle {
+        height: parent.height;
+        width: parent.width;
     }
 
-    device_bar := BrutalDevicePanel {
-        devices: devices;
-        pc_device: pc_device;
-        active_device <=> active_device;
-    }
-
-/*
-    device_bar := BrutalPanel {
+    /*
+    taskbar := BrutalPanel {
+        height: 100%;
+        width: 100%;
         x: 0;
         y: 0;
-        width: deivce_hover_area.has-hover ? 240px : 68px;
-        height: 100%;
-
-        animate width {
-            easing: ease-in-quad;
-            duration: 50ms;
-             
-        }
-
-        deivce_hover_area := TouchArea {
-            width: 100%;
-            VerticalLayout {
-                width: 100%;
-                alignment: LayoutAlignment.start;
-                for device in devices: BrutalButton {
-                    height: 50px;
-                    width: 100%;
-                    icon: device.icon;
-                    text: device.name;
-                }
-            }
-        }
+        background: BrutalBrushes.AppColorsBackground.primary;
     }
     */
+
+
+
+    VerticalLayout {
+
+    Rectangle {
+
+        view-strip := HorizontalLayout {
+            y: 0;
+            x: measure.width * -view-ind;
+
+            BrutalViewContent {
+                width: measure.width;
+            }
+
+            BrutalPanel {
+                width: measure.width;
+                background: black;
+            }
+
+            animate x { duration: 500ms;
+                easing: ease-in-out-back;
+            }
+        }
+        }
+        HorizontalLayout {
+            BrutalButton { text: "foo"; clicked => {view-ind = 0}}
+            BrutalButton { text: "bar"; clicked => {view-ind = 1}}
+            BrutalButton { text: "baz"; clicked => {view-ind = 2}}
+        }
+
+    }
 }

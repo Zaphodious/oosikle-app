@@ -1,0 +1,203 @@
+import { AboutSlint, Button, VerticalBox, ListView, ScrollView, HorizontalBox } from "std-widgets.slint";
+import { PlistSelectorDemo } from "plistdemo.slint";
+import {DeviceDisplay, ActionItem, DemoData, Playlist} from "datamodel.slint";
+import {TButton} from "stylebutton.slint";
+import {OStyle} from "styleglobal.slint";
+import { BrutalPanel } from "brutalpanel.slint";
+import { BrutalButton } from "brutalbutton.slint";
+import { BrutalLineEntry  } from "brutallineentry.slint";
+import { BrutalDevicePanel } from "brutaldevicepanel.slint";
+import { BrutalPlaylistView } from "brutalplistview.slint";
+import { BrutalBrushes } from "brutalcolors.slint";
+import { BrutalSelectedPlaylistView } from "brutalselectedplaylistview.slint";
+
+export component BrutalViewContent inherits Rectangle {
+    min-width: 800px;
+    //min-height: 480px;
+    in-out property <DeviceDisplay> active_device: DemoData.active_device;
+    in property <[DeviceDisplay]> devices: DemoData.devices;
+    in property <DeviceDisplay> pc_device: DemoData.pc_device;
+    in-out property <Playlist> selected_playlist: DemoData.sadsong_playlist;
+    in-out property <bool> commander_pane_minimized: false;
+
+    private property <bool> device_expanded: false;
+
+    BrutalPanel {
+        height: 100%;
+        width: 100%;
+        background: BrutalBrushes.AppColorsBackground.primary;
+        }
+
+    HorizontalLayout {
+        y: 10px;
+        x: 10px;
+        height: parent.height - 20px;
+        width: parent.width - 20px;
+        Rectangle {
+            width: 70px;
+        }
+        /*
+        device_bar := BrutalPanel {
+            width: deivce_hover_area.has-hover ? 240px : 80px;
+
+            deivce_hover_area := TouchArea {
+                
+            
+                }
+
+            VerticalLayout {
+                alignment: LayoutAlignment.start;
+                for device in devices: BrutalButton {
+                    width: device_bar.width - 20px;
+                        icon: device.icon;
+                        text: device.name;
+
+                }
+                }
+            }
+            */
+        BrutalPanel {
+            width: 260px;
+            background: BrutalBrushes.AppColorsBackground.tertiary;
+            Rectangle {
+                height: parent.height - 30px;
+                VerticalLayout {
+                    height: parent.height;
+                    alignment: start;
+                    HorizontalLayout {
+                        Rectangle {
+                            width: 125px;
+                            height: self.width;
+                            Rectangle {
+                                width: parent.width - 10px;
+                                background: #ffe737ff;
+                                height: self.width;
+                                //padding: 10px;
+                                border-radius: 5px;
+                                border-width: 2px;
+                                border-color: black;
+                                Image {
+                                    width: 100%;
+                                    source: active_device.icon;
+                                }
+                            }
+                        }
+
+                        VerticalLayout {
+                            BrutalButton {
+                                text: "Sync";
+                            }
+
+                            BrutalButton {
+                                text: "Clone";
+                            }
+
+                            BrutalButton {
+                                text: "Eject";
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: active_device.name;
+                        horizontal-alignment: center;
+                        font-size: 18pt;
+                        color: BrutalBrushes.AppTextColorsMain.primary;
+                    }
+
+                    BrutalPanel {
+                        height: parent.height - 150px;
+                        background: BrutalBrushes.AppColorsBackground.primary;
+                        BrutalPlaylistView {
+                            width: parent.width - 35px;
+                            height: parent.height - 14px;
+                            active_device <=> active_device;
+                        }
+                    }
+                }
+            }
+        }
+
+/*
+        VerticalLayout {
+            BrutalPanel {
+                z: 10;
+                height: 60px;
+                HorizontalLayout {
+                    BrutalButton {
+                        height: 100%;
+                        text: "hola";
+                    }
+
+                    BrutalButton {
+                        height: 100%;
+                        text: "hola";
+                    }
+
+                    BrutalLineEntry { }
+
+                    BrutalButton {
+                        disabled: true;
+                        height: 100%;
+                        text: "hola";
+                    }
+
+                    BrutalButton {
+                        selectable: true;
+                        selected: true;
+                        height: 100%;
+                        text: "hola";
+                    }
+                }
+            }
+            */
+            Rectangle {
+            Rectangle {
+
+                BrutalSelectedPlaylistView {
+                    width: parent.width;
+                    height: parent.height;
+                    selected-playlist <=> selected_playlist;
+                }
+            }
+        }
+    }
+
+    device_bar := BrutalDevicePanel {
+        y: 0;
+        x: 0;
+        height: parent.height;
+        devices: devices;
+        pc_device: pc_device;
+        active_device <=> active_device;
+    }
+
+/*
+    device_bar := BrutalPanel {
+        x: 0;
+        y: 0;
+        width: deivce_hover_area.has-hover ? 240px : 68px;
+        height: 100%;
+
+        animate width {
+            easing: ease-in-quad;
+            duration: 50ms;
+             
+        }
+
+        deivce_hover_area := TouchArea {
+            width: 100%;
+            VerticalLayout {
+                width: 100%;
+                alignment: LayoutAlignment.start;
+                for device in devices: BrutalButton {
+                    height: 50px;
+                    width: 100%;
+                    icon: device.icon;
+                    text: device.name;
+                }
+            }
+        }
+    }
+    */
+}
