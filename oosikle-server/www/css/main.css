@@ -1,0 +1,42 @@
+
+body {
+    display: grid;
+
+    grid-template-areas:
+        "device-dock device-detail main-view"
+        "util-panel util-panel util-panel";
+
+    grid-template-columns: 85px 260px auto;
+
+}
+
+#device-dock {
+    grid-area: "device-dock";
+    z-index: 999;
+
+    .navbutton {
+        width: calc(100% - 10px);
+        min-width: 45px;
+        height: 45px;
+
+    }
+}
+
+#device-dock:hover {
+    width: 200px;
+}
+
+#device-detail-panel {
+    grid-area: "device-detail";
+}
+
+#main-view {
+    grid-area: "main-view";
+}
+
+#utility-panel {
+    display: block;
+    width: 100%;
+    grid-area: "util-panel";
+}
+

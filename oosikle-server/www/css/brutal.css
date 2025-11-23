@@ -1,0 +1,91 @@
+
+* {
+        --brutal-app-bg-primary: #efecdf;
+        --brutal-app-bg-secondary: #e2d7b7ff;
+        --brutal-app-bg-tertiary: #c59782ff;
+
+
+        --brutal-app-text-color-primary:    #000000ff;
+        --brutal-app-text-color-secondary: #000000ff;
+        --brutal-app-text-color-tertiary:  #000000ff;
+
+        --brutal-app-icon-color-primary:    #000000ff;
+        --brutal-app-icon-color-secondary: #000000ff;
+        --brutal-app-icon-color-tertiary:  #000000ff;
+
+
+        --brutal-scroll-bar-color-primary: #ffe9c5;
+        --brutal-scroll-bar-color-secondary: #e2d7b5;
+        --brutal-scroll-bar-color-tertiary: #ae6c37;
+
+
+        --brutal-playlist-view-item-color-tertiary:    #0a89ff;
+        --brutal-playlist-view-item-color-secondary:    #5ba8ff;
+        --brutal-playlist-view-item-color-primary:  #98dcff;
+
+        --brutal-playlist-view-header-color-tertiary:    #0a89ff;
+        --brutal-playlist-view-header-color-secondary:    #5ba8ff;
+        --brutal-playlist-view-header-color-primary:  #98dcff;
+        
+        --brutal-playlist-view-text-color-primary:    #000000ff;
+        --brutal-playlist-view-text-color-secondary: #ffffffff;
+        --brutal-playlist-view-text-color-tertiary:  #ffffffff;
+
+
+        --brutal-button-main-bg-color-primary:    #f68f37ff;
+        --brutal-button-main-bg-color-secondary: #ffbb31ff;
+        --brutal-button-main-bg-color-tertiary:  #ffe737ff;
+
+        --brutal-button-main-text-color-primary:    #000000ff;
+        --brutal-button-main-text-color-secondary: #000000ff;
+        --brutal-button-main-text-color-tertiary:  #000000ff;
+        
+        --brutal-icon-main-color-primary:    #111;
+        --brutal-icon-main-color-secondary: #111;
+        --brutal-icon-main-color-tertiary:  #111;
+
+        --brutal-button-plist-bg-color-primary:    #0a89ff;
+        --brutal-button-plist-bg-color-secondary:    #5ba8ff;
+        --brutal-button-plist-bg-color-tertiary:  #98dcff;
+
+        --brutal-button-plist-text-color-tertiary:    #000000ff;
+        --brutal-button-plist-text-color-secondary: #ffffffff;
+        --brutal-button-plist-text-color-primary:  #ffffffff;
+        
+        --brutal-button-plist-color-tertiary:    #000000ff;
+        --brutal-button-plist-color-secondary: #efefef;
+        --brutal-button-plist-color-primary:  #efefef;
+
+}
+
+.panel {
+    border-radius: 16px;
+    border: solid black 2px;
+    padding: 8px;
+    margin: 8px;
+    background-color: var(--brutal-app-bg-secondary);
+}
+
+.navbutton {
+    border-radius: 5px;
+    background-color: var(--brutal-button-main-bg-color-primary);
+    display: inline-block;
+    height: 40px;
+    border: solid black 2px;
+    filter: drop-shadow(3px 3px);
+    margin: 12px;
+    margin-top: -1px;
+    margin-left: -1px;
+}
+
+.navbutton:hover {
+    background-color: var(--brutal-button-main-bg-color-secondary);
+}
+
+.navbutton:active, .navbutton.pressed {
+    background-color: var(--brutal-button-main-bg-color-tertiary);
+    filter: none;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 8px;
+}
