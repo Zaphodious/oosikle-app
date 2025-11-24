@@ -62,7 +62,7 @@
     border-radius: 16px;
     border: solid black 2px;
     padding: 8px;
-    margin: 8px;
+    margin: 3px;
     background-color: var(--brutal-app-bg-secondary);
 }
 
@@ -72,10 +72,10 @@
     display: inline-block;
     height: 40px;
     border: solid black 2px;
-    filter: drop-shadow(3px 3px);
+    box-shadow: 3px 3px;
     margin: 12px;
-    margin-top: -1px;
-    margin-left: -1px;
+    margin-top: 2px;
+    margin-left: 2px;
 }
 
 .navbutton:hover {
@@ -84,8 +84,8 @@
 
 .navbutton:active, .navbutton.pressed {
     background-color: var(--brutal-button-main-bg-color-tertiary);
-    filter: none;
-    margin-top: 3px;
-    margin-left: 3px;
+    box-shadow: 3px 3px inset;
+    margin-top: 6px;
+    margin-left: 6px;
     margin-bottom: 8px;
 }
