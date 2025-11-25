@@ -61,8 +61,8 @@
 .panel {
     border-radius: 16px;
     border: solid black 2px;
-    padding: 8px;
-    padding-right: 10px;
+    padding: 12px;
+    padding-right: 14px;
     margin: 3px;
     background-color: var(--brutal-app-bg-secondary);
 }

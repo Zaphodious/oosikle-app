@@ -18,17 +18,18 @@ body {
     display: grid;
 
     grid-template-areas:
-        "device-dock device-detail main-view"
-        "util-panel util-panel util-panel";
+        "device-dock device-content"
+        "util-panel util-panel";
 
-    grid-template-columns: 75px 260px auto;
+    grid-template-columns: 75px auto;
+    grid-template-rows: auto 75px;
 
 }
 
 
 
 #device-dock {
-    grid-area: "device-dock";
+    grid-area: device-dock;
     z-index: 999;
     padding: 3px;
     overflow: scroll;
@@ -49,38 +50,53 @@ body {
     width: 200px;
 }
 
-#device-detail-panel {
-    grid-area: "device-detail";
+#device-content {
+    grid-area: "device-content";
+    display: flex;
 
-    #device-detail-head {
-        display: grid;
 
-        grid-template-areas:
-            "device-pic actions"
-            "device-name device-name";
+    #device-detail-panel {
 
-        &h2 {
-            grid-area: "device-name";
+        #device-detail-head {
+            display: grid;
+
+            grid-template-columns: 160px auto;
+            grid-template-rows: 160px auto;
+
+            grid-template-areas:
+                "device-pic actions"
+                "dname dname";
+
+            column-gap: 5px;
+
+            #device-name {
+                grid-area: dname;
+                text-align: center;
+            }
+
+            & img {
+                background: blue;
+                grid-area: device-pic;
+                width: 100%;
+                height: 100%;
+
+            }
+
+            #device-action-buttons {
+                grid-area: actions;
+            }
+
         }
 
-        &img {
-            grid-area: "device-pic";
-        }
-
-        #device-action-buttons {
-            grid-area: "actions";
-        }
 
     }
 
+    #main-view {}
 
 }
 
-#main-view {
-    grid-area: "main-view";
-}
 
 #utility-panel {
     display: block;
-    grid-area: "util-panel";
+    grid-area: util-panel;
 }
