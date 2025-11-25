@@ -1,23 +1,46 @@
-
+html,
 body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#appcontent {
+    width: 100vw;
+    height: 100vh;
+    width: 100vw;
+    height: 100vh;
+}
+
+#appcontent {
     display: grid;
 
     grid-template-areas:
         "device-dock device-detail main-view"
         "util-panel util-panel util-panel";
 
-    grid-template-columns: 85px 260px auto;
+    grid-template-columns: 75px 260px auto;
 
 }
+
+
 
 #device-dock {
     grid-area: "device-dock";
     z-index: 999;
+    padding: 3px;
+    overflow: scroll;
+    max-height: 100%;
+    width: calc(100% - 15px);
+    transition: width 100ms;
 
     .navbutton {
         width: calc(100% - 10px);
         min-width: 45px;
         height: 45px;
+        margin-left: 4px;
 
     }
 }
@@ -28,6 +51,29 @@ body {
 
 #device-detail-panel {
     grid-area: "device-detail";
+
+    #device-detail-head {
+        display: grid;
+
+        grid-template-areas:
+            "device-pic actions"
+            "device-name device-name";
+
+        &h2 {
+            grid-area: "device-name";
+        }
+
+        &img {
+            grid-area: "device-pic";
+        }
+
+        #device-action-buttons {
+            grid-area: "actions";
+        }
+
+    }
+
+
 }
 
 #main-view {
@@ -36,7 +82,5 @@ body {
 
 #utility-panel {
     display: block;
-    width: 100%;
     grid-area: "util-panel";
 }
-

@@ -62,6 +62,7 @@
     border-radius: 16px;
     border: solid black 2px;
     padding: 8px;
+    padding-right: 10px;
     margin: 3px;
     background-color: var(--brutal-app-bg-secondary);
 }
@@ -72,10 +73,10 @@
     display: inline-block;
     height: 40px;
     border: solid black 2px;
-    box-shadow: 3px 3px;
-    margin: 12px;
-    margin-top: 2px;
+    box-shadow: 2px 2px;
+    margin: 3px;
     margin-left: 2px;
+    
 }
 
 .navbutton:hover {
@@ -84,8 +85,8 @@
 
 .navbutton:active, .navbutton.pressed {
     background-color: var(--brutal-button-main-bg-color-tertiary);
-    box-shadow: 3px 3px inset;
-    margin-top: 6px;
-    margin-left: 6px;
-    margin-bottom: 8px;
+    box-shadow: 1px 1px inset;
+    margin-top: 4px;
+    margin-bottom: 2px;
 }
+

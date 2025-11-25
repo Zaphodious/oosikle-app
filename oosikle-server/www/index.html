@@ -1,41 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Oosikle Client</title>
+
     <link rel="stylesheet" href="css/brutal.css">
     <link rel="stylesheet" href="css/main.css">
-</head>
+  </head>
 
-<body>
+  <body>
+    <div id="appcontent">
+      <div class="panel" id="device-dock">
+        <button class="navbutton">alpha</button>
+        <button class="navbutton pressed">beta</button>
+        <button class="navbutton">gamma</button>
+        <button class="navbutton">theta</button>
+        <button class="navbutton">omega</button>
+        <button class="navbutton">alpha</button>
+        <button class="navbutton pressed">beta</button>
+        <button class="navbutton">gamma</button>
+        <button class="navbutton">theta</button>
+        <button class="navbutton">omega</button>
+      </div>
 
-        
-    </div>
-    <div class="panel" id="device-dock">
-        <input type="button" class="navbutton" value="alpha">
-        <input type="button" class="navbutton pressed" value="beta">
-        <input type="button" class="navbutton" value="gamma">
-        <input type="button" class="navbutton" value="theta">
-        <input type="button" class="navbutton" value="omega">
-    </div>
-    <div class="panel" id="device-detail-panel">Device Detail</div>
-    <div id="main-view">
+      <div class="panel" id="device-detail-panel">
+        <div id="device-detail-head">
+          <h2>Amazon Kindle</h2>
+          <img src="#" alt="">
+
+          <div id="device-action-buttons">
+            <button>Action 1</button>
+            <button>Action 2</button>
+            <button>Action 2</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="main-view">
         <div class="panel" id="search-bar">Search Bar</div>
-        <div class="panel" id="plist-view">
-            <table>
-                <tr><th>Name</th><th>Artist</th><th>Album</th></tr>
-                <tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
-                <tr><td>Fiz</td><td>Buz</td><td>Bip</td></tr>
 
-            </table>
+        <div class="panel" id="plist-view">
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Artist</th>
+              <th>Album</th>
+            </tr>
+
+            <tr>
+              <td>Foo</td>
+              <td>Bar</td>
+              <td>Baz</td>
+            </tr>
+
+            <tr>
+              <td>Fiz</td>
+              <td>Buz</td>
+              <td>Bip</td>
+            </tr>
+          </table>
         </div>
 
         <div class="panel" id="status-bar">Status Bar</div>
+      </div>
+
+      <div class="panel" id="utility-panel">Utility Panel</div>
     </div>
-    <div class="panel" id="utility-panel">Utility Panel</div>
-
-</body>
-
+  </body>
 </html>

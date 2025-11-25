@@ -12,7 +12,7 @@ impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &winit::event_loop::ActiveEventLoop) {
         let window = event_loop.create_window(Window::default_attributes()).unwrap();
         let webview = WebViewBuilder::new()
-            .with_url("https://bulbapedia.bulbagarden.net/wiki/Magikarp_(Pok%C3%A9mon)")
+            .with_url("http://localhost:8080")
             .build(&window)
             .unwrap();
 
