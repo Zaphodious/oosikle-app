@@ -1,0 +1,25 @@
+* {
+    padding: 0;
+    margin: 0;    
+}
+
+.panel {
+    border: solid black 1px;
+    background: white;
+}
+
+.navbutton {
+    border: outset black 2px;
+    background-color: grey;
+    margin: 4px;
+}
+
+.navbutton:hover {
+    background: darkgrey;
+    border: outset darkgrey 2px;
+}
+
+.navbutton:active, .navbutton.pressed {
+    background: lightgrey;
+    border: inset lightgrey 2px;
+}

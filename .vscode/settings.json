@@ -4,5 +4,6 @@
         "DB",
         "DefineBasicPlugin"
     ],
-    "luau-lsp.sourcemap.autogenerate": false
+    "luau-lsp.sourcemap.autogenerate": false,
+    "liveServer.settings.port": 5501
 }
