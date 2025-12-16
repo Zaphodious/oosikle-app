@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="640"
+   height="1136"
+   viewBox="0 0 640 1136"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="wireframe.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.70862676"
+     inkscape:cx="553.18261"
+     inkscape:cy="568"
+     inkscape:window-width="1694"
+     inkscape:window-height="1065"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="640"
+       height="1136"
+       id="page3"
+       margin="0"
+       bleed="0" />
+    <inkscape:page
+       x="698.53418"
+       y="2.8223603"
+       width="642.08698"
+       height="1128.9441"
+       id="page4"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect9"
+       width="615.27454"
+       height="107.24969"
+       x="12.700627"
+       y="1014.6385" />
+    <ellipse
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="ellipse9"
+       cx="69.853401"
+       cy="1064.7355"
+       rx="41.629814"
+       ry="35.985092" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       d="m 131.23975,1040.0397 31.04596,28.2236 -36.69068,23.9901"
+       id="path9" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1"
+       width="615.27454"
+       height="80.437263"
+       x="711.2348"
+       y="16.93416" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2"
+       width="615.27454"
+       height="107.24969"
+       x="709.82361"
+       y="1014.6385" />
+    <ellipse
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="path2"
+       cx="766.97638"
+       cy="1064.7355"
+       rx="41.629814"
+       ry="35.985092" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       d="m 828.36273,1040.0397 31.04596,28.2236 -36.69068,23.9901"
+       id="path3" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="904.56647"
+       y="1088.0199"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         x="904.56647"
+         y="1088.0199"
+         style="font-size:53.3333px;fill:#000000;fill-opacity:1;stroke:none">Device Menu</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect8"
+       width="591.28448"
+       height="1032.9839"
+       x="-16.934162"
+       y="23.990063" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="57.858387"
+       y="83.259628"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         x="57.858387"
+         y="83.259628">Devices</tspan></text>
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="path4"
+       cx="107.24969"
+       cy="193.33168"
+       rx="55.036026"
+       ry="53.624844" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="182.04224"
+       y="211.67702"
+       id="text5"><tspan
+         sodipodi:role="line"
+         id="tspan5"
+         x="182.04224"
+         y="211.67702">Device A</tspan></text>
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="ellipse5"
+       cx="107.24969"
+       cy="318.9267"
+       rx="55.036026"
+       ry="53.624844" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="182.04224"
+       y="337.27203"
+       id="text6"><tspan
+         sodipodi:role="line"
+         id="tspan6"
+         x="182.04224"
+         y="337.27203">Device B</tspan></text>
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="ellipse6"
+       cx="107.24969"
+       cy="440.28818"
+       rx="55.036026"
+       ry="53.624844" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="182.04224"
+       y="458.63351"
+       id="text7"><tspan
+         sodipodi:role="line"
+         id="tspan7"
+         x="182.04224"
+         y="458.63351">Device C</tspan></text>
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="ellipse7"
+       cx="107.24969"
+       cy="568.70557"
+       rx="55.036026"
+       ry="53.624844" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="182.04224"
+       y="587.0509"
+       id="text8"><tspan
+         sodipodi:role="line"
+         id="tspan8"
+         x="182.04224"
+         y="587.0509">Device D</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect10"
+       width="534.83728"
+       height="114.30559"
+       x="746.51428"
+       y="128.41739" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="777.56024"
+       y="207.44348"
+       id="text10"><tspan
+         sodipodi:role="line"
+         id="tspan10"
+         x="777.56024"
+         y="207.44348">Device Info</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11"
+       width="534.83728"
+       height="114.30559"
+       x="746.51428"
+       y="481.2124" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="777.56024"
+       y="560.23846"
+       id="text11"><tspan
+         sodipodi:role="line"
+         id="tspan11"
+         x="777.56024"
+         y="560.23846">plist 1 - type</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect12"
+       width="534.83728"
+       height="114.30559"
+       x="746.51428"
+       y="611.04095" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="777.56024"
+       y="690.06708"
+       id="text12"><tspan
+         sodipodi:role="line"
+         id="tspan12"
+         x="777.56024"
+         y="690.06708">plist 2 - type</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect13"
+       width="534.83728"
+       height="114.30559"
+       x="746.51428"
+       y="742.28076" />
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="777.56024"
+       y="821.30682"
+       id="text13"><tspan
+         sodipodi:role="line"
+         id="tspan13"
+         x="777.56024"
+         y="821.30682">plist 3 - type</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:53.3333px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="863.64227"
+       y="436.05469"
+       id="text14"><tspan
+         sodipodi:role="line"
+         id="tspan14"
+         x="863.64227"
+         y="436.05469">Playlists</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect14"
+       width="135.47331"
+       height="114.3056"
+       x="746.51428"
+       y="258.24597" />
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="760.6261"
+       y="354.20624"
+       id="text15"><tspan
+         sodipodi:role="line"
+         id="tspan15"
+         x="760.6261"
+         y="354.20624"
+         style="font-size:26.6667px">Action 1</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect15"
+       width="135.47331"
+       height="114.3056"
+       x="939.84595"
+       y="258.24597" />
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="953.95776"
+       y="354.20624"
+       id="text16"><tspan
+         sodipodi:role="line"
+         id="tspan16"
+         x="953.95776"
+         y="354.20624"
+         style="font-size:26.6667px">Action 2</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect16"
+       width="135.47331"
+       height="114.3056"
+       x="1133.1776"
+       y="258.24597" />
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="1147.2894"
+       y="354.20624"
+       id="text17"><tspan
+         sodipodi:role="line"
+         id="tspan17"
+         x="1147.2894"
+         y="354.20624"
+         style="font-size:26.6667px">Action 3</tspan></text>
+  </g>
+</svg>

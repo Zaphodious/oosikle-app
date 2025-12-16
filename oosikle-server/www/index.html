@@ -7,17 +7,26 @@
 
     <title>Oosikle Client</title>
 
-    <!--<link rel="stylesheet" href="css/brutal.css">
-    <link rel="stylesheet" href="css/wireframe.theme.css">
-    <link rel="stylesheet" href="css/main.css">-->
+    <link rel="preload" type="script" href="js/main.js">
+    <link rel="preload" type="script" href="js/deps/_hyperscript.min.js">
+    <link rel="preload" type="script" href="js/deps/htmx.min.js">
+
+    <!--
+  <link rel="stylesheet" href="css/brutal.css">
+  <link rel="stylesheet" href="css/main.css">
+-->
     <link rel="stylesheet" href="css/layout2.css">
+    <link rel="stylesheet" href="css/wireframe.theme.css">
   </head>
 
   <body>
+    <script src="js/deps/_hyperscript.min.js"> </script>
+
+    <script src="js/deps/htmx.min.js"> </script>
+
     <div id="appcontent">
-      <div>
-        
-      </div>
+      <div></div>
+
       <div class="panel" id="device-dock">
         <button class="navbutton">alpha</button>
         <button class="navbutton pressed">beta</button>
@@ -79,5 +88,7 @@
 
       <div class="panel" id="utility-panel">Utility Panel</div>
     </div>
+
+    <script src="js/main.js" defer> </script>
   </body>
 </html>
